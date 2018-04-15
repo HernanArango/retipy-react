@@ -12,7 +12,6 @@ class App extends Component {
       </nav>
       <div>
         <Route exact path="/evaluation/:id" render={props => {
-          console.log(props.match.params);
           return <RetinalEvaluation id={props.match.params.id} /> }} />
         <Route exact path="/upload" component={UploadImage} />
       </div>

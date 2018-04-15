@@ -36,6 +36,37 @@ class Roi extends Component
   }
 }
 
+class Result extends Component
+{
+  constructor(props)
+  {
+    super(props)
+    this.state =
+    {
+      name: props.name,
+      data: props.roi,
+      image: props.image
+    }
+  }
+
+  render()
+  {
+    return(
+      <div>
+        <label>{this.state.name}</label>
+      <Stage width={window.innerWidth} height={window.innerHeight}>
+        <Layer>
+          <Image image={this.state.image} />
+        </Layer>
+        <Layer>
+          {this.state.data}
+        </Layer>
+      </Stage>
+    </div>
+    );
+  }
+}
+
 export default class RetinalEvaluation extends Component
 {
   constructor(props)
@@ -44,39 +75,73 @@ export default class RetinalEvaluation extends Component
     this.state = {
       id: props.id,
       uri: "",
-      roi: [],
-      image: null
-    }
+      results: [],
+      selection: 0
+    };
+    this.changeImage = this.changeImage.bind(this);
   }
 
   componentDidMount()
   {
     getId(this.state.id).then(data => {
-      var new_roi = []
-      for (var i = 0; i < data.data.length; i++)
+      var results = [];
+      // process the result array
+      console.log(data)
+      for (var i = 0; i < data.results.length; i++)
       {
-        var currentRoi = <Roi key={i} x1={data.data[i].roi_x[0]} x2={data.data[i].roi_x[3]} y1={data.data[i].roi_y[0]} y2={data.data[i].roi_y[3]} color={Konva.Util.getRandomColor()} />;
-        new_roi.push(currentRoi);
+        var currentResultData = data.results[i];
+        // process the internal Roi objects
+        var roiList = [];
+        for (var roiIndex=0; roiIndex < currentResultData.data.length; roiIndex++)
+        {
+          var currentRoi = <Roi
+            key={i}
+            x1={currentResultData.data[i].roi_x[0]}
+            x2={currentResultData.data[i].roi_x[3]}
+            y1={currentResultData.data[i].roi_y[0]}
+            y2={currentResultData.data[i].roi_y[3]}
+            color={Konva.Util.getRandomColor()} />;
+          roiList.push(currentRoi);
+        }
+        // load the result image in memory
+        var currentImage = new window.Image();
+        currentImage.src = "data:image/png;base64," + currentResultData.image;
+
+        var currentResult = <Result
+          name={currentResultData.name}
+          data={roiList}
+          image={currentImage}/>;
+        results.push(currentResult);
       }
-      var new_image = new window.Image();
-      new_image.src = "data:image/png;base64," + data.image;
-      this.setState({uri: data.uri, roi: new_roi, image: new_image})
+      this.setState({uri: data.uri, results: results});
     });
   }
 
+  changeImage(event)
+  {
+
+  }
+
+
+
   render()
   {
+    var options = []
+    const option= (name, id) =>
+      <option
+        key={id}
+        value={name} />
+    for (var i = 0; i < this.state.results.length; i++)
+    {
+      options.push(option(this.state.results[i].name, i));
+    }
     return(
-        <div>
-          <Stage width={window.innerWidth} height={window.innerHeight}>
-            <Layer>
-              <Image image={this.state.image} />
-            </Layer>
-            <Layer>
-              {this.state.roi}
-            </Layer>
-          </Stage>
-        </div>
+      <div>
+        <select id="result" onChange={this.changeImage} value={this.state.selection}>
+          {options}
+        </select>
+        {this.state.results[this.state.selection]}
+      </div>
      );
   }
 }
