@@ -11,8 +11,8 @@ class App extends Component {
         <Link to="/evaluation/1">Evaluation</Link>
       </nav>
       <div>
-        <Route exact path="/evaluation/:id" render={props => {
-          return <RetinalEvaluation id={props.match.params.id} /> }} />
+        <Route exact path="/evaluation/:id/:selection" render={props => {
+          return <RetinalEvaluation id={props.match.params.id} selection={props.match.params.selection}/> }} />
         <Route exact path="/upload" component={UploadImage} />
       </div>
     </div>

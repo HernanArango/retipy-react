@@ -30,7 +30,7 @@ class Roi extends Component
         width={this.props.x2 - this.props.x1}
         height={this.props.y2 - this.props.y1}
         fill={this.props.color}
-        opacity={0.5}
+        opacity={this.props.opacity}
       />
     );
   }
@@ -44,13 +44,14 @@ class Result extends Component
     this.state =
     {
       name: props.name,
-      data: props.roi,
+      data: props.data,
       image: props.image
     }
   }
 
   render()
   {
+    console.log(this.state.data)
     return(
       <div>
         <label>{this.state.name}</label>
@@ -76,9 +77,8 @@ export default class RetinalEvaluation extends Component
       id: props.id,
       uri: "",
       results: [],
-      selection: 0
+      selection: props.selection
     };
-    this.changeImage = this.changeImage.bind(this);
   }
 
   componentDidMount()
@@ -86,7 +86,6 @@ export default class RetinalEvaluation extends Component
     getId(this.state.id).then(data => {
       var results = [];
       // process the result array
-      console.log(data)
       for (var i = 0; i < data.results.length; i++)
       {
         var currentResultData = data.results[i];
@@ -95,12 +94,13 @@ export default class RetinalEvaluation extends Component
         for (var roiIndex=0; roiIndex < currentResultData.data.length; roiIndex++)
         {
           var currentRoi = <Roi
-            key={i}
-            x1={currentResultData.data[i].roi_x[0]}
-            x2={currentResultData.data[i].roi_x[3]}
-            y1={currentResultData.data[i].roi_y[0]}
-            y2={currentResultData.data[i].roi_y[3]}
-            color={Konva.Util.getRandomColor()} />;
+            key={roiIndex}
+            x1={currentResultData.data[roiIndex].roi_x[0]}
+            x2={currentResultData.data[roiIndex].roi_x[3]}
+            y1={currentResultData.data[roiIndex].roi_y[0]}
+            y2={currentResultData.data[roiIndex].roi_y[3]}
+            color={Konva.Util.getRandomColor()}
+            opacity={0.5} />;
           roiList.push(currentRoi);
         }
         // load the result image in memory
@@ -110,36 +110,18 @@ export default class RetinalEvaluation extends Component
         var currentResult = <Result
           name={currentResultData.name}
           data={roiList}
-          image={currentImage}/>;
+          image={currentImage} />;
         results.push(currentResult);
       }
       this.setState({uri: data.uri, results: results});
+      this.forceUpdate()
     });
   }
 
-  changeImage(event)
-  {
-
-  }
-
-
-
   render()
   {
-    var options = []
-    const option= (name, id) =>
-      <option
-        key={id}
-        value={name} />
-    for (var i = 0; i < this.state.results.length; i++)
-    {
-      options.push(option(this.state.results[i].name, i));
-    }
     return(
       <div>
-        <select id="result" onChange={this.changeImage} value={this.state.selection}>
-          {options}
-        </select>
         {this.state.results[this.state.selection]}
       </div>
      );
