@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Konva from "konva";
-import { Stage, Layer, Rect, Image } from "react-konva";
+import { Stage, Layer, Rect, Image, Text } from "react-konva";
 
 const config = {
   backend_url: "http://localhost:8080/"
@@ -21,23 +21,63 @@ const getId = (id) => {
 
 class Roi extends Component
 {
+  constructor(props)
+  {
+    super(props);
+    this.state = {
+      tooltip: props.tooltip,
+      text: props.text,
+      visible: false,
+      key: props.id
+    }
+  }
+
+  componentDidMount()
+  {
+    var comp = this;
+    var rect = this.refs.iRoi;
+    rect.on("mousemove", function(){
+      comp.setState({visible: true})
+    })
+    rect.on("mouseout", function(){
+      comp.setState({visible: false})
+    })
+  }
+
   render()
   {
-    return (
-      <Rect
+    return(
+      [
+      <Rect ref="iRoi"
+        key={"r" + this.state.key}
         x={this.props.x1}
         y={this.props.y1}
         width={this.props.x2 - this.props.x1}
         height={this.props.y2 - this.props.y1}
         fill={this.props.color}
         opacity={this.props.opacity}
+      />,
+      <Text
+      key={"t" + this.state.key}
+      text={this.state.text}
+      visible={this.state.visible}
+      position={{x: this.props.x1, y: this.props.y1}}
+      textFill="white"
+      fill="white"
+      shadow="black"
+      ref={"tooltip"}
       />
+      ]
     );
   }
 }
 
 class Result extends Component
 {
+  handleClick = () => {
+    console.log(this.state.name);
+  }
+
   constructor(props)
   {
     super(props)
@@ -54,8 +94,8 @@ class Result extends Component
     console.log(this.state.data)
     return(
       <div>
-        <label>{this.state.name}</label>
-      <Stage width={window.innerWidth} height={window.innerHeight}>
+        <label>Image: {this.state.name}</label>
+      <Stage width={this.state.image.width} height={this.state.image.height}>
         <Layer>
           <Image image={this.state.image} />
         </Layer>
@@ -95,12 +135,14 @@ export default class RetinalEvaluation extends Component
         {
           var currentRoi = <Roi
             key={roiIndex}
+            id={roiIndex}
             x1={currentResultData.data[roiIndex].roi_x[0]}
             x2={currentResultData.data[roiIndex].roi_x[3]}
             y1={currentResultData.data[roiIndex].roi_y[0]}
             y2={currentResultData.data[roiIndex].roi_y[3]}
             color={Konva.Util.getRandomColor()}
-            opacity={0.5} />;
+            opacity={0.5}
+            text={currentResultData.data[roiIndex].description} />;
           roiList.push(currentRoi);
         }
         // load the result image in memory
