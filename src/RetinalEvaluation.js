@@ -28,7 +28,9 @@ class Roi extends Component
       tooltip: props.tooltip,
       text: props.text,
       visible: false,
-      key: props.id
+      key: props.id,
+      sizex: props.x2 - props.x1,
+      sizey: props.y2 - props.y1
     }
   }
 
@@ -52,8 +54,8 @@ class Roi extends Component
         key={"r" + this.state.key}
         x={this.props.x1}
         y={this.props.y1}
-        width={this.props.x2 - this.props.x1}
-        height={this.props.y2 - this.props.y1}
+        width={this.state.sizex}
+        height={this.state.sizey}
         fill={this.props.color}
         opacity={this.props.opacity}
       />,
@@ -61,7 +63,7 @@ class Roi extends Component
       key={"t" + this.state.key}
       text={this.state.text}
       visible={this.state.visible}
-      position={{x: this.props.x1, y: this.props.y1}}
+      position={{x: this.props.x1 + (this.state.sizex/3), y: this.props.y1 + (this.state.sizey/3)}}
       textFill="white"
       fill="white"
       shadow="black"
