@@ -24,50 +24,60 @@ class Roi extends Component
   constructor(props)
   {
     super(props);
+    const size_x = props.x2 - props.x1;
+    const size_y = props.y2 - props.y1;
     this.state = {
       tooltip: props.tooltip,
       text: props.text,
       visible: false,
       key: props.id,
-      sizex: props.x2 - props.x1,
-      sizey: props.y2 - props.y1
+      size_x: size_x,
+      size_y: size_y,
+      label_x: this.props.x1 + size_x/4,
+      label_y: this.props.y1 + size_y/3
     }
   }
 
   componentDidMount()
   {
-    var comp = this;
-    var rect = this.refs.iRoi;
+    const roi = this;
+    const rect = this.refs.iRoi;
+    const stage = rect.getStage();
     rect.on("mousemove", function(){
-      comp.setState({visible: true})
-    })
-    rect.on("mouseout", function(){
-      comp.setState({visible: false})
-    })
+      const pointer = stage.getPointerPosition();
+      roi.setState({ visible: true, label_x: pointer.x + 10, label_y: pointer.y + 10 })
+    });
+    rect.on("mouseout", function()
+    {
+      roi.setState({ visible: false })
+    });
   }
 
   render()
   {
     return(
       [
+
       <Rect ref="iRoi"
         key={"r" + this.state.key}
         x={this.props.x1}
         y={this.props.y1}
-        width={this.state.sizex}
-        height={this.state.sizey}
+        width={this.state.size_x}
+        height={this.state.size_y}
         fill={this.props.color}
         opacity={this.props.opacity}
       />,
       <Text
-      key={"t" + this.state.key}
-      text={this.state.text}
-      visible={this.state.visible}
-      position={{x: this.props.x1 + (this.state.sizex/3), y: this.props.y1 + (this.state.sizey/3)}}
-      textFill="white"
-      fill="white"
-      shadow="black"
-      ref={"tooltip"}
+        key={"t" + this.state.key}
+        text={this.state.text}
+        visible={this.state.visible}
+        position={{x: this.state.label_x, y: this.state.label_y}}
+        textFill="white"
+        fill="white"
+        shadowColor="black"
+        shadowOpacity={1}
+        fontSize={16}
+        ref={"tooltip"}
       />
       ]
     );
@@ -119,7 +129,8 @@ export default class RetinalEvaluation extends Component
       id: props.id,
       uri: "",
       results: [],
-      selection: props.selection
+      selection: props.selection,
+      block: true
     };
   }
 
@@ -147,23 +158,31 @@ export default class RetinalEvaluation extends Component
             text={currentResultData.data[roiIndex].description} />;
           roiList.push(currentRoi);
         }
+        // we reverse the list so we print first the bottom right Roi first, to avoid tooltip overlap
+        roiList.reverse();
         // load the result image in memory
-        var currentImage = new window.Image();
-        currentImage.src = "data:image/png;base64," + currentResultData.image;
-
-        var currentResult = <Result
+        var currentImage = document.createElement('img');
+        // eslint-disable-next-line
+        currentImage.onload = () => // wait for the image to load to update the state
+        {
+          var currentResult = <Result
           name={currentResultData.name}
           data={roiList}
           image={currentImage} />;
-        results.push(currentResult);
+          results.push(currentResult);
+          this.setState({uri: data.uri, results: results, block: false});
+        }
+        currentImage.src = "data:image/png;base64," + currentResultData.image;
       }
-      this.setState({uri: data.uri, results: results});
-      this.forceUpdate()
     });
   }
 
   render()
   {
+    for(var i=0; i < this.state.results.length; i++)
+    {
+
+    }
     return(
       <div>
         {this.state.results[this.state.selection]}

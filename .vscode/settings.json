@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "Konva"
-    ]
+    ],
+    "files.associations": {
+        "*.js": "javascriptreact"
+    },
 }
