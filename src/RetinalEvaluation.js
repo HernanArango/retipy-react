@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import Konva from "konva";
 import { Stage, Layer, Rect, Image, Text } from "react-konva";
-
-const config = {
-  backend_url: "http://localhost:8080/"
-}
+import { Configuration as CNF } from './Configuration.js';
 
 const getId = (id) => {
-  var endpoint = (id) => `retipy/evaluation/${id}`
-  return fetch(config.backend_url + endpoint(id), {
+  var endpoint = (id) => `${CNF.EVALUATION_ENDPOINT}/${id}`
+  return fetch(CNF.REST_URL + endpoint(id), {
     method: 'GET',
     mode: 'cors',
     referrer: 'no-referrer',

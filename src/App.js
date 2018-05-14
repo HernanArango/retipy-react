@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import {Route, Link} from 'react-router-dom'
+import {Route, Link} from 'react-router-dom';
 import RetinalEvaluation from "./RetinalEvaluation.js"
-import UploadImage from "./UploadImage.js"
+import UploadImage from "./UploadImage.js";
+import Diagnostic from "./diagnostics/Diagnostic.js";
 
 class App extends Component {
   render() {

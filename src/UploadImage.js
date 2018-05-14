@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from 'react-router-dom';
 import BlockUi from 'react-block-ui';
 import 'react-block-ui/style.css';
+import { Configuration as CNF } from './Configuration.js';
 
 export default class UploadImage extends Component
 {
@@ -13,10 +14,8 @@ export default class UploadImage extends Component
         redirect: false,
         id: 0,
         file: null,
-        services: ["evaluation", "diagnostic"],
-        service: "evaluation",
-        algorithms: ["fractal", "density"],
-        algorithm: "density",
+        service: CNF.SERVICES.evaluation,
+        algorithm: CNF.EVALUATION_ALGORITHMS.density,
         block: false
       };
 
@@ -36,8 +35,17 @@ export default class UploadImage extends Component
   {
     event.preventDefault()
     console.log(this.state.file);
+    var url;
+    if (this.state.service === CNF.SERVICES.evaluation)
+    {
+      url = CNF.REST_URL + CNF.EVALUATION_ENDPOINT + "/" + this.state.algorithm;
+    }
+    else
+    {
+      url = CNF.REST_URL + CNF.DIAGNOSTIC_ENDPOINT + "/image";
+    }
     fetch(
-      "http://localhost:8080/retipy/evaluation/" + this.state.algorithm,
+      url,
       {
         method: 'POST',
         body: this.state.file,
@@ -84,23 +92,23 @@ export default class UploadImage extends Component
     var algorithmOptions = [];
     const createOption= (name, id) =>
       <option key={ id } value={ name }>{ name }</option>;
-    for (var i=0; i<this.state.algorithms.length; i++)
+    for (var key in CNF.EVALUATION_ALGORITHMS)
     {
       algorithmOptions.push(
-        createOption(this.state.algorithms[i], this.state.algorithms[i]));
+        createOption(CNF.EVALUATION_ALGORITHMS[key], CNF.EVALUATION_ALGORITHMS[key]));
     }
     var serviceOptions = []
-    for (i=0; i<this.state.services.length; i++)
+    for (key in CNF.SERVICES)
     {
       serviceOptions.push(
-        createOption(this.state.services[i], this.state.services[i]));
+        createOption(CNF.SERVICES[key], CNF.SERVICES[key]));
     }
     if (this.state.redirect)
     {
-      if (this.state.service === "evaluation")
-        return(<Redirect to={"/evaluation/" + this.state.id + "/1"}/>);
+      if (this.state.service === CNF.SERVICES.evaluation)
+        return(<Redirect to={`/${CNF.SERVICES.evaluation}/` + this.state.id + "/1"}/>);
       else
-        return(<Redirect to={"/diagnostic/" + this.state.id}/>);
+        return(<Redirect to={`/${CNF.SERVICES.diagnostic}/` + this.state.id}/>);
     }
     else
     {
@@ -118,7 +126,7 @@ export default class UploadImage extends Component
            {serviceOptions}
           </select>
         </label>
-        {this.state.service === "evaluation" &&
+        {this.state.service === CNF.SERVICES.evaluation &&
         <label>
           Algorithm:
           <select
