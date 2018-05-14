@@ -3,8 +3,35 @@ import { Redirect } from 'react-router-dom';
 import BlockUi from 'react-block-ui';
 import 'react-block-ui/style.css';
 import { Configuration as CNF } from './Configuration.js';
+import { withStyles } from '@material-ui/core/styles';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import Paper from '@material-ui/core/Paper';
+import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
+import { Typography, Divider } from "@material-ui/core";
 
-export default class UploadImage extends Component
+const styles = theme => ({
+  root: {
+    display: 'flex',
+  },
+  formControl: {
+    margin: theme.spacing.unit * 3,
+  },
+  group: {
+    margin: `${theme.spacing.unit}px 0`,
+  },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
+
+class UploadImage extends Component
 {
   constructor(props)
   {
@@ -28,13 +55,13 @@ export default class UploadImage extends Component
 
   toggleBlock()
   {
-    this.setState({block: true})
+    this.setState({block: !this.state.block})
   }
 
   handleSubmit(event)
   {
-    event.preventDefault()
-    console.log(this.state.file);
+    event.preventDefault();
+    this.toggleBlock();
     var url;
     if (this.state.service === CNF.SERVICES.evaluation)
     {
@@ -72,8 +99,12 @@ export default class UploadImage extends Component
 
   fileOnChange(event)
   {
+    this.setState({filename: event.target.files[0].name});
     this.getBase64(event.target.files[0]).then(
-      result => this.setState({ file: result.substring(result.indexOf(",") + 1) })
+      result => this.setState(
+        {
+          file: result.substring(result.indexOf(",") + 1)
+        })
     );
   }
 
@@ -89,9 +120,10 @@ export default class UploadImage extends Component
 
   render()
   {
+    const { classes } = this.props;
     var algorithmOptions = [];
     const createOption= (name, id) =>
-      <option key={ id } value={ name }>{ name }</option>;
+      <FormControlLabel key={id} value={name} control={<Radio />} label={name}/> ;
     for (var key in CNF.EVALUATION_ALGORITHMS)
     {
       algorithmOptions.push(
@@ -113,35 +145,75 @@ export default class UploadImage extends Component
     else
     {
     return(
-      <div>
+      <div className={classes.root}>
       <BlockUi tag="div" blocking={this.state.block}>
       <form onSubmit={this.handleSubmit}>
-        <label>
-          Image:
-          <input type="file" onChange={this.fileOnChange}/>
-        </label>
-        <label>
-          Service:
-          <select name="service" onChange={this.serviceOnChange} value={this.state.service}>
-           {serviceOptions}
-          </select>
-        </label>
+      <FormControl
+        component="fieldset"
+        required
+        className={classes.formControl}
+        onSubmit={this.handleSubmit}
+      >
+        <Paper className={classes.paper}>
+          <FormLabel component="legend">Choose an image</FormLabel>
+            <Input
+              id="file"
+              type="file"
+              onChange={this.fileOnChange}
+              style={{
+                width: 0,
+                height: 0,
+                opacity: 0,
+                overflow: 'hidden',
+                position: 'absolute',
+                zIndex: 1,
+              }}
+            />
+            <Button component="label" htmlFor="file">
+              Open
+            </Button>
+            {this.state.filename != null &&
+            <Typography>{this.state.filename}</Typography>
+            }
+          <Divider light />
+          <FormLabel component="legend">Service</FormLabel>
+          <RadioGroup
+            aria-label="service"
+            name="service1"
+            className={classes.group}
+            value={this.state.service}
+            onChange={this.serviceOnChange}
+          >
+            {serviceOptions}
+          </RadioGroup>
         {this.state.service === CNF.SERVICES.evaluation &&
-        <label>
-          Algorithm:
-          <select
-            name="algorithm"
+        <Paper className={classes.paper}>
+          <FormLabel component="legend">Algorithm</FormLabel>
+          <RadioGroup
+            aria-label="evaluation algorithms"
+            name="evalalgorithms1"
+            className={classes.group}
+            value={this.state.algorithm}
             onChange={this.algorithmOnChange}
-            value={this.state.algorithm}>
+          >
             {algorithmOptions}
-          </select>
-        </label>
-        }
+          </RadioGroup>
+        </Paper>}
         <br/>
-        <button onClick={this.toggleBlock} type="submit">Upload</button>
+        <Button
+          type="submit"
+          variant="raised"
+          color="primary"
+        >
+          Upload
+        </Button>
+        </Paper>
+      </FormControl>
       </form>
       </BlockUi>
       </div>);
     }
   }
 }
+
+export default withStyles(styles)(UploadImage);

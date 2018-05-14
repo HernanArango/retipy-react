@@ -1,9 +1,28 @@
 import React, { Component } from "react";
-import Konva from "konva";
-import { Stage, Layer, Line, Image, Text } from "react-konva";
+import { Stage, Layer, Line, Image } from "react-konva";
 import { Configuration as CNF } from "../Configuration.js";
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField'
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
+});
 
 const getId = (id) => {
   var endpoint = (id) => `${CNF.DIAGNOSTIC_ENDPOINT}/${id}`
@@ -51,7 +70,7 @@ class PolyRoi extends Component
   }
 }
 
-export default class Diagnostic extends Component
+class Diagnostic extends Component
 {
   state =
   {
@@ -102,10 +121,9 @@ export default class Diagnostic extends Component
     }
   }
 
-  handleAddRoi = () =>
+  handleAddRoi = event =>
   {
-    console.log("enable add roi");
-    this.setState({ addingRoi: true });
+    this.setState({ addingRoi: event.target.checked });
   }
 
   handleClearRoi = () =>
@@ -136,9 +154,11 @@ export default class Diagnostic extends Component
 
   render()
   {
+    const { classes } = this.props;
     return(
-      <div>
-        <div> {/* Konva div */}
+      <Grid container className={classes.root} spacing={24}>
+        <Grid item justify="center" xs={12}> {/* Konva div */}
+        <div>
           <Stage
             width={this.state.width}
             height={this.state.height}
@@ -165,36 +185,54 @@ export default class Diagnostic extends Component
             </Layer>
           </Stage>
         </div>
-        <div>
-          <Button
-            variant="raised"
-            color="primary"
-            onClick={this.handleAddRoi}
-            disabled={this.state.addingRoi} >
-            Add Roi
-          </Button>
-          <Button
-            variant="raised"
-            color="primary"
-            onClick={this.handleSaveRoi}
-            disabled={!this.state.addingRoi} >
-            Save Current Roi
-          </Button>
-          <Button
-            variant="raised"
-            color="primary"
-            onClick={this.handleClearRoi}
-            disabled={!this.state.addingRoi} >
-            Remove Current Roi
-          </Button>
-          <TextField
-            color="primary"
-            disabled={!this.state.addingRoi}
-            placeholder="WYS in the selected ROI"
-            helperText="Roi Observation"
-            value={this.state.roiText} />
-        </div>
-      </div>
+        </Grid>
+        <Grid item xs={12}>
+            <Grid container>
+              <Grid item>
+                <Paper className={classes.paper}>
+                  <FormGroup row>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={this.state.addingRoi}
+                          color="primary"
+                          onChange={this.handleAddRoi}
+                        />}
+                      label="Add new ROI"
+                    />
+                    <Button
+                      variant="raised"
+                      color="primary"
+                      onClick={this.handleSaveRoi}
+                      disabled={!this.state.addingRoi}
+                      className={classes.button}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="raised"
+                      color="primary"
+                      onClick={this.handleClearRoi}
+                      disabled={!this.state.addingRoi}
+                      className={classes.button}
+                    >
+                      Cancel
+                    </Button>
+                  </FormGroup>
+                  <TextField
+                    color="primary"
+                    disabled={!this.state.addingRoi}
+                    placeholder="Notes"
+                    helperText="Roi Observation"
+                    value={this.state.roiText}
+                  />
+                </Paper>
+              </Grid>
+            </Grid>
+        </Grid>
+      </Grid>
     );
   }
 }
+
+export default withStyles(styles)(Diagnostic);
