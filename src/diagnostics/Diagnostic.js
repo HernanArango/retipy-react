@@ -1,25 +1,40 @@
 import React, { Component } from "react";
 import Konva from "konva";
 import { Stage, Layer, Line, Image, Text } from "react-konva";
+import { Configuration as CNF } from "../Configuration.js";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField'
+
+const getId = (id) => {
+  var endpoint = (id) => `${CNF.DIAGNOSTIC_ENDPOINT}/${id}`
+  return fetch(CNF.REST_URL + endpoint(id), {
+    method: 'GET',
+    mode: 'cors',
+    referrer: 'no-referrer',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'content-type': 'application/json'
+    }})
+    .then(response => response.json())
+}
 
 class PolyRoi extends Component
 {
   constructor(props)
   {
     super(props);
-    var points = [];
-    for (var i=0; i < props.x_coordinates; i++)
-    {
-        points.push(props.x_coordinates[i]);
-        points.push(props.y_coordinates[i]);
-    }
     this.state = {
       tooltip: props.tooltip,
       text: props.text,
       visible: false,
       key: props.id,
-      points: points
+      points: props.points
     }
+  }
+
+  setPoints(points)
+  {
+    this.setState({points: points});
   }
 
   render()
@@ -28,14 +43,15 @@ class PolyRoi extends Component
       <Line ref="iRoi"
         points={this.state.points}
         key={"r" + this.state.key}
-        fill={this.props.color}
-        opacity={this.props.opacity}
+        closed={true}
+        fill="black"
+        opacity={0.5}
       />
     );
   }
 }
 
-class Diagnostic extends Component
+export default class Diagnostic extends Component
 {
   state =
   {
@@ -44,70 +60,139 @@ class Diagnostic extends Component
     height: 0,
     notes: "",
     rois: [],
-    diagnostic: ""
+    roiCount: 0,
+    diagnostic: "",
+    points: [],
+    roiText: "",
+    addingRoi: false
   }
 
   constructor(props)
   {
     super(props);
     this.state.id = props.id;
-
   }
 
   componentDidMount()
   {
-    const canvas = document.createElement("canvas");
-    canvas.width = this.state.width;
-    canvas.height = this.state.height;
-    const context = canvas.getContext("2d");
-    this.setState({ canvas, context });
 
-    //TODO: get the diagnostic here
-
-    const image = document.createElement('img');
-    image.onload = () =>
-    {
-      context.drawImage(image, 0, 0);
-    }
-    image.src = "data:image/png;base64,01823y01824yh917";
-
-
-
-    this.setState({ canvas });
+    getId(this.state.id).then(data =>
+      {
+        const image = document.createElement('img');
+        image.onload = () =>
+        {
+          this.setState({width: image.naturalWidth, height: image.naturalHeight});
+          this.setState({ image });
+        }
+        image.src = "data:image/png;base64," + data.image;
+      });
   }
 
   handleMouseDown = () =>
   {
-    console.log("clicked");
-    const stage = this.image.getStage();
-    const point = stage.getPointerPosition();
+    if (this.state.addingRoi)
+    {
+      const stage = this.image.getStage();
+      const point = stage.getPointerPosition();
+      var currentPoints = this.state.points.slice();
+      currentPoints.push(point.x);
+      currentPoints.push(point.y);
+      console.log(`x:${point.x} y:${point.y}`);
+      this.setState( { points: currentPoints } );
+    }
+  }
+
+  handleAddRoi = () =>
+  {
+    console.log("enable add roi");
+    this.setState({ addingRoi: true });
+  }
+
+  handleClearRoi = () =>
+  {
+    this.setState( { points: [], addingRoi: false } );
+  }
+
+  handleSaveRoi = () =>
+  {
+    if (this.state.addingRoi && this.state.points.length >= 6)
+    {
+      const id = this.state.roiCount;
+      console.log(`saving roi with id ${id}`);
+      const roi =
+        <PolyRoi tooltip={id} text={this.state.roiText} key={id} points={this.state.points} />
+      var roiList = this.state.rois;
+      roiList.push(roi);
+      this.setState(
+        {
+          rois: roiList,
+          roiCount: id + 1,
+          points: [],
+          addingRoi: false,
+          roiText: ""
+        });
+    }
   }
 
   render()
   {
-    const { canvas } = this.state;
-    console.log("canvas", canvas);
     return(
       <div>
         <div> {/* Konva div */}
-          <Stage width={this.state.width} height={this.state.height}>
+          <Stage
+            width={this.state.width}
+            height={this.state.height}
+            onContentClick={this.handleMouseDown}
+          >
             <Layer>
               <Image
                 image={this.state.image}
-                />
-            </Layer>
-            <Layer>
-              <Image
-                image={canvas}
                 ref={node => (this.image = node)}
                 width={this.state.width}
                 height={this.state.height}
-                onMouseDown={this.handleMouseDown}
               />
+            </Layer>
+            <Layer>
+              <Line ref="currentRoi"
+                points={this.state.points}
+                closed={false}
+                stroke="white"
+                opacity={0.5}
+              />
+            </Layer>
+            <Layer>
+              {this.state.rois}
             </Layer>
           </Stage>
         </div>
         <div>
+          <Button
+            variant="raised"
+            color="primary"
+            onClick={this.handleAddRoi}
+            disabled={this.state.addingRoi} >
+            Add Roi
+          </Button>
+          <Button
+            variant="raised"
+            color="primary"
+            onClick={this.handleSaveRoi}
+            disabled={!this.state.addingRoi} >
+            Save Current Roi
+          </Button>
+          <Button
+            variant="raised"
+            color="primary"
+            onClick={this.handleClearRoi}
+            disabled={!this.state.addingRoi} >
+            Remove Current Roi
+          </Button>
+          <TextField
+            color="primary"
+            disabled={!this.state.addingRoi}
+            placeholder="WYS in the selected ROI"
+            helperText="Roi Observation"
+            value={this.state.roiText} />
         </div>
       </div>
     );
