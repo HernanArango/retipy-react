@@ -7,7 +7,6 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Typography } from "@material-ui/core";
 import Snackbar from '@material-ui/core/Snackbar';
@@ -100,8 +99,9 @@ class Diagnostic extends Component
     height: 600,
     ratio: 1,
     notes: "",
-    rois: [],
+    roiElementList: [],
     roiCount: 0,
+    roiList: [],
     diagnostic: "",
     points: [],
     roiText: "",
@@ -154,22 +154,29 @@ class Diagnostic extends Component
 
           // extra data load
           const dataRoiList = data.rois;
-          var roiList = [];
+          var roiElementList = [];
+          var roiDictList = [];
           for (var i=0; i < dataRoiList.length; i++)
           {
             var currentRoi = dataRoiList[i];
-            var points = [];
+            var pointsFixed = [];
             for (var pIndex=0; pIndex < currentRoi.roi_x.length; pIndex++)
             {
-              points.push(currentRoi.roi_x[pIndex] * ratio);
-              points.push(currentRoi.roi_y[pIndex] * ratio);
+              pointsFixed.push(currentRoi.roi_x[pIndex] * ratio);
+              pointsFixed.push(currentRoi.roi_y[pIndex] * ratio);
             }
             const roi = <PolyRoi
               tooltip={i}
               text={currentRoi.notes}
               key={i}
-              points={points} />
-            roiList.push(roi);
+              points={pointsFixed} />
+            roiElementList.push(roi);
+            const roiDict = {
+              notes: currentRoi.notes,
+              roi_x: currentRoi.roi_x,
+              roi_y: currentRoi.roi_y
+            }
+            roiDictList.push(roiDict);
           }
           this.setState(
             {
@@ -177,7 +184,8 @@ class Diagnostic extends Component
               width: width,
               ratio: ratio,
               image: image,
-              rois: roiList
+              roiElementList: roiElementList,
+              roiList: roiDictList
             });
         }
         image.src = "data:image/png;base64," + data.image;
@@ -231,13 +239,28 @@ class Diagnostic extends Component
     if (this.state.addingRoi && this.state.points.length >= 6)
     {
       const id = this.state.roiCount;
-      const roi =
+      const roiElement =
         <PolyRoi tooltip={id} text={this.state.roiText} key={id} points={this.state.points} />
-      var roiList = this.state.rois;
-      roiList.push(roi);
+      var roi_x = [];
+      var roi_y = [];
+      for(var i=0; i < this.state.points.length; i+=2)
+      {
+        roi_x.push(this.state.points[i]/this.state.ratio);
+        roi_y.push(this.state.points[i+1]/this.state.ratio);
+      }
+      const roiDict = {
+        notes: this.state.roiText,
+        roi_x: roi_x,
+        roi_y: roi_y
+      }
+      var roiList = this.state.roiElementList;
+      roiList.push(roiElement);
+      var roiDictList = this.state.roiList;
+      roiDictList.push(roiDict);
       this.setState(
         {
-          rois: roiList,
+          roiElementList: roiList,
+          roiList: roiDictList,
           roiCount: id + 1,
           points: [],
           addingRoi: false,
@@ -274,10 +297,52 @@ class Diagnostic extends Component
         {
           showSnackbar: true,
           userMessage: "Please Add or Cancel the current RoI"
-        }
-      )
+        })
       return;
     }
+    if (this.state.diagnostic==="")
+    {
+      this.setState(
+        {
+          showSnackbar: true,
+          userMessage: "Diagnostic must have a value"
+        });
+      return;
+    }
+
+    var diagnosticData =
+    {
+      id: this.state.id,
+      diagnostic: this.state.diagnostic,
+      rois: this.state.roiList,
+      status: "UPDATED",
+    }
+    console.log(JSON.stringify(diagnosticData));
+
+    fetch(
+      CNF.REST_URL + CNF.DIAGNOSTIC_ENDPOINT,
+      {
+        method: 'POST',
+        body: JSON.stringify(diagnosticData),
+        mode: 'cors',
+        headers:
+        {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(success =>
+        this.setState({showSnackbar: true, userMessage: "Diagnostic Updated Successfully"}))
+      .catch(error =>
+        {
+          console.log(error);
+          this.setState(
+            {
+              showSnackbar: true,
+              userMessage: "There was an error saving this diagnostic"
+            })
+        });
   }
 
   render()
@@ -334,10 +399,11 @@ class Diagnostic extends Component
                 closed={false}
                 stroke="white"
                 opacity={0.5}
+                visible={this.state.addingRoi}
               />
             </Layer>
             <Layer>
-              {this.state.rois}
+              {this.state.roiElementList}
             </Layer>
           </Stage>
         </Paper>
@@ -411,7 +477,7 @@ class Diagnostic extends Component
             <Grid container>
               <Grid item xs={6}>
               <TextField
-                value={this.state.rois.length}
+                value={this.state.roiElementList.length}
                 label="RoI Count"
                 className={classes.textField}
                 disabled/>
@@ -436,7 +502,7 @@ class Diagnostic extends Component
               <Button
                 variant="raised"
                 color="primary"
-                classes={classes.button}
+                className={classes.button}
                 onClick={this.handleUpdateDiagnostic}>
                 Update Diagnostic
               </Button>
