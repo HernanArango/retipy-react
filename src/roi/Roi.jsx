@@ -39,7 +39,6 @@ export default class Roi extends Component
   {
     return(
       [
-
       <Rect ref="iRoi"
         key={"r" + this.state.key}
         x={this.props.x1}
