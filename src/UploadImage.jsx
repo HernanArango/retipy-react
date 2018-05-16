@@ -2,21 +2,24 @@ import React, { Component } from "react";
 import { Redirect } from 'react-router-dom';
 import BlockUi from 'react-block-ui';
 import 'react-block-ui/style.css';
-import { Configuration as CNF } from './Configuration.js';
+import { Configuration as CNF } from './Configuration';
 import { withStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Paper from '@material-ui/core/Paper';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
-import { Typography, Divider } from "@material-ui/core";
+import { Typography, Divider, Grid } from "@material-ui/core";
 
 const styles = theme => ({
   root: {
     display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
   },
   formControl: {
     margin: theme.spacing.unit * 3,
@@ -28,6 +31,14 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     textAlign: 'center',
     color: theme.palette.text.secondary,
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    margin: theme.spacing.unit,
+  },
+  button: {
+    margin: theme.spacing.unit,
   },
 });
 
@@ -148,67 +159,77 @@ class UploadImage extends Component
       <div className={classes.root}>
       <BlockUi tag="div" blocking={this.state.block}>
       <form onSubmit={this.handleSubmit}>
-      <FormControl
-        component="fieldset"
-        required
-        className={classes.formControl}
-        onSubmit={this.handleSubmit}
-      >
-        <Paper className={classes.paper}>
-          <FormLabel component="legend">Choose an image</FormLabel>
-            <Input
-              id="file"
-              type="file"
-              onChange={this.fileOnChange}
-              style={{
-                width: 0,
-                height: 0,
-                opacity: 0,
-                overflow: 'hidden',
-                position: 'absolute',
-                zIndex: 1,
-              }}
-            />
-            <Button component="label" htmlFor="file">
-              Open
-            </Button>
+      <Grid container className={classes.container} spacing={16}>
+        <Grid item xs={12}>
+        <Grid container justify="center">
+          <Paper className={classes.paper}>
+            <FormLabel component="legend">Choose an image</FormLabel>
+              <Input
+                id="file"
+                type="file"
+                onChange={this.fileOnChange}
+                style={{
+                  width: 0,
+                  height: 0,
+                  opacity: 0,
+                  overflow: 'hidden',
+                  position: 'absolute',
+                  zIndex: 1,
+                }}
+              />
+              <Button
+                component="label" htmlFor="file" variant="raised" className={classes.button}>
+                Open
+              </Button>
             {this.state.filename != null &&
+            <Divider light /> &&
             <Typography>{this.state.filename}</Typography>
             }
-          <Divider light />
-          <FormLabel component="legend">Service</FormLabel>
-          <RadioGroup
-            aria-label="service"
-            name="service1"
-            className={classes.group}
-            value={this.state.service}
-            onChange={this.serviceOnChange}
-          >
-            {serviceOptions}
-          </RadioGroup>
+          </Paper>
+        </Grid>
+        </Grid>
+        <Grid item xs={6}>
+          <Paper className={classes.paper}>
+            <FormLabel component="legend">Service</FormLabel>
+            <RadioGroup
+              aria-label="service"
+              name="service1"
+              className={classes.group}
+              value={this.state.service}
+              onChange={this.serviceOnChange}
+            >
+              {serviceOptions}
+            </RadioGroup>
+          </Paper>
+        </Grid>
         {this.state.service === CNF.SERVICES.evaluation &&
-        <Paper className={classes.paper}>
-          <FormLabel component="legend">Algorithm</FormLabel>
-          <RadioGroup
-            aria-label="evaluation algorithms"
-            name="evalalgorithms1"
-            className={classes.group}
-            value={this.state.algorithm}
-            onChange={this.algorithmOnChange}
+        <Grid item xs={6}>
+          <Paper className={classes.paper}>
+            <FormLabel component="legend">Algorithm</FormLabel>
+            <RadioGroup
+              aria-label="evaluation algorithms"
+              name="evalalgorithms1"
+              className={classes.group}
+              value={this.state.algorithm}
+              onChange={this.algorithmOnChange}
+            >
+              {algorithmOptions}
+            </RadioGroup>
+          </Paper>
+        </Grid>}
+        <Grid item xs={12}>
+        <Grid container justify="center">
+          <Button
+            type="submit"
+            variant="raised"
+            color="primary"
+            className={classes.button}
           >
-            {algorithmOptions}
-          </RadioGroup>
-        </Paper>}
-        <br/>
-        <Button
-          type="submit"
-          variant="raised"
-          color="primary"
-        >
-          Upload
-        </Button>
-        </Paper>
-      </FormControl>
+            Upload
+          </Button>
+        </Grid>
+        </Grid>
+      </Grid>
       </form>
       </BlockUi>
       </div>);

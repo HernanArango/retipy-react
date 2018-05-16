@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Stage, Layer, Line, Image } from "react-konva";
-import { Configuration as CNF } from "../Configuration.js";
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -13,9 +11,17 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+import { Stage, Layer, Line, Image } from "react-konva";
+import { Configuration as CNF } from "../Configuration";
+import PolyRoi from "../roi/PolyRoi";
+
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
   },
   container: {
     display: 'flex',
@@ -55,39 +61,6 @@ const getId = (id) => {
       'content-type': 'application/json'
     }})
     .then(response => response.json())
-}
-
-class PolyRoi extends Component
-{
-  constructor(props)
-  {
-    super(props);
-    this.state = {
-      tooltip: props.tooltip,
-      text: props.text,
-      visible: false,
-      key: props.id,
-      points: props.points
-    }
-  }
-
-  setPoints(points)
-  {
-    this.setState({points: points});
-  }
-
-  render()
-  {
-    return(
-      <Line ref="iRoi"
-        points={this.state.points}
-        key={"r" + this.state.key}
-        closed={true}
-        fill="black"
-        opacity={0.5}
-      />
-    );
-  }
 }
 
 class Diagnostic extends Component
@@ -350,6 +323,9 @@ class Diagnostic extends Component
     const { classes } = this.props;
     return(
       <div className={classes.root}>
+      {// TODO: move this Snackbar to App.js and create a React context with it, so its accessible
+       // to everyone.
+      }
       <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
@@ -375,9 +351,9 @@ class Diagnostic extends Component
           }
         />
 
-
-      <Grid container spacing={24} justify="center">
-        <Grid item xs={12}> {/* Konva div */}
+      <Grid container spacing={16} className={classes.container}>
+        <Grid item xs={12} sm={12} > {/* Konva div */}
+        <Grid container justify="center">
         <Paper className={classes.paper}>
           <Typography variant="display1">Diagnostic</Typography>
           <Stage
@@ -407,6 +383,7 @@ class Diagnostic extends Component
             </Layer>
           </Stage>
         </Paper>
+        </Grid>
         </Grid>
         <Grid item xs={6}>
           <Paper className={classes.paper}>

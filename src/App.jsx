@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import {Route, Link} from 'react-router-dom';
-import RetinalEvaluation from "./RetinalEvaluation.js"
-import UploadImage from "./UploadImage.js";
-import Diagnostic from "./diagnostics/Diagnostic.js";
+import RetinalEvaluation from "./evaluation/RetinalEvaluation"
+import UploadImage from "./UploadImage";
+import Diagnostic from "./diagnostics/Diagnostic";
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
