@@ -170,8 +170,8 @@ class Diagnostic extends Component
             showSnackbar: true,
             userMessage: "Diagnostic Loaded Successfully"
           });
-
-      });
+      })
+      .catch(error => console.log(error));
   }
 
   handleMouseDown = () =>
@@ -290,7 +290,6 @@ class Diagnostic extends Component
       rois: this.state.roiList,
       status: "UPDATED",
     }
-    console.log(JSON.stringify(diagnosticData));
 
     fetch(
       CNF.REST_URL + CNF.DIAGNOSTIC_ENDPOINT,
