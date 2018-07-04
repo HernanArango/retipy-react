@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Typography } from "@material-ui/core";
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-
+import {
+  Button,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Paper,
+  Snackbar,
+  Switch,
+  TextField,
+  Typography
+} from "@material-ui/core";
+import  CloseIcon from '@material-ui/icons/Close'
 import { Stage, Layer, Line, Image } from "react-konva";
 import { Configuration as CNF } from "../Configuration";
 import PolyRoi from "../roi/PolyRoi";

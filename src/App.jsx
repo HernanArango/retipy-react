@@ -1,20 +1,15 @@
 import React, { Component } from "react";
 import {Route, Link} from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
+import { AppBar, Drawer, IconButton, MenuItem, Snackbar, Toolbar, Typography } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import CloseIcon from '@material-ui/icons/Close';
 import RetinalEvaluation from "./evaluation/RetinalEvaluation"
 import UploadImage from "./UploadImage";
 import Diagnostic from "./diagnostics/Diagnostic";
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import Drawer from '@material-ui/core/Drawer';
-import MenuItem from '@material-ui/core/MenuItem';
-import Snackbar from '@material-ui/core/Snackbar';
-import CloseIcon from '@material-ui/icons/Close';
 import { GlobalContext } from "./GlobalContext";
+import Record from "./record/Record";
 
 const styles = {
   root: {
@@ -97,6 +92,11 @@ class App extends Component {
                   Evaluation
                 </Link>
               </MenuItem>
+              <MenuItem onClick={this.handleDrawer}>
+                <Link to="/record">
+                  Record
+                </Link>
+              </MenuItem>
             </Drawer>
             <Typography variant="title" color="inherit" className={classes.flex}>
               Retipy
@@ -119,6 +119,11 @@ class App extends Component {
           exact
           path="/diagnostic/:id"
           render={ props => <Diagnostic id={props.match.params.id} /> }
+        />
+        <Route
+          exact
+          path="/record"
+          render={props => <Record />}
         />
       </div>
     </div>
