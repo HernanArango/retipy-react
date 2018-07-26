@@ -1,39 +1,54 @@
 import React, { Component } from "react";
 import { withStyles, Grid, Paper, Typography, TextField } from "@material-ui/core";
 
+import PropTypes from 'prop-types'; 
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+
 const styles = theme => ({
   root: {
-   display: 'flex',
-   flexWrap: 'wrap',
-   justifyContent: 'space-around',
-   overflow: 'hidden',
-   backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: '#EFEFEF',
   },
   container: {
-   display: 'flex',
-   flexWrap: 'wrap',
-   margin: theme.spacing.unit,
+    display: 'flex',
+    flexWrap: 'wrap',
+    margin: theme.spacing.unit, 
   },
   paper: {
-   padding: theme.spacing.unit * 2,
-   textAlign: 'center',
-   color: theme.palette.text.secondary,
+    padding: theme.spacing.unit * 2,
+    textAlign: 'left',
+    color: theme.palette.text.secondary,
+  },
+  title: {
+    margin: theme.spacing.unit * 2,
   },
   roiButton: {
-   margin: theme.spacing.unit / 2,
+    margin: theme.spacing.unit / 2,
   },
   button: {
-   margin: theme.spacing.unit,
+    margin: theme.spacing.unit,
+    justify: 'center',
   },
   textField: {
-   margin: theme.spacing.unit,
-   width: 200,
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    paddinVertical: theme.spacing.unit * 100,
+    width: 200,
   },
   close: {
-   width: theme.spacing.unit * 4,
-   height: theme.spacing.unit * 4,
+    width: theme.spacing.unit * 4,
+    height: theme.spacing.unit * 4,
   },
- });
+});
+
 
 class OpticalEvaluation extends Component
 {
@@ -53,7 +68,16 @@ class OpticalEvaluation extends Component
     biomicroscopy: "",
     PIO: "",
     evaluationId: 0,
+    expanded: null,
+    exams: [1, 2, 3],
+    addDisabled: false,
   }
+
+  handleChange = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+    });
+  };
 
   constructor(props)
   {
@@ -62,157 +86,211 @@ class OpticalEvaluation extends Component
     this.state.disabled = props.disabled;
   }
 
+  addHandler(){
+    //Aqui se deberia añadir un nuevo objeto examen dentro de la variable exams
+    this.state.exams.push(1)
+    console.log(this.state.exams);
+    this.setState({addDisabled: true});
+  }
+
+  addButton(n){
+    console.log(n)
+    if(n == 1){
+      return(<Button variant="contained" color="primary" className={this.props.button}  onClick={this.saveHandler.bind(this)}>
+        Guardar
+      </Button>);
+    }
+    else{
+      return null;
+    }
+  } 
+
+  disabled(n){
+    if(n == 1){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  saveHandler(){
+    this.setState({addDisabled: false});
+  }
+
+  loadEvaluations(){
+    const { classes } = this.props;
+    const { expanded } = this.state;
+    var n = this.state.exams.length;
+    var result = []
+    for (var i = 0; i < n; i++) {
+       result.push(<ExpansionPanel key={i}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography className={classes.heading}>Examen {i+1} - aquí va la fecha</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+         <Grid container spacing={16} justify={'space-around'}>
+            <Grid item  lg={12} md={12} sm={12} xs={12}>
+              <Typography variant="display1">Agudeza Visual</Typography>
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="OD"            
+                disabled={this.disabled(n-i)}
+                placeholder="20/20"
+                helperText="Agudeza visual del ojo derecho"
+                value={this.state.visualRightEye}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="OD"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="ODPH"
+                disabled={this.disabled(n-i)}
+                placeholder="20/20"
+                helperText="PH del ojo derecho"
+                value={this.state.visualRightPh}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="OD - PH"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="OI"
+                disabled={this.disabled(n-i)}
+                placeholder="20/20"
+                helperText="Agudeza visual del ojo izquierdo"
+                value={this.state.visualLeftEye}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="OI"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="OIPH"
+                disabled={this.disabled(n-i)}
+                placeholder="20/20"
+                helperText="PH del ojo izquierdo"
+                value={this.state.visualLeftPh}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="OI - PH"
+                fullWidth
+              />    
+            </Grid>
+            <Grid item  lg={12} md={12} sm={12} xs={12}>
+              <Typography variant="display1">Valoración de Pupilas</Typography>
+             </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="PDRD"
+                disabled={this.disabled(n-i)}
+                placeholder="1+"
+                helperText="Pupila derecha - RD"
+                value={this.state.pupilRightEyeRD}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="PD - RD"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="PDRC"
+                disabled={this.disabled(n-i)}
+                placeholder="1+"
+                helperText="Pupila derecha - RC"
+                value={this.state.pupilRightEyeRC}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="PD - RC"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="PDDPA"
+                disabled={this.disabled(n-i)}
+                placeholder="1+"
+                helperText="Pupila derecha - DPA"
+                value={this.state.pupilRightEyeDPA}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="PD - DPA"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="PIRD"
+                disabled={this.disabled(n-i)}
+                placeholder="1+"
+                helperText="Pupila izquierda - RD"
+                value={this.state.pupilLeftEyeRD}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="PI - RD"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="PIRC"
+                disabled={this.disabled(n-i)}
+                placeholder="1+"
+                helperText="Pupila izquierda - RC"
+                value={this.state.pupilLeftEyeRC}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="PI - RC"
+                fullWidth
+              />
+            </Grid>
+            <Grid item  lg={5} md={5} sm={12} xs={12}>
+              <TextField
+                required
+                id="PIDPA"
+                disabled={this.disabled(n-i)}
+                placeholder="1+"
+                helperText="Pupila izquierda - DPA"
+                value={this.state.pupilLeftEyeDPA}
+                onChange={event => this.setState({identity: event.target.value})}
+                label="PI - DPA"
+                fullWidth
+              />        
+            </Grid>
+            <Grid item  lg={12} md={12} sm={12} xs={12} align={'right'}>
+              {this.addButton(n-i)}            
+            </Grid>
+          </Grid>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>);
+    }
+    return(result);
+  }
+
   render()
   {
     const { classes } = this.props;
     return(
       <div className={classes.root}>
-        <Grid container spacing={16} className={classes.container}>
-          <Grid item xs={12}>
-            <Typography variant="display1">Optical Evaluation Data</Typography>
-            <Paper className={classes.paper}>
-              <Grid container>
-                <Grid item xs={4}>
-                  <Typography variant="display2">Agudeza Visual</Typography>
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="OD"
-                    disabled={this.state.disabled}
-                    placeholder="20/20"
-                    helperText="Agudeza visual del ojo derecho"
-                    value={this.state.visualRightEye}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="OD"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="ODPH"
-                    disabled={this.state.disabled}
-                    placeholder="20/20"
-                    helperText="PH del ojo derecho"
-                    value={this.state.visualRightPh}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="OD - PH"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="OI"
-                    disabled={this.state.disabled}
-                    placeholder="20/20"
-                    helperText="Agudeza visual del ojo izquierdo"
-                    value={this.state.visualLeftEye}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="OI"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="OIPH"
-                    disabled={this.state.disabled}
-                    placeholder="20/20"
-                    helperText="PH del ojo izquierdo"
-                    value={this.state.visualLeftPh}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="OI - PH"
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                <Typography variant="display2">Valoración de Pupilas</Typography>
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="PDRD"
-                    disabled={this.state.disabled}
-                    placeholder="1+"
-                    helperText="Pupila derecha - RD"
-                    value={this.state.pupilRightEyeRD}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="PD - RD"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="PDRC"
-                    disabled={this.state.disabled}
-                    placeholder="1+"
-                    helperText="Pupila derecha - RC"
-                    value={this.state.pupilRightEyeRC}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="PD - RC"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="PDDPA"
-                    disabled={this.state.disabled}
-                    placeholder="1+"
-                    helperText="Pupila derecha - DPA"
-                    value={this.state.pupilRightEyeDPA}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="PD - DPA"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="PIRD"
-                    disabled={this.state.disabled}
-                    placeholder="1+"
-                    helperText="Pupila izquierda - RD"
-                    value={this.state.pupilLeftEyeRD}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="PI - RD"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="PIRC"
-                    disabled={this.state.disabled}
-                    placeholder="1+"
-                    helperText="Pupila izquierda - RC"
-                    value={this.state.pupilLeftEyeRC}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="PI - RC"
-                  />
-                  <TextField
-                    className={classes.textField}
-                    required
-                    id="PIDPA"
-                    disabled={this.state.disabled}
-                    placeholder="1+"
-                    helperText="Pupila izquierda - DPA"
-                    value={this.state.pupilLeftEyeDPA}
-                    onChange={event => this.setState({identity: event.target.value})}
-                    label="PI - DPA"
-                  />
-                </Grid>
-              </Grid>
-              <TextField
-                required
-                id="biomicroscopy"
-                disabled={this.state.disabled}
-                placeholder="some text here"
-                helperText="Biomicroscopia"
-                value={this.state.biomicroscopy}
-                onChange={event => this.setState({identity: event.target.value})}
-                label="Biomicroscopia"
-                fullWidth
-              />
-              <TextField
-                required
-                id="PIO"
-                disabled={this.state.disabled}
-                placeholder="some text here"
-                helperText="PIO"
-                value={this.state.PIO}
-                onChange={event => this.setState({identity: event.target.value})}
-                label="PIO"
-                fullWidth
-              />
-            </Paper>
+        <Grid container spacing={16} className={classes.container} justify={'center'}>
+          <Grid item  lg={8} md={10} sm={12} xs={12}>
+            <Typography variant="display1" className={classes.title}>Optical Evaluation Data</Typography>
+            {this.loadEvaluations()}
           </Grid>
+          <Grid item  lg={8} md={10} sm={12} xs={12} align={'right'}>
+            <Button variant="fab" color="primary" aria-label="Add" className={classes.button} onClick={this.addHandler.bind(this)} disabled={this.state.addDisabled}>
+            <AddIcon />
+          </Button>
+        </Grid>
         </Grid>
       </div>
     );
