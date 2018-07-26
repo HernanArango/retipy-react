@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, withStyles } from "@material-ui/core";
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   root: {
@@ -7,17 +8,20 @@ const styles = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#EFEFEF',
   },
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    margin: theme.spacing.unit,
+    margin: theme.spacing.unit, 
   },
   paper: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing.unit,
     textAlign: 'center',
     color: theme.palette.text.secondary,
+  },
+  title: {
+    margin: theme.spacing.unit * 2,
   },
   roiButton: {
     margin: theme.spacing.unit / 2,
@@ -26,9 +30,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
   textField: {
-    marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200,
   },
   close: {
     width: theme.spacing.unit * 4,
@@ -56,6 +58,18 @@ const familiarAutocomplete = [
   { label: 'Nefropatía'},
 ];
 
+class ControlledExpansionPanels extends React.Component {
+  state = {
+    expanded: null,
+  };
+
+  handleChange = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+    });
+  };
+}
+
 class Demography extends Component
 {
   state =
@@ -64,7 +78,7 @@ class Demography extends Component
     editable: false,
     identity: "",
     name: "",
-    age: 0,
+    age: "",
     sex: "",
     origin: "",
     procedencia: "",
@@ -80,6 +94,11 @@ class Demography extends Component
     super(props);
     this.state.id = props.id;
     this.state.disabled = props.disabled;
+    const { expanded } = this.state;
+  }
+
+  saveHandler(){
+    console.log("Guarde");
   }
 
   render()
@@ -87,123 +106,156 @@ class Demography extends Component
     const { classes } = this.props;
     return(
       <div className={classes.root}>
-        <Grid container spacing={16} className={classes.container}>
-          <Grid item xs={12}>
-            <Typography variant="display1">Demographic Data</Typography>
+        <Grid container spacing={16} className={classes.container} justify={'center'}>
+          <Grid item  lg={8} md={10} sm={12} xs={12}>
+            <Typography variant="display1" className={classes.title} >Demographic Data</Typography>
             <Paper className={classes.paper}>
+            <Grid container spacing={16} justify={'space-around'}>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="identity"
                 disabled={this.state.disabled}
-                placeholder="123456789"
-                helperText="eg. # de Cédula"
                 value={this.state.identity}
                 onChange={event => this.setState({identity: event.target.value})}
-                label="Identity"
+                label="Documento de identidad"
                 fullWidth
+                margin="normal"
               />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
-                required
-                id="age"
-                disabled={this.state.disabled}
-                placeholder="18"
-                helperText="Edad"
-                value={this.state.age}
-                onChange={event => this.setState({age: event.target.value})}
-                label="Age"
+                id="date"
+                label="Birthday"
+                type="date"
+                className={classes.textField}
                 fullWidth
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
-              <FormControl>
-                <InputLabel htmlFor="sex-simple">Sex</InputLabel>
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
+
+              <FormControl fullWidth 
+                className={classes.textField} margin="normal">
+                <InputLabel htmlFor="sex-simple">Sexo</InputLabel>
                 <Select
+                  style={{ textAlign: 'left' }}
                   value={this.state.sex}
                   onChange={event => this.setState({ sex: event.target.value })}
                   inputProps={{name: 'sex', id: 'sex-simple'}}
+
                 >
                   <MenuItem value="M">Male</MenuItem>
                   <MenuItem value="F">Female</MenuItem>
                 </Select>
               </FormControl>
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="origin"
                 disabled={this.state.disabled}
-                placeholder="Origin"
-                helperText="Origen"
                 value={this.state.origin}
                 onChange={event => this.setState({origin: event.target.value})}
-                label="Origin"
+                label="Origen"
+                margin="normal"
                 fullWidth
               />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="procedence"
                 disabled={this.state.disabled}
-                placeholder="Procedencia"
-                helperText="Procedencia"
                 value={this.state.procedencia}
                 onChange={event => this.setState({procedencia: event.target.value})}
                 label="Procedencia"
                 fullWidth
+                margin="normal"
               />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="education"
                 disabled={this.state.disabled}
-                placeholder="Education"
-                helperText="Escolaridad"
                 value={this.state.education}
                 onChange={event => this.setState({education: event.target.value})}
-                label="Education"
+                label="Educación"
                 fullWidth
+                margin="normal"
               />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="race"
                 disabled={this.state.disabled}
-                placeholder="Race"
-                helperText="Patient Race"
                 value={this.state.race}
                 onChange={event => this.setState({race: event.target.value})}
                 label="Raza"
                 fullWidth
+                margin="normal"
               />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="pathologicalPast"
                 disabled={this.state.disabled}
-                placeholder="Antecedentes Patologicos"
-                helperText="Antecedentes Patologicos"
                 value={this.state.patologicalPast}
                 onChange={event => this.setState({patologicalPast: event.target.value})}
                 label="Antecedentes Patologicos"
                 fullWidth
+                margin="normal"
               />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="familiarPast"
                 disabled={this.state.disabled}
-                placeholder="Antecedentes Familiares"
-                helperText="Antecedentes Familiares"
                 value={this.state.familiarPast}
                 onChange={event => this.setState({familiarPast: event.target.value})}
                 label="Antecedentes Familiares"
                 fullWidth
+                margin="normal"
               />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
+                className={classes.textField}
                 id="medicines"
                 disabled={this.state.disabled}
-                placeholder="Medicamentos"
-                helperText="Medicamentos"
                 value={this.state.medicines}
                 onChange={event => this.setState({medicines: event.target.value})}
                 label="Medicamentos"
+                margin="normal"
                 fullWidth
               />
+              </Grid>
+              <Grid item  lg={12} md={12} sm={12} xs={12} align={'right'}>
+                <Button variant="contained" color="primary" className={this.props.button}  onClick={this.saveHandler.bind(this)}>
+                  Guardar
+                </Button>
+              </Grid>
+             </Grid>
             </Paper>
           </Grid>
         </Grid>
+
+
       </div>
     )
   }
