@@ -8,6 +8,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
+import Biomicroscopy from './Biomicroscopy.jsx';
 
 const styles = theme => ({
   root: {
@@ -65,8 +66,6 @@ class OpticalEvaluation extends Component
     pupilRightEyeRD: 0,
     pupilRightEyeRC: 0,
     pupilRightEyeDPA: 0,
-    biomicroscopy: "",
-    PIO: "",
     evaluationId: 0,
     expanded: null,
     exams: [1, 2, 3],
@@ -126,7 +125,7 @@ class OpticalEvaluation extends Component
     for (var i = 0; i < n; i++) {
        result.push(<ExpansionPanel key={i}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Examen {i+1} - aquí va la fecha</Typography>
+          <Typography className={classes.heading}>Examen {i+1} - Aquí va la fecha</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
          <Grid container spacing={16} justify={'space-around'}>
@@ -266,6 +265,12 @@ class OpticalEvaluation extends Component
                 fullWidth
               />        
             </Grid>
+            <Grid item  lg={12} md={12} sm={12} xs={12}>
+              <Typography variant="display1">Biomicroscopia</Typography>
+            </Grid>
+            <Grid item lg={11} md={11} sm={12} xs={12}>
+              <Biomicroscopy disabled={n-i}/>
+            </Grid> 
             <Grid item  lg={12} md={12} sm={12} xs={12} align={'right'}>
               {this.addButton(n-i)}            
             </Grid>
