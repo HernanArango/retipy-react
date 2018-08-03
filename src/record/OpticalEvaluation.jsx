@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { withStyles, Grid, Paper, Typography, TextField } from "@material-ui/core";
-
-import PropTypes from 'prop-types'; 
+import { withStyles, Grid, Typography, TextField } from "@material-ui/core";
+ 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -68,7 +67,6 @@ class OpticalEvaluation extends Component
     biomicroscopy: "",
     PIO: "",
     evaluationId: 0,
-    expanded: null,
     exams: [1, 2, 3],
     addDisabled: false,
   }
@@ -87,15 +85,14 @@ class OpticalEvaluation extends Component
   }
 
   addHandler(){
+    console.log("Add optical evaluation");  
     //Aqui se deberia añadir un nuevo objeto examen dentro de la variable exams
     this.state.exams.push(1)
-    console.log(this.state.exams);
     this.setState({addDisabled: true});
   }
 
   addButton(n){
-    console.log(n)
-    if(n == 1){
+    if(n === 1){
       return(<Button variant="contained" color="primary" className={this.props.button}  onClick={this.saveHandler.bind(this)}>
         Guardar
       </Button>);
@@ -106,7 +103,7 @@ class OpticalEvaluation extends Component
   } 
 
   disabled(n){
-    if(n == 1){
+    if(n === 1){
       return false;
     }
     else{
@@ -116,22 +113,22 @@ class OpticalEvaluation extends Component
 
   saveHandler(){
     this.setState({addDisabled: false});
+    console.log("Save optical evaluation");
   }
 
   loadEvaluations(){
     const { classes } = this.props;
-    const { expanded } = this.state;
     var n = this.state.exams.length;
     var result = []
     for (var i = 0; i < n; i++) {
        result.push(<ExpansionPanel key={i}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Examen {i+1} - aquí va la fecha</Typography>
+          <Typography className={classes.heading}>Exam {i+1} - Date here</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
          <Grid container spacing={16} justify={'space-around'}>
             <Grid item  lg={12} md={12} sm={12} xs={12}>
-              <Typography variant="display1">Agudeza Visual</Typography>
+              <Typography variant="display1">Visual Acuity</Typography>
             </Grid>
             <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
@@ -139,10 +136,10 @@ class OpticalEvaluation extends Component
                 id="OD"            
                 disabled={this.disabled(n-i)}
                 placeholder="20/20"
-                helperText="Agudeza visual del ojo derecho"
+                helperText="Visual acuity of the right eye"
                 value={this.state.visualRightEye}
                 onChange={event => this.setState({identity: event.target.value})}
-                label="OD"
+                label="RE"
                 fullWidth
               />
             </Grid>

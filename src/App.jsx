@@ -7,6 +7,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CloseIcon from '@material-ui/icons/Close';
 import RetinalEvaluation from "./evaluation/RetinalEvaluation"
 import UploadImage from "./UploadImage";
+import Home from "./Home";
 import Diagnostic from "./diagnostics/Diagnostic";
 import { GlobalContext } from "./GlobalContext";
 import Record from "./record/Record";
@@ -83,6 +84,11 @@ class App extends Component {
                 </IconButton>
               </div>
               <MenuItem onClick={this.handleDrawer}>
+                <Link to="/" >
+                  Home
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={this.handleDrawer}>
                 <Link to="/upload" >
                   Upload Image
                 </Link>
@@ -115,6 +121,7 @@ class App extends Component {
             /> }
         />
         <Route exact path="/upload" component={UploadImage} />
+        <Route exact path="/" component={Home} />
         <Route
           exact
           path="/diagnostic/:id"
@@ -127,6 +134,7 @@ class App extends Component {
         />
       </div>
     </div>
+            
     );
   }
 }
