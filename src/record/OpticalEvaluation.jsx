@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { withStyles, Grid, Typography, TextField } from "@material-ui/core";
- 
+
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
+import Biomicroscopy from './Biomicroscopy.jsx';
 
 const styles = theme => ({
   root: {
@@ -19,7 +20,7 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    margin: theme.spacing.unit, 
+    margin: theme.spacing.unit,
   },
   paper: {
     padding: theme.spacing.unit * 2,
@@ -64,8 +65,6 @@ class OpticalEvaluation extends Component
     pupilRightEyeRD: 0,
     pupilRightEyeRC: 0,
     pupilRightEyeDPA: 0,
-    biomicroscopy: "",
-    PIO: "",
     evaluationId: 0,
     exams: [1, 2, 3],
     addDisabled: false,
@@ -85,7 +84,7 @@ class OpticalEvaluation extends Component
   }
 
   addHandler(){
-    console.log("Add optical evaluation");  
+    console.log("Add optical evaluation");
     //Aqui se deberia añadir un nuevo objeto examen dentro de la variable exams
     this.state.exams.push(1)
     this.setState({addDisabled: true});
@@ -100,7 +99,7 @@ class OpticalEvaluation extends Component
     else{
       return null;
     }
-  } 
+  }
 
   disabled(n){
     if(n === 1){
@@ -133,7 +132,7 @@ class OpticalEvaluation extends Component
             <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
-                id="OD"            
+                id="OD"
                 disabled={this.disabled(n-i)}
                 placeholder="20/20"
                 helperText="Visual acuity of the right eye"
@@ -180,7 +179,7 @@ class OpticalEvaluation extends Component
                 onChange={event => this.setState({identity: event.target.value})}
                 label="OI - PH"
                 fullWidth
-              />    
+              />
             </Grid>
             <Grid item  lg={12} md={12} sm={12} xs={12}>
               <Typography variant="display1">Valoración de Pupilas</Typography>
@@ -261,10 +260,16 @@ class OpticalEvaluation extends Component
                 onChange={event => this.setState({identity: event.target.value})}
                 label="PI - DPA"
                 fullWidth
-              />        
+              />
+            </Grid>
+            <Grid item  lg={12} md={12} sm={12} xs={12}>
+              <Typography variant="display1">Biomicroscopia</Typography>
+            </Grid>
+            <Grid item lg={11} md={11} sm={12} xs={12}>
+              <Biomicroscopy disabled={n-i}/>
             </Grid>
             <Grid item  lg={12} md={12} sm={12} xs={12} align={'right'}>
-              {this.addButton(n-i)}            
+              {this.addButton(n-i)}
             </Grid>
           </Grid>
         </ExpansionPanelDetails>
