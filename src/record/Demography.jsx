@@ -58,18 +58,6 @@ const familiarAutocomplete = [
   { label: 'Nefropatía'},
 ];
 
-class ControlledExpansionPanels extends React.Component {
-  state = {
-    expanded: null,
-  };
-
-  handleChange = panel => (event, expanded) => {
-    this.setState({
-      expanded: expanded ? panel : false,
-    });
-  };
-}
-
 class Demography extends Component
 {
   state =
@@ -94,11 +82,10 @@ class Demography extends Component
     super(props);
     this.state.id = props.id;
     this.state.disabled = props.disabled;
-    const { expanded } = this.state;
   }
 
   saveHandler(){
-    console.log("Guarde");
+    console.log("Save demographic data");
   }
 
   render()
@@ -119,7 +106,7 @@ class Demography extends Component
                 disabled={this.state.disabled}
                 value={this.state.identity}
                 onChange={event => this.setState({identity: event.target.value})}
-                label="Documento de identidad"
+                label="ID"
                 fullWidth
                 margin="normal"
               />
@@ -141,7 +128,7 @@ class Demography extends Component
 
               <FormControl fullWidth 
                 className={classes.textField} margin="normal">
-                <InputLabel htmlFor="sex-simple">Sexo</InputLabel>
+                <InputLabel htmlFor="sex-simple">Sex</InputLabel>
                 <Select
                   style={{ textAlign: 'left' }}
                   value={this.state.sex}
@@ -175,7 +162,7 @@ class Demography extends Component
                 disabled={this.state.disabled}
                 value={this.state.procedencia}
                 onChange={event => this.setState({procedencia: event.target.value})}
-                label="Procedencia"
+                label="Procedence"
                 fullWidth
                 margin="normal"
               />
@@ -188,7 +175,7 @@ class Demography extends Component
                 disabled={this.state.disabled}
                 value={this.state.education}
                 onChange={event => this.setState({education: event.target.value})}
-                label="Educación"
+                label="Education"
                 fullWidth
                 margin="normal"
               />
@@ -201,7 +188,7 @@ class Demography extends Component
                 disabled={this.state.disabled}
                 value={this.state.race}
                 onChange={event => this.setState({race: event.target.value})}
-                label="Raza"
+                label="Race"
                 fullWidth
                 margin="normal"
               />
@@ -214,7 +201,7 @@ class Demography extends Component
                 disabled={this.state.disabled}
                 value={this.state.patologicalPast}
                 onChange={event => this.setState({patologicalPast: event.target.value})}
-                label="Antecedentes Patologicos"
+                label="Pathological Past"
                 fullWidth
                 margin="normal"
               />
@@ -227,7 +214,7 @@ class Demography extends Component
                 disabled={this.state.disabled}
                 value={this.state.familiarPast}
                 onChange={event => this.setState({familiarPast: event.target.value})}
-                label="Antecedentes Familiares"
+                label="Family Past"
                 fullWidth
                 margin="normal"
               />
@@ -240,14 +227,14 @@ class Demography extends Component
                 disabled={this.state.disabled}
                 value={this.state.medicines}
                 onChange={event => this.setState({medicines: event.target.value})}
-                label="Medicamentos"
+                label="Medicines"
                 margin="normal"
                 fullWidth
               />
               </Grid>
               <Grid item  lg={12} md={12} sm={12} xs={12} align={'right'}>
                 <Button variant="contained" color="primary" className={this.props.button}  onClick={this.saveHandler.bind(this)}>
-                  Guardar
+                  Save
                 </Button>
               </Grid>
              </Grid>
