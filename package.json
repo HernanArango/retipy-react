@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^1.0.0-rc.0",
-    "@material-ui/icons": "^1.0.0-rc.0",
-    "downshift": "^2.0.10",
-    "konva": "^2.0.2",
-    "react": "^16.3.1",
+    "@material-ui/core": "^1.4.3",
+    "@material-ui/icons": "^2.0.1",
+    "downshift": "^2.0.19",
+    "konva": "^2.1.7",
+    "react": "^16.4.1",
     "react-block-ui": "^1.1.1",
-    "react-dom": "^16.3.1",
-    "react-konva": "^1.7.1",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.1.4"
+    "react-dom": "^16.4.1",
+    "react-konva": "^1.7.12",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^1.1.4",
+    "react-select": "^2.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

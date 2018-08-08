@@ -2,7 +2,9 @@ import React from 'react';
 
 export const GlobalContext = React.createContext({
     token: "",
-    user_name: "",
+    loginOpen: false,
+    handleChange: null,
+    username: "",
     drawerOpen: false,
     toastMessage: "",
     toastOpen: false,

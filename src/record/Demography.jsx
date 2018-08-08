@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, withStyles } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
+import Autocomplete from "../common/Autocomplete";
 
 const styles = theme => ({
   root: {
@@ -13,7 +14,7 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    margin: theme.spacing.unit, 
+    margin: theme.spacing.unit,
   },
   paper: {
     padding: theme.spacing.unit,
@@ -45,7 +46,10 @@ const patologicalAutocomplete = [
   { label: 'Enfermedad Autoinmune'},
   { label: 'Dislipidemia'},
   { label: 'Nefropatía'},
-];
+].map(suggestion => ({
+  value: suggestion.label,
+  label: suggestion.label,
+}));
 
 const familiarAutocomplete = [
   { label: 'Demencia'},
@@ -56,7 +60,10 @@ const familiarAutocomplete = [
   { label: 'Enfermedad Autoinmune'},
   { label: 'Dislipidemia'},
   { label: 'Nefropatía'},
-];
+].map(suggestion => ({
+  value: suggestion.label,
+  label: suggestion.label,
+}));
 
 class Demography extends Component
 {
@@ -126,7 +133,7 @@ class Demography extends Component
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
 
-              <FormControl fullWidth 
+              <FormControl fullWidth
                 className={classes.textField} margin="normal">
                 <InputLabel htmlFor="sex-simple">Sex</InputLabel>
                 <Select
@@ -197,6 +204,25 @@ class Demography extends Component
               <TextField
                 required
                 className={classes.textField}
+                id="medicines"
+                disabled={this.state.disabled}
+                value={this.state.medicines}
+                onChange={event => this.setState({medicines: event.target.value})}
+                label="Medicines"
+                margin="normal"
+                fullWidth
+              />
+              </Grid>
+              <Grid item  lg={5} md={5} sm={12} xs={12}>
+                <Autocomplete
+                  suggestions={patologicalAutocomplete}
+                  selection={this.state.patologicalPast}
+                  placeholder="Pathological Past"
+                  handleSelect={(value) => this.setState({patologicalPast: value})}
+                />
+              {/* <TextField
+                required
+                className={classes.textField}
                 id="pathologicalPast"
                 disabled={this.state.disabled}
                 value={this.state.patologicalPast}
@@ -204,10 +230,16 @@ class Demography extends Component
                 label="Pathological Past"
                 fullWidth
                 margin="normal"
-              />
+              /> */}
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
-              <TextField
+                <Autocomplete
+                  suggestions={familiarAutocomplete}
+                  selection={this.state.familiarPast}
+                  placeholder="Familiar Past"
+                  handleSelect={(value) => this.setState({familiarPast: value})}
+                />
+              {/* <TextField
                 required
                 className={classes.textField}
                 id="familiarPast"
@@ -217,20 +249,7 @@ class Demography extends Component
                 label="Family Past"
                 fullWidth
                 margin="normal"
-              />
-              </Grid>
-              <Grid item  lg={5} md={5} sm={12} xs={12}>
-              <TextField
-                required
-                className={classes.textField}
-                id="medicines"
-                disabled={this.state.disabled}
-                value={this.state.medicines}
-                onChange={event => this.setState({medicines: event.target.value})}
-                label="Medicines"
-                margin="normal"
-                fullWidth
-              />
+              /> */}
               </Grid>
               <Grid item  lg={12} md={12} sm={12} xs={12} align={'right'}>
                 <Button variant="contained" color="primary" className={this.props.button}  onClick={this.saveHandler.bind(this)}>

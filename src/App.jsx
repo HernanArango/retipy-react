@@ -3,6 +3,7 @@ import {Route, Link} from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Drawer, IconButton, MenuItem, Snackbar, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import {AccountCircleSharp} from '@material-ui/icons';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CloseIcon from '@material-ui/icons/Close';
 import RetinalEvaluation from "./evaluation/RetinalEvaluation"
@@ -11,25 +12,43 @@ import Home from "./Home";
 import Diagnostic from "./diagnostics/Diagnostic";
 import { GlobalContext } from "./GlobalContext";
 import Record from "./record/Record";
+import Login from "./common/Login";
 
 const styles = {
   root: {
     flexGrow: 1,
   },
+  flex: {
+    flexGrow: 1,
+  },
 };
 
 class App extends Component {
+
+  handleChange = (key, value) => this.setState({[key]: value});
+
   state = {
     token: "",
-    user_name: "Guest",
+    loginOpen: false,
+    handleChange: this.handleChange,
+    username: "",
     drawerOpen: false,
     toastMessage: "",
     toastOpen: false,
   }
 
+  toast = (message) => {
+    this.setState(
+      {
+        toastOpen: true,
+        toastMessage: message,
+      }
+    );
+  }
+
   handleDrawer = () => this.setState({drawerOpen: !this.state.drawerOpen});
 
-  handleSnackbar = (event, reason) =>
+  closeSnackbar = (event, reason) =>
   {
     if (reason === 'clickaway') {
       return;
@@ -37,8 +56,8 @@ class App extends Component {
 
     this.setState(
       {
-        showSnackbar: false,
-        userMessage: ""
+        toastOpen: false,
+        toastMessage: ""
       });
   }
 
@@ -54,7 +73,7 @@ class App extends Component {
           }}
           open={this.state.toastOpen}
           autoHideDuration={3000}
-          onClose={this.handleSnackbar}
+          onClose={this.closeSnackbar}
           ContentProps={{
             'aria-describedby': 'message-id',
           }}
@@ -65,7 +84,7 @@ class App extends Component {
               aria-label="Close"
               color="inherit"
               className={classes.close}
-              onClick={this.handleSnackbar}
+              onClick={this.closeSnackbar}
             >
               <CloseIcon />
             </IconButton>
@@ -77,6 +96,7 @@ class App extends Component {
             <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.handleDrawer} >
               <MenuIcon />
             </IconButton>
+            {this.state.token !== "" && // don't render menu if the user is not logged in
             <Drawer open={this.state.drawerOpen} >
               <div className={classes.drawerHeader}>
                 <IconButton onClick={this.handleDrawer}>
@@ -104,9 +124,26 @@ class App extends Component {
                 </Link>
               </MenuItem>
             </Drawer>
+            }
             <Typography variant="title" color="inherit" className={classes.flex}>
               Retipy
             </Typography>
+            <div>
+              <IconButton onClick={
+                () => {
+                  if (this.state.token === "")
+                  {
+                    this.setState({loginOpen: true});
+                  }
+                }}>
+                <AccountCircleSharp color="inherit"/>
+              </IconButton>
+              <Login
+                handleChange={this.handleChange}
+                open={this.state.loginOpen}
+              />
+            </div>
+              {this.state.username && <Typography color="inherit">{this.state.username}</Typography>}
           </Toolbar>
         </AppBar>
       </GlobalContext.Provider>
@@ -118,14 +155,27 @@ class App extends Component {
             <RetinalEvaluation
               id={props.match.params.id}
               selection={props.match.params.selection}
-            /> }
+            />}
         />
-        <Route exact path="/upload" component={UploadImage} />
-        <Route exact path="/" component={Home} />
+        <Route
+          exact
+          path="/upload"
+          render={() =>
+            <UploadImage token={this.state.token} toast={this.toast}/>}
+        />
+        <Route
+          exact
+          path="/"
+          render={() => <Home token={this.state.token} toast={this.toast}/>}
+        />
         <Route
           exact
           path="/diagnostic/:id"
-          render={ props => <Diagnostic id={props.match.params.id} /> }
+          render={ props =>
+            <Diagnostic
+              id={props.match.params.id}
+              token={this.state.token}
+              handleChange={this.handleChange} /> }
         />
         <Route
           exact
@@ -134,7 +184,7 @@ class App extends Component {
         />
       </div>
     </div>
-            
+
     );
   }
 }

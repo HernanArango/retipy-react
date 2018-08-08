@@ -82,6 +82,7 @@ class UploadImage extends Component
     {
       url = CNF.REST_URL + CNF.DIAGNOSTIC_ENDPOINT + "/image";
     }
+    this.props.toast("Uploading Image");
     fetch(
       url,
       {
@@ -90,13 +91,19 @@ class UploadImage extends Component
         mode: 'cors',
         headers:
         {
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': this.props.token,
         }
       }).then(response => response.json())
       .then(success => {
-        console.log(success)
-        this.setState({ redirect: true, id: success.id })}) // TODO: we should have a redirect after a successful upload with the created id!
-      .catch(error => console.log(error)); // TODO: add better error handling
+        this.props.toast("Upload Successful");
+        this.setState({ redirect: true, id: success.id });
+      })
+      .catch(error => {
+        console.log(error);
+        this.props.toast("There was an error when uploading the image");
+        this.toggleBlock();
+      }); // TODO: add better error handling
   }
 
   getBase64(file, onLoadCallback) {
