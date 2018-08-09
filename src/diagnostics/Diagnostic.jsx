@@ -57,7 +57,7 @@ const getId = (id, token) => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'content-type': 'application/json',
-      'Authentication': token,
+      'Authorization': token,
     }})
     .then(response => response.json())
 }

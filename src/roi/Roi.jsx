@@ -20,16 +20,19 @@ export default class Roi extends Component
     }
   }
 
+  roiReference = null;
+
+  setRoiReference = element => { this.roiReference = element }
+
   componentDidMount()
   {
     const roi = this;
-    const rect = this.refs.iRoi;
-    const stage = rect.getStage();
-    rect.on("mousemove", function(){
+    const stage = this.roiReference.getStage();
+    this.roiReference.on("mousemove", function(){
       const pointer = stage.getPointerPosition();
       roi.setState({ visible: true, label_x: pointer.x + 10, label_y: pointer.y + 10 })
     });
-    rect.on("mouseout", function()
+    this.roiReference.on("mouseout", function()
     {
       roi.setState({ visible: false })
     });
@@ -39,7 +42,7 @@ export default class Roi extends Component
   {
     return(
       [
-      <Rect ref="iRoi"
+      <Rect ref={this.setRoiReference}
         key={"r" + this.state.key}
         x={this.props.x1}
         y={this.props.y1}

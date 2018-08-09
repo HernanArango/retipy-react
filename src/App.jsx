@@ -8,11 +8,11 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CloseIcon from '@material-ui/icons/Close';
 import RetinalEvaluation from "./evaluation/RetinalEvaluation"
 import UploadImage from "./UploadImage";
-import Home from "./Home";
 import Diagnostic from "./diagnostics/Diagnostic";
 import { GlobalContext } from "./GlobalContext";
-import Record from "./record/Record";
+import Record from "./patient/Record";
 import Login from "./common/Login";
+import PatientList from "./patient/PatientList";
 
 const styles = {
   root: {
@@ -28,7 +28,7 @@ class App extends Component {
   handleChange = (key, value) => this.setState({[key]: value});
 
   state = {
-    token: "",
+    token: "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRpcHkiLCJzdWIiOiJhbGV2YWx2IiwiaWRlbnRpdHkiOiIxMTExMTExMSIsInNjb3BlIjoidXNlcnMiLCJpYXQiOjE1MzM3Nzg1OTQsImV4cCI6MTUzMzc4MjE5NH0.PuCIKmx-lQtON7aW9Q4IV3l5NHs-zg7aqBdYjPvsbjc",
     loginOpen: false,
     handleChange: this.handleChange,
     username: "",
@@ -166,7 +166,7 @@ class App extends Component {
         <Route
           exact
           path="/"
-          render={() => <Home token={this.state.token} toast={this.toast}/>}
+          render={() => <PatientList token={this.state.token} toast={this.toast}/>}
         />
         <Route
           exact
@@ -175,7 +175,9 @@ class App extends Component {
             <Diagnostic
               id={props.match.params.id}
               token={this.state.token}
-              handleChange={this.handleChange} /> }
+              handleChange={this.handleChange}
+            />
+          }
         />
         <Route
           exact
