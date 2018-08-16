@@ -13,7 +13,8 @@ import { GlobalContext } from "./GlobalContext";
 import Record from "./patient/Record";
 import Login from "./common/Login";
 import PatientList from "./patient/PatientList";
-import { CookiesProvider } from "react-cookie";
+import { withCookies } from "react-cookie";
+import { refreshToken } from "./token/TokenService";
 
 const styles = {
   root: {
@@ -36,6 +37,32 @@ class App extends Component {
     drawerOpen: false,
     toastMessage: "",
     toastOpen: false,
+  }
+
+  constructor(props)
+  {
+    super(props);
+
+    const { cookies } = props;
+    const token = cookies.get('token');
+    const username = cookies.get('username');
+    if (token !== undefined)
+    {
+      refreshToken(token)
+        .then(newToken =>
+        {
+          if (newToken !== "")
+          {
+            cookies.set('token', newToken, { path: '/' });
+            cookies.set('username', username, { path: '/' });
+            this.setState(
+              {
+                token: newToken,
+                username: username,
+              });
+          }
+        })
+    }
   }
 
   toast = (message) => {
@@ -139,12 +166,10 @@ class App extends Component {
                 }}>
                 <AccountCircleSharp color="inherit"/>
               </IconButton>
-              <CookiesProvider>
               <Login
                 handleChange={this.handleChange}
                 open={this.state.loginOpen}
               />
-              </CookiesProvider>
             </div>
               {this.state.username && <Typography color="inherit">{this.state.username}</Typography>}
           </Toolbar>
@@ -194,4 +219,4 @@ class App extends Component {
   }
 }
 
-export default withStyles(styles)(App);
+export default withCookies(withStyles(styles)(App));

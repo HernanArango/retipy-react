@@ -1,8 +1,8 @@
 import React from 'react';
 import { Grid, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, withStyles, Typography } from '@material-ui/core';
-import {Configuration as CNF} from "../Configuration";
 import { instanceOf } from 'prop-types';
 import { Cookies, withCookies } from 'react-cookie';
+import { createToken } from '../token/TokenService';
 
 
 const styles = theme => ({
@@ -27,16 +27,6 @@ class Login extends React.Component {
     constructor(props)
     {
         super(props);
-
-        const { cookies, handleChange } = props;
-        const token = cookies.get('token');
-        const username = cookies.get('username');
-        if (token !== undefined)
-        {
-            handleChange('loginOpen', false);
-            handleChange('token', token);
-            handleChange('username', username);
-        }
         this.state =
         {
             error: false,
@@ -62,23 +52,7 @@ class Login extends React.Component {
     handleLogin = () => {
         this.setState({error: false});
         const {username, password} = this.state;
-        fetch(CNF.REST_URL + CNF.LOGIN_ENDPOINT,
-            {
-                method: 'POST',
-                mode: 'cors',
-                referrer: 'no-referrer',
-                body: JSON.stringify({"username": username, "password": password}),
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'content-type': 'application/json'
-            }})
-            .then(response => {
-                if (!response.ok)
-                {
-                    throw Error(response.statusText)
-                }
-                return response.text();
-            })
+        createToken(username, password)
             .then(body => {
                 const { cookies } = this.props;
                 cookies.set('token', body, { path: '/' });
@@ -90,7 +64,7 @@ class Login extends React.Component {
                 this.props.handleChange('toastMessage', `Welcome, ${username}`);
                 this.props.handleChange('toastOpen', true);
             })
-            .catch(reason => this.setState({error: true}))
+            .catch(() => this.setState({error: true}))
     }
 
     render()

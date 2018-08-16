@@ -50,12 +50,14 @@ class PatientList extends Component
   {
     list: [],
     inputValue: "",
+    token: ""
   };
 
   constructor(props)
   {
     super(props);
     this.state.disabled = props.disabled;
+    this.state.token = props.token;
   }
 
   addHandler(){
@@ -79,13 +81,11 @@ class PatientList extends Component
     return(result);
   }
 
-  handleSearch = event =>
+  fetchPatients(token)
   {
-    this.setState({inputValue: event.target.value});
-  };
 
-  componentDidMount()
-  {
+    if (token !== "")
+    {
     fetch(
       CNF.REST_URL + CNF.PATIENT_ENDPOINT + "/list",
       {
@@ -95,23 +95,49 @@ class PatientList extends Component
         headers: {
           'Access-Control-Allow-Origin': '*',
           'content-type': 'application/json',
-          'Authorization': this.props.token,
+          'Authorization': token,
         }
       })
-      .then(response => response.json())
+      .then(response => {
+        if(!response.ok)
+        {
+          throw Error("Not logged in");
+        }
+        return response.json();
+      })
       .then(data =>
         {
-          var list = []
-          for (var i=0; i < data.length; i++)
+          var list = [];
+          for (var i=0; i < data.patientList.length; i++)
           {
-            list.push([data[i].first, data[i].second, data[i].third])
+            list.push(
+              [data.patientList[i].first, data.patientList[i].second, data.patientList[i].third]);
           }
           this.setState(
             {
-              list: list
+              list: list,
+              token: token,
             });
         })
       .catch(error => console.log(error));
+    }
+  }
+
+  handleSearch = event =>
+  {
+    this.setState({inputValue: event.target.value});
+  };
+
+  componentDidMount()
+  {
+    this.fetchPatients(this.state.token);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.token !== prevProps.token)
+    {
+      this.fetchPatients(this.props.token);
+    }
   }
 
   render()
