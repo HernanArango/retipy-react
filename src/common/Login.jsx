@@ -1,6 +1,8 @@
 import React from 'react';
 import { Grid, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, withStyles, Typography } from '@material-ui/core';
-import {Configuration as CNF} from "../Configuration"
+import {Configuration as CNF} from "../Configuration";
+import { instanceOf } from 'prop-types';
+import { Cookies, withCookies } from 'react-cookie';
 
 
 const styles = theme => ({
@@ -18,9 +20,23 @@ const styles = theme => ({
 
 
 class Login extends React.Component {
+    static propTypes = {
+        cookies: instanceOf(Cookies).isRequired
+    };
+
     constructor(props)
     {
         super(props);
+
+        const { cookies, handleChange } = props;
+        const token = cookies.get('token');
+        const username = cookies.get('username');
+        if (token !== undefined)
+        {
+            handleChange('loginOpen', false);
+            handleChange('token', token);
+            handleChange('username', username);
+        }
         this.state =
         {
             error: false,
@@ -64,12 +80,15 @@ class Login extends React.Component {
                 return response.text();
             })
             .then(body => {
-                    this.setState({password: ""});
-                    this.props.handleChange('loginOpen', false);
-                    this.props.handleChange('token', body);
-                    this.props.handleChange('username', username);
-                    this.props.handleChange('toastMessage', `Welcome, ${username}`);
-                    this.props.handleChange('toastOpen', true);
+                const { cookies } = this.props;
+                cookies.set('token', body, { path: '/' });
+                cookies.set('username', username, { path: '/' });
+                this.setState({password: ""});
+                this.props.handleChange('loginOpen', false);
+                this.props.handleChange('token', body);
+                this.props.handleChange('username', username);
+                this.props.handleChange('toastMessage', `Welcome, ${username}`);
+                this.props.handleChange('toastOpen', true);
             })
             .catch(reason => this.setState({error: true}))
     }
@@ -120,4 +139,4 @@ class Login extends React.Component {
     }
 }
 
-export default withStyles(styles)(Login);
+export default withCookies(withStyles(styles)(Login));

@@ -8,6 +8,7 @@
     "konva": "^2.1.8",
     "react": "^16.4.1",
     "react-block-ui": "^1.1.1",
+    "react-cookie": "^2.2.0",
     "react-dom": "^16.4.1",
     "react-konva": "^1.7.12",
     "react-router-dom": "^4.3.1",

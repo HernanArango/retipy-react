@@ -13,6 +13,7 @@ import { GlobalContext } from "./GlobalContext";
 import Record from "./patient/Record";
 import Login from "./common/Login";
 import PatientList from "./patient/PatientList";
+import { CookiesProvider } from "react-cookie";
 
 const styles = {
   root: {
@@ -28,7 +29,7 @@ class App extends Component {
   handleChange = (key, value) => this.setState({[key]: value});
 
   state = {
-    token: "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRpcHkiLCJzdWIiOiJhbGV2YWx2IiwiaWRlbnRpdHkiOiIxMTExMTExMSIsInNjb3BlIjoidXNlcnMiLCJpYXQiOjE1MzM3Nzg1OTQsImV4cCI6MTUzMzc4MjE5NH0.PuCIKmx-lQtON7aW9Q4IV3l5NHs-zg7aqBdYjPvsbjc",
+    token: "",
     loginOpen: false,
     handleChange: this.handleChange,
     username: "",
@@ -138,10 +139,12 @@ class App extends Component {
                 }}>
                 <AccountCircleSharp color="inherit"/>
               </IconButton>
+              <CookiesProvider>
               <Login
                 handleChange={this.handleChange}
                 open={this.state.loginOpen}
               />
+              </CookiesProvider>
             </div>
               {this.state.username && <Typography color="inherit">{this.state.username}</Typography>}
           </Toolbar>
