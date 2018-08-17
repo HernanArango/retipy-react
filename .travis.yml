@@ -3,6 +3,7 @@ node_js:
   - "node"
 script:
   - yarn install
+  - sed -i 's,http://localhost:8080,http://retipy-rest.avaldes.co,g' src/Configuration.jsx
   - yarn build
 
 deploy:
