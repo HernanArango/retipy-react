@@ -106,7 +106,7 @@ class Biomicroscopy extends Component
       return true;
     }
   }
-  
+
   render()
   {
     const { classes } = this.props;
@@ -115,7 +115,7 @@ class Biomicroscopy extends Component
           <Grid container spacing={16} justify={'space-around'} >
             <Grid item lg={10} md={10} sm={10} xs={8}>
               <TextField
-                id="nombre"
+                id={this.state.nombre}
                 disabled={this.disabled(this.props.disabled)}
                 value={this.state.nombre}
                 onChange={event => this.setState({nombre: event.target.value})}

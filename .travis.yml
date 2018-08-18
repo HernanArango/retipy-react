@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - "node"
+script:
+  - yarn install
+  - sed -i 's,http://localhost:8080,https://retipy-rest.avaldes.co,g' src/Configuration.jsx
+  - yarn build
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep-history: true
+  local-dir: build
+  project-name: retipy-react
+  on:
+    branch: master
+  target-branch: gh-pages
+  fqdn: retipy.avaldes.co

@@ -4,14 +4,11 @@ import {
   Button,
   FormControlLabel,
   Grid,
-  IconButton,
   Paper,
-  Snackbar,
   Switch,
   TextField,
   Typography
 } from "@material-ui/core";
-import  CloseIcon from '@material-ui/icons/Close'
 import { Stage, Layer, Line, Image } from "react-konva";
 import { Configuration as CNF } from "../Configuration";
 import PolyRoi from "../roi/PolyRoi";
@@ -51,7 +48,7 @@ const styles = theme => ({
   },
 });
 
-const getId = (id) => {
+const getId = (id, token) => {
   var endpoint = (id) => `${CNF.DIAGNOSTIC_ENDPOINT}/${id}`
   return fetch(CNF.REST_URL + endpoint(id), {
     method: 'GET',
@@ -59,7 +56,8 @@ const getId = (id) => {
     referrer: 'no-referrer',
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'Authorization': token,
     }})
     .then(response => response.json())
 }
@@ -81,8 +79,6 @@ class Diagnostic extends Component
     roiText: "",
     addingRoi: false,
     creationDate: "",
-    showSnackbar: false,
-    userMessage: ""
   }
 
   constructor(props)
@@ -94,7 +90,7 @@ class Diagnostic extends Component
   componentDidMount()
   {
     // Load the data from the rest endpoint
-    getId(this.state.id).then(data =>
+    getId(this.state.id, this.props.token).then(data =>
       {
         //image load
         const image = document.createElement('img');
@@ -168,9 +164,9 @@ class Diagnostic extends Component
           {
             diagnostic: data.diagnostic,
             creationDate: data.creationDate,
-            showSnackbar: true,
-            userMessage: "Diagnostic Loaded Successfully"
           });
+        this.props.toast("Diagnostic Loaded Successfully");
+
       })
       .catch(error => console.log(error));
   }
@@ -239,23 +235,10 @@ class Diagnostic extends Component
           points: [],
           addingRoi: false,
           roiText: "",
-          showSnackbar: true,
-          userMessage: "Added RoI"
         });
-    }
-  }
 
-  handleSnackbarClose = (event, reason) =>
-  {
-    if (reason === 'clickaway') {
-      return;
+      this.props.toast("Added new RoI");
     }
-
-    this.setState(
-      {
-        showSnackbar: false,
-        userMessage: ""
-      });
   }
 
   handleAddRoiNotes = event =>
@@ -267,20 +250,12 @@ class Diagnostic extends Component
   {
     if (this.state.addingRoi)
     {
-      this.setState(
-        {
-          showSnackbar: true,
-          userMessage: "Please Add or Cancel the current RoI"
-        })
+      this.props.toast("Please Add or Cancel the current RoI");
       return;
     }
     if (this.state.diagnostic==="")
     {
-      this.setState(
-        {
-          showSnackbar: true,
-          userMessage: "Diagnostic must have a value"
-        });
+      this.props.toast("Diagnostic must have a value");
       return;
     }
 
@@ -306,15 +281,11 @@ class Diagnostic extends Component
       })
       .then(response => response.json())
       .then(success =>
-        this.setState({showSnackbar: true, userMessage: "Diagnostic Updated Successfully"}))
+        this.props.toast("Diagnostic Updated Successfully"))
       .catch(error =>
         {
           console.log(error);
-          this.setState(
-            {
-              showSnackbar: true,
-              userMessage: "There was an error saving this diagnostic"
-            })
+          this.props.toast("There was an error saving this diagnostic");
         });
   }
 
@@ -323,34 +294,6 @@ class Diagnostic extends Component
     const { classes } = this.props;
     return(
       <div className={classes.root}>
-      {// TODO: move this Snackbar to App.js and create a React context with it, so its accessible
-       // to everyone.
-      }
-      <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          open={this.state.showSnackbar}
-          autoHideDuration={3000}
-          onClose={this.handleSnackbarClose}
-          ContentProps={{
-            'aria-describedby': 'message-id',
-          }}
-          message={<span id="message-id">{this.state.userMessage}</span>}
-          action={
-            <IconButton
-              key="close"
-              aria-label="Close"
-              color="inherit"
-              className={classes.close}
-              onClick={this.handleSnackbarClose}
-            >
-              <CloseIcon />
-            </IconButton>
-          }
-        />
-
       <Grid container spacing={16} className={classes.container}>
         <Grid item xs={12} sm={12} > {/* Konva div */}
         <Grid container justify="center">
