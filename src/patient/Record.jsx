@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import Demography from "./Demography";
-import OpticalEvaluation from "./OpticalEvaluation";
+import Patient from "./Patient";
+import OpticalEvaluationView from "./OpticalEvaluationView";
+import { Typography } from "@material-ui/core";
 
 export default class Record extends Component
 {
@@ -8,8 +9,9 @@ export default class Record extends Component
   {
     return(
       <div>
-        <Demography id={0} disabled={false} />
-        <OpticalEvaluation id={0} disabled={false} />
+        <Typography>THIS IS A DEMO UI</Typography>
+        <Patient id={0} disabled={false}/>
+        <OpticalEvaluationView id={0} disabled={false} />
       </div>
       );
   }

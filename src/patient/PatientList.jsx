@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from 'react-router-dom';
 import { Grid, Paper, Typography, TextField, withStyles } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
@@ -6,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import {Configuration as CNF} from "../Configuration.jsx"
+import PleaseLogIn from "../common/PleaseLogIn";
 
 const styles = theme => ({
   root: {
@@ -14,6 +16,7 @@ const styles = theme => ({
     justifyContent: 'space-around',
     overflow: 'hidden',
     backgroundColor: '#EFEFEF',
+    minHeight: window.innerHeight,
   },
   container: {
     display: 'flex',
@@ -50,7 +53,10 @@ class PatientList extends Component
   {
     list: [],
     inputValue: "",
-    token: ""
+    token: "",
+    disabled: false,
+    newPatient: false,
+    redirectTarget: -1,
   };
 
   constructor(props)
@@ -60,9 +66,7 @@ class PatientList extends Component
     this.state.token = props.token;
   }
 
-  addHandler(){
-    console.log("Add new patient");
-  }
+  handleRedirect = (id) => (event) => this.setState({redirectTarget: id});
 
   loadPatients(){
     var n = this.state.list.length;
@@ -72,7 +76,8 @@ class PatientList extends Component
        result.push(
        <div key={i}>
         <ListItem button>
-          <ListItemText primary={this.state.list[i][1]} />
+          {this.state.redirectTarget === this.state.list[i][0] && <Redirect to={`/patient/${this.state.redirectTarget}`}/> }
+          <ListItemText primary={this.state.list[i][1]} onClick={this.handleRedirect(this.state.list[i][0])} />
           {this.state.list[i][2]}
         </ListItem>
         <Divider light />
@@ -143,6 +148,12 @@ class PatientList extends Component
   render()
   {
     const { classes } = this.props;
+    if (this.props.token === "")
+    {
+        return(<PleaseLogIn/>);
+    }
+    else
+    {
     return(
       <div className={classes.root}>
         <Grid container spacing={16} className={classes.container} justify={'center'}>
@@ -152,11 +163,12 @@ class PatientList extends Component
                 <Typography variant="display1" className={classes.title} >Patient List</Typography>
               </Grid>
               <Grid item lg={6} md={6} sm={6} xs={6} align={'right'}>
+                {this.state.newPatient && <Redirect to="/patient/0" />}
                 <Button
                   variant="contained"
                   color="primary"
                   className={classes.title}
-                  onClick={this.addHandler.bind(this)}
+                  onClick={() => this.setState({newPatient: true})}
                 >
                   New Patient
                 </Button>
@@ -186,7 +198,8 @@ class PatientList extends Component
           </Grid>
         </Grid>
       </div>
-    )
+      );
+    }
   }
 }
 

@@ -49,7 +49,7 @@ const styles = theme => ({
 });
 
 const getId = (id, token) => {
-  var endpoint = (id) => `${CNF.DIAGNOSTIC_ENDPOINT}/${id}`
+  const endpoint = (id) => `${CNF.DIAGNOSTIC_ENDPOINT}/${id}`
   return fetch(CNF.REST_URL + endpoint(id), {
     method: 'GET',
     mode: 'cors',

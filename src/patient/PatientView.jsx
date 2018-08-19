@@ -10,6 +10,7 @@ const styles = theme => ({
     justifyContent: 'space-around',
     overflow: 'hidden',
     backgroundColor: '#EFEFEF',
+    minHeight: window.innerHeight,
   },
   container: {
     display: 'flex',
@@ -39,7 +40,7 @@ const styles = theme => ({
   },
 });
 
-const patologicalAutocomplete = [
+const pathologicalAutocomplete = [
   { label: 'Hipertension Arterial'},
   { label: 'Diabetes Mellitus'},
   { label: 'Arterioesclerosis'},
@@ -50,6 +51,14 @@ const patologicalAutocomplete = [
   value: suggestion.label,
   label: suggestion.label,
 }));
+
+const toAutocompleteData = (values) => {
+  return values.map(value => ({value: value, label: value}));
+}
+
+const fromAutocompleteData = (values) => {
+  return values.map(value => value.value);
+}
 
 const familiarAutocomplete = [
   { label: 'Demencia'},
@@ -65,36 +74,17 @@ const familiarAutocomplete = [
   label: suggestion.label,
 }));
 
-class Demography extends Component
+class PatientView extends Component
 {
   state =
   {
-    id: 0,
-    editable: false,
-    identity: "",
-    name: "",
-    age: "",
-    sex: "",
-    origin: "",
-    procedencia: "",
-    education: "",
-    race: "",
-    patologicalPast: [],
-    familiarPast: [],
-    medicines: [],
-  };
+    loaded: false,
+  }
 
-  constructor(props)
+  componentDidMount()
   {
-    super(props);
-    this.state.id = props.id;
-    this.state.disabled = props.disabled;
+    this.setState({loaded: true})
   }
-
-  saveHandler(){
-    console.log("Save demographic data");
-  }
-
   render()
   {
     const { classes } = this.props;
@@ -104,24 +94,40 @@ class Demography extends Component
           <Grid item  lg={8} md={10} sm={12} xs={12}>
             <Typography variant="display1" className={classes.title} >Demographic Data</Typography>
             <Paper className={classes.paper}>
+            <form>
             <Grid container spacing={16} justify={'space-around'}>
+              <Grid item lg={11} md={11} sm={12} xs={12}>
+                <TextField
+                  required
+                  className={classes.textField}
+                  id="name"
+                  disabled={this.props.disabled}
+                  value={this.props.name}
+                  onChange={event => this.props.handleChange('name', event.target.value)}
+                  label="Name"
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
                 className={classes.textField}
                 id="identity"
-                disabled={this.state.disabled}
-                value={this.state.identity}
-                onChange={event => this.setState({identity: event.target.value})}
-                label="ID"
+                disabled={this.props.disabled}
+                value={this.props.identity}
+                onChange={event => this.props.handleChange('identity', event.target.value)}
+                label="Identity"
                 fullWidth
                 margin="normal"
+                type="number"
+                helperText="National ID"
               />
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 id="date"
-                label="Birthday"
+                label="Birthdate"
                 type="date"
                 className={classes.textField}
                 fullWidth
@@ -129,6 +135,8 @@ class Demography extends Component
                 InputLabelProps={{
                   shrink: true,
                 }}
+                value={this.props.birthDate}
+                onChange={event => this.props.handleChange('birthDate', event.target.value)}
               />
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
@@ -138,13 +146,12 @@ class Demography extends Component
                 <InputLabel htmlFor="sex-simple">Sex</InputLabel>
                 <Select
                   style={{ textAlign: 'left' }}
-                  value={this.state.sex}
-                  onChange={event => this.setState({ sex: event.target.value })}
+                  value={this.props.sex}
+                  onChange={event => this.props.handleChange('sex', event.target.value)}
                   inputProps={{name: 'sex', id: 'sex-simple'}}
-
                 >
-                  <MenuItem value="M">Male</MenuItem>
-                  <MenuItem value="F">Female</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
+                  <MenuItem value="Male">Male</MenuItem>
                 </Select>
               </FormControl>
               </Grid>
@@ -153,10 +160,10 @@ class Demography extends Component
                 required
                 className={classes.textField}
                 id="origin"
-                disabled={this.state.disabled}
-                value={this.state.origin}
-                onChange={event => this.setState({origin: event.target.value})}
-                label="Origen"
+                disabled={this.props.disabled}
+                value={this.props.origin}
+                onChange={event => this.props.handleChange('origin', event.target.value)}
+                label="Origin"
                 margin="normal"
                 fullWidth
               />
@@ -166,97 +173,78 @@ class Demography extends Component
                 required
                 className={classes.textField}
                 id="procedence"
-                disabled={this.state.disabled}
-                value={this.state.procedencia}
-                onChange={event => this.setState({procedencia: event.target.value})}
+                disabled={this.props.disabled}
+                value={this.props.procedence}
+                onChange={event => this.props.handleChange('procedence', event.target.value)}
                 label="Procedence"
                 fullWidth
                 margin="normal"
               />
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
-              <TextField
-                required
-                className={classes.textField}
-                id="education"
-                disabled={this.state.disabled}
-                value={this.state.education}
-                onChange={event => this.setState({education: event.target.value})}
-                label="Education"
-                fullWidth
-                margin="normal"
-              />
+              <FormControl fullWidth
+                className={classes.textField} margin="normal">
+                <InputLabel htmlFor="sex-simple">Education</InputLabel>
+                <Select
+                  style={{ textAlign: 'left' }}
+                  value={this.props.education}
+                  onChange={event => this.props.handleChange('education', event.target.value)}
+                  inputProps={{name: 'education', id: 'education-simple'}}
+                >
+                  <MenuItem value="None">None</MenuItem>
+                  <MenuItem value="Primary">Primary</MenuItem>
+                  <MenuItem value="HighSchool">High School</MenuItem>
+                  <MenuItem value="Bachelor">Bachelor Degree</MenuItem>
+                  <MenuItem value="Master">Master Degree</MenuItem>
+                  <MenuItem value="Doctorate">Doctorate</MenuItem>
+                  <MenuItem value="PostDoctorate">Post Doctorate</MenuItem>
+                </Select>
+              </FormControl>
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
               <TextField
                 required
                 className={classes.textField}
                 id="race"
-                disabled={this.state.disabled}
-                value={this.state.race}
-                onChange={event => this.setState({race: event.target.value})}
+                disabled={this.props.disabled}
+                value={this.props.race}
+                onChange={event => this.props.handleChange('race', event.target.value)}
                 label="Race"
                 fullWidth
                 margin="normal"
               />
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
-              <TextField
-                required
-                className={classes.textField}
-                id="medicines"
-                disabled={this.state.disabled}
-                value={this.state.medicines}
-                onChange={event => this.setState({medicines: event.target.value})}
-                label="Medicines"
-                margin="normal"
-                fullWidth
-              />
+                <Autocomplete
+                  suggestions={[]}
+                  selection={toAutocompleteData(this.props.medicines)}
+                  placeholder="Medicines"
+                  handleSelect={value => this.props.handleChange('medicines', fromAutocompleteData(value))}
+                />
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
                 <Autocomplete
-                  suggestions={patologicalAutocomplete}
-                  selection={this.state.patologicalPast}
+                  suggestions={pathologicalAutocomplete}
+                  selection={toAutocompleteData(this.props.pathologicalPast)}
                   placeholder="Pathological Past"
-                  handleSelect={(value) => this.setState({patologicalPast: value})}
+                  handleSelect={value => this.props.handleChange('pathologicalPast', fromAutocompleteData(value))}
                 />
-              {/* <TextField
-                required
-                className={classes.textField}
-                id="pathologicalPast"
-                disabled={this.state.disabled}
-                value={this.state.patologicalPast}
-                onChange={event => this.setState({patologicalPast: event.target.value})}
-                label="Pathological Past"
-                fullWidth
-                margin="normal"
-              /> */}
               </Grid>
               <Grid item  lg={5} md={5} sm={12} xs={12}>
                 <Autocomplete
                   suggestions={familiarAutocomplete}
-                  selection={this.state.familiarPast}
+                  selection={toAutocompleteData(this.props.familiarPast)}
                   placeholder="Familiar Past"
-                  handleSelect={(value) => this.setState({familiarPast: value})}
+                  handleSelect={value => this.props.handleChange('familiarPast', fromAutocompleteData(value))}
                 />
-              {/* <TextField
-                required
-                className={classes.textField}
-                id="familiarPast"
-                disabled={this.state.disabled}
-                value={this.state.familiarPast}
-                onChange={event => this.setState({familiarPast: event.target.value})}
-                label="Family Past"
-                fullWidth
-                margin="normal"
-              /> */}
               </Grid>
+             </Grid>
+             </form>
               <Grid item  lg={12} md={12} sm={12} xs={12} align={'right'}>
-                <Button variant="contained" color="primary" className={this.props.button}  onClick={this.saveHandler.bind(this)}>
+                <Button variant="contained" color="primary" className={this.props.button} onClick={this.props.save} >
                   Save
                 </Button>
               </Grid>
-             </Grid>
             </Paper>
           </Grid>
         </Grid>
@@ -267,4 +255,4 @@ class Demography extends Component
   }
 }
 
-export default withStyles(styles)(Demography);
+export default withStyles(styles)(PatientView);

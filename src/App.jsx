@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import {Route, Link} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Drawer, IconButton, MenuItem, Snackbar, Toolbar, Typography } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import { AppBar, IconButton, Snackbar, Toolbar, Typography } from '@material-ui/core';
 import {AccountCircleSharp} from '@material-ui/icons';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CloseIcon from '@material-ui/icons/Close';
 import RetinalEvaluation from "./evaluation/RetinalEvaluation"
 import UploadImage from "./UploadImage";
@@ -15,18 +13,22 @@ import Login from "./common/Login";
 import PatientList from "./patient/PatientList";
 import { withCookies } from "react-cookie";
 import { refreshToken } from "./token/TokenService";
+import Patient from "./patient/Patient";
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    minHeight: window.innerHeight - 80,
+    minHeight: window.innerHeight,
   },
   footer: {
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 14,
-    marginTop: 20,
+    fontSize: 11,
+    marginTop: -20,
+    marginBottom: -20,
     color: 'rgb(127, 127, 127)',
+    backgroundColor: '#EFEFEF',
+    flexGrow: 1,
   },
   flex: {
     flexGrow: 1,
@@ -69,6 +71,11 @@ class App extends Component {
                 username: username,
               });
           }
+        })
+        .catch(error => {
+          console.log(error);
+          cookies.remove('token', { path: '/' });
+          cookies.remove('username', { path: '/' });
         })
     }
   }
@@ -130,43 +137,11 @@ class App extends Component {
         <GlobalContext.Provider value={this.state}>
           <AppBar position="static">
             <Toolbar>
-              <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.handleDrawer} >
-                <MenuIcon />
-              </IconButton>
-              {this.state.token !== "" && // don't render menu if the user is not logged in
-              <Drawer open={this.state.drawerOpen} >
-                <div className={classes.drawerHeader}>
-                  <IconButton onClick={this.handleDrawer}>
-                    <ChevronLeftIcon />
-                  </IconButton>
-                </div>
-                <MenuItem onClick={this.handleDrawer}>
-                  <Link to="/" >
-                    Home
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={this.handleDrawer}>
-                  <Link to="/upload" >
-                    Upload Image
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={this.handleDrawer}>
-                  <Link to="/evaluation/1/1">
-                    Evaluation
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={this.handleDrawer}>
-                  <Link to="/record">
-                    Record
-                  </Link>
-                </MenuItem>
-              </Drawer>
-              }
               <Typography variant="title" color="inherit" className={classes.flex}>
                 Retipy
               </Typography>
               <div>
-                <IconButton 
+                <IconButton
                   onClick={() => {
                     if (this.state.token === "")
                     {
@@ -185,7 +160,6 @@ class App extends Component {
             </Toolbar>
           </AppBar>
         </GlobalContext.Provider>
-        <div>
           <Route
             exact
             path="/evaluation/:id/:selection"
@@ -222,13 +196,17 @@ class App extends Component {
             path="/record"
             render={props => <Record />}
           />
-        </div>
+          <Route
+            exact
+            path="/patient/:id"
+            render={ props =>
+              <Patient id={parseInt(props.match.params.id, 10)} token={this.state.token} toast={this.toast} />}
+          />
       </div>
-      <footer>
-        <div className={classes.footer}>
-          <p>Copyright © 2018 Alejandro Valdes - Alejandra Aguiar - Felipe Castaño</p>
-          <p>Public Repository Available: <a href="https://github.com/alevalv/retipy">https://github.com/alevalv/retipy</a></p>
-        </div>
+      <footer className={classes.footer}>
+          <p>retipy <a href="https://github.com/alevalv/retipy-react">v0.0.1</a>
+          <br/>Copyright © 2018 Alejandro Valdes - Alejandra Aguiar - Felipe Castaño
+          <br/>Licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a></p>
       </footer>
     </div>
 
