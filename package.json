@@ -1,6 +1,6 @@
 {
-  "name": "react-typescript",
-  "version": "0.1.0",
+  "name": "retipy-react",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.5.1",

@@ -11,6 +11,7 @@ import Routes from './configuration/Routes';
 import withRoot from './configuration/withRoot';
 import { RetipyContextProvider } from './context/RetipyContext';
 import Login from "./login/Login";
+import LoginError from "./login/LoginError";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -62,6 +63,12 @@ class App extends React.Component<IAppProps, IAppState> {
 
   public render() {
     const { classes } = this.props;
+
+    let app = <Routes />;
+    if (this.state.token === "") {
+      app = <LoginError />
+    }
+
     return (
       <RetipyContextProvider
         value={
@@ -113,7 +120,7 @@ class App extends React.Component<IAppProps, IAppState> {
             </Toolbar>
           </AppBar>
 
-          <Routes />
+          {app}
 
           <footer className={classes.footer}>
             <p>retipy <a href="https://github.com/alevalv/retipy-react">v0.0.1</a>
