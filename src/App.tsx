@@ -1,6 +1,7 @@
-import { createStyles, IconButton, Snackbar } from "@material-ui/core";
+import { AppBar, createStyles, IconButton, Snackbar, Toolbar, Typography } from "@material-ui/core";
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { AccountCircleSharp } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import * as React from 'react';
 import './App.css';
@@ -16,6 +17,7 @@ const styles = (theme: Theme) =>
     footer: {
       color: 'rgb(127, 127, 127)',
       flexGrow: 1,
+      fontFamily: 'Roboto Mono, monospace',
       fontSize: 11,
       fontWeight: 'bold',
       marginBottom: -20,
@@ -30,6 +32,7 @@ const styles = (theme: Theme) =>
   });
 
 interface IAppState {
+  isLoginDialogOpen: boolean,
   isToastOpen: boolean,
   toast: string,
   token: string,
@@ -45,6 +48,7 @@ class App extends React.Component<IAppProps, IAppState> {
     super(props);
 
     this.state = {
+      isLoginDialogOpen: false,
       isToastOpen: false,
       toast: "",
       token: "",
@@ -83,9 +87,29 @@ class App extends React.Component<IAppProps, IAppState> {
               </IconButton>
             }
           />
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="title" color="inherit" className={classes.flex}>
+                Retipy
+              </Typography>
+              <div>
+                <IconButton
+                  onClick={this.openLoginDialog}>
+                  <AccountCircleSharp color="inherit" />
+                </IconButton>
+              </div>
+            </Toolbar>
+          </AppBar>
 
           <Routes />
 
+
+          <footer className={classes.footer}>
+            <p>retipy <a href="https://github.com/alevalv/retipy-react">v0.0.1</a>
+              <br />Copyright © 2018 Alejandro Valdes - Alejandra Aguiar - Felipe Castaño
+          <br />Licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a></p>
+          <br/>
+          </footer>
         </div>
       </RetipyContextProvider>
     );
@@ -115,6 +139,12 @@ class App extends React.Component<IAppProps, IAppState> {
         isToastOpen: false,
         toast: "",
       });
+  }
+
+  private openLoginDialog = () => {
+    if (this.state.token === "") {
+      this.setState({ isLoginDialogOpen: true });
+    }
   }
 }
 

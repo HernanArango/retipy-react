@@ -7,6 +7,8 @@ import { Redirect } from "react-router";
 const styles = (theme: Theme) =>
     createStyles({
         button: {
+            alignContent: 'right',
+            float: 'right',
             margin: theme.spacing.unit,
             paddingLeft: theme.spacing.unit,
         },
@@ -32,6 +34,7 @@ const styles = (theme: Theme) =>
             marginRight: theme.spacing.unit,
         },
         title: {
+            flexGrow: 1,
             margin: theme.spacing.unit * 2,
         },
     });
@@ -70,15 +73,15 @@ const PatientList = withStyles(styles)(
                     <Grid container={true} spacing={16} className={classes.container} justify={'center'}>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                             <Grid container={true} spacing={16} justify={'space-around'}>
-                                <Grid item={true} lg={6} md={6} sm={6} xs={6}>
+                                <Grid item={true} lg={9} md={9} sm={6} xs={6}>
                                     <Typography variant="display1" className={classes.title} >Patient List</Typography>
                                 </Grid>
-                                <Grid item={true} lg={6} md={6} sm={6} xs={6}>
+                                <Grid item={true} lg={3} md={3} sm={6} xs={6}>
                                     {this.state.isRedirectEnabled && <Redirect to="/patient/0" />}
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        className={classes.title}
+                                        className={classes.button}
                                         onClick={this.createPatient}
                                     >
                                         New Patient
