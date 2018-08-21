@@ -123,6 +123,7 @@ class App extends React.Component<IAppProps, IAppState> {
           {app}
 
           <footer className={classes.footer}>
+          <br/>
             <p>retipy <a href="https://github.com/alevalv/retipy-react">v0.0.1</a>
               <br />Copyright © 2018 Alejandro Valdes - Alejandra Aguiar - Felipe Castaño
           <br />Licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a></p>

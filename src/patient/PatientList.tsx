@@ -3,6 +3,7 @@ import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import * as React from "react";
 import { Redirect } from "react-router";
+import { IAuthProps } from "../common/IAuthProps";
 import { Endpoints } from "../configuration/Endpoints";
 
 const styles = (theme: Theme) =>
@@ -48,9 +49,8 @@ interface IPatientListState {
     redirectTarget: number,
 }
 
-interface IPatientListProps extends WithStyles<typeof styles> {
-    token: string,
-    toast: (message: string) => void,
+interface IPatientListProps extends WithStyles<typeof styles>, IAuthProps {
+
 }
 
 const PatientList = withStyles(styles)(
