@@ -45,6 +45,7 @@ export interface IPatient {
 interface IPatientProps extends IAuthProps {
     id: number,
     disabled: boolean,
+    history: any,
 }
 
 class Patient extends React.Component<IPatientProps, IPatient> {
@@ -90,6 +91,7 @@ class Patient extends React.Component<IPatientProps, IPatient> {
                 race={this.state.race}
                 sex={this.state.sex}
                 handleChange={this.handleChange}
+                save={this.savePatient}
             />
         );
     }
@@ -125,6 +127,46 @@ class Patient extends React.Component<IPatientProps, IPatient> {
                 .catch(error => this.props.toast(error.message));
         }
     }
+
+    private savePatient = () => {
+        let message = "";
+        if (this.state.id === 0)
+        {
+            message = "New patient created";
+        }
+        else
+        {
+            message = "Patient updated";
+        }
+        fetch(
+            process.env.REACT_APP_RETIPY_BACKEND_URL + Endpoints.Patient,
+            {
+                body: JSON.stringify(this.state),
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Authorization': this.props.token,
+                    'content-type': 'application/json',
+                },
+                method: 'POST',
+                mode: 'cors',
+                referrer: 'no-referrer',
+            }
+        )
+        .then(response =>
+            {
+                if(!response.ok)
+                {
+                    throw Error("There was an error saving the current patient");
+                }
+                return response.json();
+            })
+        .then(restPatient => {
+            this.props.toast(message);
+            this.updatePatient(restPatient);
+            this.props.history.push(`/patient/${restPatient.id}`);
+        })
+        .catch(error => this.props.toast(error.message));
+    };
 
     private updatePatient = (restPatient: any) => {
         const sex: string = restPatient.sex;

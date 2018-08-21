@@ -1,10 +1,11 @@
 import { AppBar, createStyles, IconButton, Snackbar, Toolbar, Typography } from "@material-ui/core";
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { AccountCircleSharp } from '@material-ui/icons';
+import { AccountCircleSharp, Home } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import * as Cookies from 'es-cookie';
 import * as React from 'react';
+import { Redirect } from "react-router";
 import './App.css';
 import { Endpoints } from "./configuration/Endpoints";
 import Routes from './configuration/Routes';
@@ -37,7 +38,9 @@ const styles = (theme: Theme) =>
 
 interface IAppState {
   isLoginDialogOpen: boolean,
+  isRedirecting: boolean,
   isToastOpen: boolean,
+  redirect: string,
   toast: string,
   token: string,
   username: string,
@@ -53,12 +56,21 @@ class App extends React.Component<IAppProps, IAppState> {
 
     this.state = {
       isLoginDialogOpen: false,
+      isRedirecting: false,
       isToastOpen: false,
+      redirect: "",
       toast: "",
       'token': "",
       'username': "",
+
     }
     this.refreshToken();
+  }
+
+  public componentDidUpdate() {
+    if (this.state.isRedirecting) {
+      this.setState({redirect: "", isRedirecting: false});
+    }
   }
 
   public render() {
@@ -80,6 +92,7 @@ class App extends React.Component<IAppProps, IAppState> {
         }
       >
         <div className={classes.root}>
+          {this.state.isRedirecting && <Redirect to={this.state.redirect} />}
           <Login open={this.state.isLoginDialogOpen} closeDialog={this.closeDialog} setLoginData={this.setLoginData} />
           <Snackbar
             anchorOrigin={{
@@ -110,6 +123,10 @@ class App extends React.Component<IAppProps, IAppState> {
               <Typography variant="title" color="inherit" className={classes.flex}>
                 Retipy
               </Typography>
+              <IconButton
+                onClick={this.handleHomeButton}>
+                <Home color="inherit" />
+              </IconButton>
               <div>
                 <IconButton
                   onClick={this.openLoginDialog}>
@@ -185,6 +202,17 @@ class App extends React.Component<IAppProps, IAppState> {
       isLoginDialogOpen: false,
       'token': token,
       'username': username,
+    })
+  }
+
+  private handleHomeButton = (event: React.MouseEvent<HTMLElement>) => {
+    this.redirect("/");
+  }
+
+  private redirect = (location: string) => {
+    this.setState({
+      isRedirecting: true,
+      redirect: location,
     })
   }
 

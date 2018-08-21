@@ -6,7 +6,7 @@ import PatientList from "../patient/PatientList";
 
 const renderPatientList =
     (token: string,
-    toast:(message: string)=> any) =>
+    toast: (message: string) => any) =>
         (props: any) =>
             <PatientList token={token} toast={toast} />;
 

@@ -72,6 +72,7 @@ interface IPatientViewState {
 interface IPatientViewProps extends WithStyles<typeof styles>, IPatient {
     disabled: boolean,
     handleChange: (property: string, value: any) => void,
+    save: () => void,
 }
 
 const PatientView = withStyles(styles)(
@@ -255,7 +256,7 @@ const PatientView = withStyles(styles)(
                                             variant="contained"
                                             color="primary"
                                             className={classes.button}
-                                            // onClick={this.props.save}
+                                            onClick={this.props.save}
                                         >
                                             <SaveIcon className={classes.leftIcon} />
                                             Save
