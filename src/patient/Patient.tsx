@@ -2,6 +2,7 @@ import * as React from "react";
 import { Education } from "../common/Education";
 import { IAuthProps } from "../common/IAuthProps";
 import { Sex } from "../common/Sex";
+import { Endpoints } from "../configuration/Endpoints";
 import PatientView from "./PatientView";
 
 
@@ -54,7 +55,7 @@ class Patient extends React.Component<IPatientProps, IPatient> {
             birthDate: "",
             education: Education.None,
             familiarPast: [],
-            id: 0,
+            id: props.id,
             identity: 0,
             medicines: [],
             name: "",
@@ -65,10 +66,14 @@ class Patient extends React.Component<IPatientProps, IPatient> {
             race: "",
             sex: Sex.Female,
         }
+
+        if (props.id !== 0) {
+            this.fetchPatient();
+        }
     }
 
     public render() {
-        return(
+        return (
             <PatientView
                 birthDate={this.state.birthDate}
                 disabled={this.props.disabled}
@@ -90,10 +95,57 @@ class Patient extends React.Component<IPatientProps, IPatient> {
     }
 
     private handleChange = <T extends string>(key: keyof IPatient, value: T) => {
-       this.setState({
-        ...this.state,
-        [key]: value
-      })};
+        this.setState({
+            ...this.state,
+            [key]: value
+        })
+    };
+
+    private fetchPatient = () => {
+        if (this.props.id !== 0 && this.props.token !== "") {
+            fetch(
+                process.env.REACT_APP_RETIPY_BACKEND_URL + Endpoints.Patient + `/${this.props.id}`,
+                {
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Authorization': this.props.token,
+                        'content-type': 'application/json',
+                    },
+                    method: 'GET',
+                    mode: 'cors',
+                    referrer: 'no-referrer',
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error("Error when retrieving patient");
+                    }
+                    return response.json();
+                })
+                .then(restPatient => this.updatePatient(restPatient))
+                .catch(error => this.props.toast(error.message));
+        }
+    }
+
+    private updatePatient = (restPatient: any) => {
+        const sex: string = restPatient.sex;
+        const education: string = restPatient.education;
+        this.setState({
+            birthDate: restPatient.birthDate.substring(0, 10),
+            education: Education[education],
+            familiarPast: restPatient.familiarPast,
+            id: restPatient.id,
+            identity: restPatient.identity,
+            medicines: restPatient.medicines,
+            name: restPatient.name,
+            opticalEvaluations: restPatient.opticalEvaluations,
+            origin: restPatient.origin,
+            pathologicalPast: restPatient.pathologicalPast,
+            procedence: restPatient.procedence,
+            race: restPatient.race,
+            sex: Sex[sex],
+        });
+    }
+
 }
 
 export default Patient;
