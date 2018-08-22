@@ -1,7 +1,11 @@
 import { Button, createStyles, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import LaunchIcon from '@material-ui/icons/Launch';
 import SaveIcon from '@material-ui/icons/Save';
 import * as React from "react";
+import { Redirect } from "react-router";
 import Autocomplete from "../common/Autocomplete";
 import { Education } from "../common/Education";
 import { Sex } from "../common/Sex";
@@ -10,6 +14,11 @@ import { IPatient } from "./Patient";
 const styles = (theme: Theme) =>
     createStyles({
         button: {
+            margin: theme.spacing.unit,
+        },
+        buttonSmall: {
+            align: 'right',
+            justify: 'center',
             margin: theme.spacing.unit,
         },
         container: {
@@ -25,6 +34,9 @@ const styles = (theme: Theme) =>
             padding: theme.spacing.unit,
             textAlign: 'center',
         },
+        rightIcon: {
+            marginLeft: theme.spacing.unit,
+        },
         root: {
             display: 'flex',
             flexWrap: 'wrap',
@@ -36,6 +48,7 @@ const styles = (theme: Theme) =>
         },
         title: {
             margin: theme.spacing.unit * 2,
+            verticalAlign: 'middle',
         },
     });
 
@@ -67,6 +80,8 @@ const familiarAutocomplete = [
 
 interface IPatientViewState {
     isLoaded: boolean,
+    isRedirect: boolean,
+    redirectTo: string,
 }
 
 interface IPatientViewProps extends WithStyles<typeof styles>, IPatient {
@@ -77,6 +92,16 @@ interface IPatientViewProps extends WithStyles<typeof styles>, IPatient {
 
 const PatientView = withStyles(styles)(
     class extends React.Component<IPatientViewProps, IPatientViewState> {
+        constructor(props: IPatientViewProps) {
+            super(props);
+
+            this.state = {
+                isLoaded: false,
+                isRedirect: false,
+                redirectTo: "",
+            }
+        }
+
         public render() {
             const { classes } = this.props;
             return (
@@ -247,7 +272,7 @@ const PatientView = withStyles(styles)(
                                             variant="contained"
                                             color="default"
                                             className={classes.button}
-                                            // onClick={this.props.handleChange()}
+                                            onClick={this.handleOpenOpticalEvaluation(0)}
                                         >
                                             <AddIcon className={classes.leftIcon} />
                                             New Optical Evaluation
@@ -265,20 +290,95 @@ const PatientView = withStyles(styles)(
                                 </form>
                             </Paper>
                         </Grid>
+                        <Grid item={true} lg={8} md={10} sm={12} xs={12}>
+                            <Typography variant="display1" className={classes.title}>
+                                Optical Evaluations
+                            </Typography>
+                        </Grid>
+                        <Grid item={true} lg={8} md={10} sm={12} xs={12}>
+                            {this.state.isRedirect && <Redirect to={this.state.redirectTo} />}
+                            {this.renderOpticalEvaluations()}
+                        </Grid>
                     </Grid>
-
-
                 </div>
             )
+        }
+
+        private renderOpticalEvaluations = () => {
+            const opticalEvaluations: any[] = [];
+            this.props.opticalEvaluations.forEach(opticalEvaluation => {
+                opticalEvaluations.push(
+                    this.opticalEvaluationButton(
+                        opticalEvaluation.id, opticalEvaluation.creationDate, Math.random()))
+            })
+            return opticalEvaluations;
+        }
+
+        private opticalEvaluationButton = (id: number, date: string, key: number) => {
+            const { classes } = this.props;
+            return (
+                <Grid key={key} item={true} lg={6} md={6} sm={12} xs={12}>
+                    <Paper className={classes.paper}>
+                        <Grid container={true} >
+                            <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                <Typography
+                                    variant="title" gutterBottom={true} className={classes.title}
+                                >
+                                    Date: {date.substring(0, 10)}
+                                </Typography>
+                            </Grid>
+                            <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    size="small"
+                                    className={classes.button}
+                                    onClick={this.handleOpenOpticalEvaluation(id)}
+                                >
+                                    Open
+                                    <LaunchIcon className={classes.rightIcon} />
+                                </Button>
+                                <Button
+                                    className={classes.buttonSmall}
+                                    variant="contained"
+                                    color="secondary"
+                                    size="small"
+                                // onClick={(e) => this.props.handleCopyOpticalEvaluation(this.props.id)}
+                                >
+                                    Copy
+                                    <FileCopyIcon className={classes.rightIcon} />
+                            </Button>
+                                <Button
+                                    className={classes.buttonSmall}
+                                    variant="contained"
+                                    color="secondary"
+                                    size="small"
+                                    disabled={this.props.disabled}
+                                // onClick={(e) => this.props.handleDeleteOpticalEvaluation(this.props.id)}
+                                >
+                                    Delete
+                                    <DeleteIcon className={classes.rightIcon} />
+                            </Button>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+            );
+        }
+
+        private handleChange = (target: string) => (value: any) => {
+            this.props.handleChange(target, value)
         }
 
         private handleEventChange = (target: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
             this.props.handleChange(target, event.target.value);
         }
 
-        private handleChange = (target: string) => (value: any) =>
-        {
-            this.props.handleChange(target, value)
+        private handleOpenOpticalEvaluation = (target: number) => (event: any) => {
+            this.setState({
+                isRedirect: true,
+                redirectTo: `/patient/${this.props.id}/opticalEvaluation/${target}`
+            })
         }
     }
 );

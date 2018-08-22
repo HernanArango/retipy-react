@@ -5,7 +5,6 @@ import { Sex } from "../common/Sex";
 import { Endpoints } from "../configuration/Endpoints";
 import PatientView from "./PatientView";
 
-
 export interface IOpticalEvaluation {
     biomicroscopy: Map<string, string>,
     creationDate: string,

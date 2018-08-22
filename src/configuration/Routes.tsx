@@ -1,20 +1,31 @@
 import * as React from "react";
 import { Route } from "react-router-dom";
 import { RetipyContextConsumer } from "../context/RetipyContext";
+import OpticalEvaluation from "../patient/OpticalEvaluation";
 import Patient from "../patient/Patient";
 import PatientList from "../patient/PatientList";
 
 const renderPatientList =
     (token: string,
-    toast: (message: string) => any) =>
+        toast: (message: string) => any) =>
         (props: any) =>
             <PatientList token={token} toast={toast} />;
 
 const renderPatient =
     (token: string,
-    toast:(message: string)=> any) =>
+        toast: (message: string) => any) =>
         (props: any) =>
             <Patient
+                token={token}
+                toast={toast}
+                id={parseInt(props.match.params.id, 10)}
+                disabled={false}
+                {...props} />;
+const renderOpticalEvaluation =
+    (token: string,
+        toast: (message: string) => any) =>
+        (props: any) =>
+            <OpticalEvaluation
                 token={token}
                 toast={toast}
                 id={parseInt(props.match.params.id, 10)}
@@ -35,7 +46,12 @@ const Routes: React.SFC = (props) => {
                         exact={true}
                         path="/patient/:id"
                         render={renderPatient(retipyContext.token, retipyContext.toast)}
-                        />
+                    />
+                    <Route
+                        exact={true}
+                        path="/patient/:id/opticalevaluation/:id"
+                        render={renderOpticalEvaluation(retipyContext.token, retipyContext.toast)}
+                    />
                 </div>
             )}
         </RetipyContextConsumer>
