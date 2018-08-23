@@ -147,7 +147,7 @@ const PatientList = withStyles(styles)(
 
             if (token !== "") {
                 fetch(
-                    process.env.REACT_APP_RETIPY_BACKEND_URL + Endpoints.Patient + "/list",
+                    Endpoints.Server + Endpoints.Patient + "/list",
                     {
                         headers: {
                             'Access-Control-Allow-Origin': '*',

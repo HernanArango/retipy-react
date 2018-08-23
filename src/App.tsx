@@ -160,7 +160,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
     else {
       fetch(
-        process.env.REACT_APP_RETIPY_BACKEND_URL + Endpoints.Token,
+        Endpoints.Server + Endpoints.Token,
         {
           body: token,
           headers: {

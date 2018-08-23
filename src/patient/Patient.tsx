@@ -105,7 +105,7 @@ class Patient extends React.Component<IPatientProps, IPatient> {
     private fetchPatient = () => {
         if (this.props.id !== 0 && this.props.token !== "") {
             fetch(
-                process.env.REACT_APP_RETIPY_BACKEND_URL + Endpoints.Patient + `/${this.props.id}`,
+                Endpoints.Server + Endpoints.Patient + `/${this.props.id}`,
                 {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
@@ -138,7 +138,7 @@ class Patient extends React.Component<IPatientProps, IPatient> {
             message = "Patient updated";
         }
         fetch(
-            process.env.REACT_APP_RETIPY_BACKEND_URL + Endpoints.Patient,
+            Endpoints.Server + Endpoints.Patient,
             {
                 body: JSON.stringify(this.state),
                 headers: {

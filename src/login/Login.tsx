@@ -97,7 +97,7 @@ const Login = withStyles(styles)(
             this.setState({ hasError: false });
             const body: any ={username: this.state.username, password: this.state.password}
             fetch(
-                process.env.REACT_APP_RETIPY_BACKEND_URL + Endpoints.Login,
+                Endpoints.Server + Endpoints.Login,
                 {
                     body: JSON.stringify(body),
                     headers: {
