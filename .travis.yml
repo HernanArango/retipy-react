@@ -14,6 +14,6 @@ deploy:
   local-dir: build
   project-name: retipy-react
   on:
-    branch: master
+    branch: typescript
   target-branch: gh-pages
 fqdn: retipy.avaldes.co
