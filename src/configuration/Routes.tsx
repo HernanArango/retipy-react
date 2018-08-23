@@ -29,6 +29,7 @@ const renderOpticalEvaluation =
                 token={token}
                 toast={toast}
                 id={parseInt(props.match.params.id, 10)}
+                patientId={parseInt(props.match.params.patientId, 10)}
                 disabled={false}
                 {...props} />;
 
@@ -49,7 +50,7 @@ const Routes: React.SFC = (props) => {
                     />
                     <Route
                         exact={true}
-                        path="/patient/:id/opticalevaluation/:id"
+                        path="/patient/:patientId/opticalevaluation/:id"
                         render={renderOpticalEvaluation(retipyContext.token, retipyContext.toast)}
                     />
                 </div>

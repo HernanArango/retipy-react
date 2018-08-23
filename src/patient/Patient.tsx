@@ -31,6 +31,7 @@ export interface IPatient {
     familiarPast: string[],
     id: number,
     identity: number,
+    isRedirect: boolean,
     medicines: string[],
     name: string,
     opticalEvaluations: IOpticalEvaluation[],
@@ -38,6 +39,7 @@ export interface IPatient {
     pathologicalPast: string[],
     procedence: string,
     race: string,
+    redirect: string,
     sex: Sex,
 }
 
@@ -57,6 +59,7 @@ class Patient extends React.Component<IPatientProps, IPatient> {
             familiarPast: [],
             id: props.id,
             identity: 0,
+            isRedirect: false,
             medicines: [],
             name: "",
             opticalEvaluations: [],
@@ -64,6 +67,7 @@ class Patient extends React.Component<IPatientProps, IPatient> {
             pathologicalPast: [],
             procedence: "",
             race: "",
+            redirect: "",
             sex: Sex.Female,
         }
 
@@ -90,7 +94,10 @@ class Patient extends React.Component<IPatientProps, IPatient> {
                 race={this.state.race}
                 sex={this.state.sex}
                 handleChange={this.handleChange}
-                save={this.savePatient}
+                handleSave={this.savePatient}
+                handleOpenOpticalEvaluation={this.handleOpenOpticalEvaluation}
+                isRedirect={this.state.isRedirect}
+                redirect={this.state.redirect}
             />
         );
     }
@@ -101,6 +108,20 @@ class Patient extends React.Component<IPatientProps, IPatient> {
             [key]: value
         })
     };
+
+    private handleOpenOpticalEvaluation = (target: number) => (event: any) => {
+        if (this.props.id === 0)
+        {
+            this.props.toast("Please save the Patient before creating an Optical Evaluation");
+        }
+        else
+        {
+            this.setState({
+                isRedirect: true,
+                redirect: `/patient/${this.props.id}/opticalEvaluation/${target}`,
+            });
+        }
+    }
 
     private fetchPatient = () => {
         if (this.props.id !== 0 && this.props.token !== "") {

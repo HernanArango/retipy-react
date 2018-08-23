@@ -1,6 +1,9 @@
 import { Button, createStyles, Grid, MenuItem, Paper, TextField, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import SaveIcon from '@material-ui/icons/Save';
 import * as React from "react";
+import { Redirect } from "react-router";
 import { IOpticalEvaluation } from "./Patient";
 
 const styles = (theme: Theme) => createStyles({
@@ -17,6 +20,9 @@ const styles = (theme: Theme) => createStyles({
         align: "left",
         flexGrow: 1,
         justify: "center",
+    },
+    leftIcon: {
+        marginRight: theme.spacing.unit,
     },
     paper: {
         color: theme.palette.text.secondary,
@@ -64,12 +70,16 @@ const pupilAssessmentMenuItem = [
 ].map(suggestion => (<MenuItem value={suggestion.label}>{`${suggestion.label}+`}</MenuItem>));
 
 interface IOpticalEvaluationViewState {
+    isRedirect: boolean,
     newComponentName: string,
+    redirect: string,
 }
 
 interface IOpticalEvaluationViewProps extends WithStyles<typeof styles>, IOpticalEvaluation {
     disabled: boolean,
     handleChange: (target: string, value: any) => void,
+    handleSave: () => void,
+    patientId: number,
 }
 
 const OpticalEvaluationView = withStyles(styles)(
@@ -77,7 +87,9 @@ const OpticalEvaluationView = withStyles(styles)(
         constructor(props: IOpticalEvaluationViewProps) {
             super(props);
             this.state = {
+                isRedirect: false,
                 newComponentName: "",
+                redirect: "",
             }
         }
 
@@ -85,220 +97,243 @@ const OpticalEvaluationView = withStyles(styles)(
             const { classes } = this.props;
             return (
                 <div className={classes.root}>
-                <Grid container={true} spacing={16} justify={'center'} className={classes.container}>
-                    <Grid item={true} lg={10} md={10} sm={12} xs={12}>
-                        <Typography
-                            className={classes.heading}
-                            variant="display1"
-                            gutterBottom={true}
-                        >
-                            Examination - {this.props.creationDate.substring(0, 10)}
-                        </Typography>
-                    </Grid>
-                    <Paper className={classes.paper} >
-                    <Grid container={true} spacing={16} justify={'space-around'} >
-                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
+                    <Grid container={true} spacing={16} justify={'center'} className={classes.container} >
+                        <Grid item={true} lg={8} md={10} sm={12} xs={12}>
+                            <Typography
+                                className={classes.heading}
+                                variant="display1"
+                                gutterBottom={true}
+                            >
+                                Examination - {this.props.creationDate.substring(0, 10)}
+                                Version {this.props.version}
+                            </Typography>
+                            <Paper className={classes.paper} >
+                                <Grid container={true} spacing={16} justify={'space-around'} >
+                                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
 
-                        &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;
                         </Grid>
-                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                        <Typography variant="display1">Visual Acuity</Typography>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            className={classes.textField}
-                            id="OD"
-                            disabled={this.props.disabled}
-                            placeholder="Right Eye"
-                            label="Right Eye"
-                            value={this.props.visualRightEye}
-                            onChange={this.handleEventChange('visualRightEye')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {visualAcuityMenuItems}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            className={classes.textField}
-                            id="ODPH"
-                            disabled={this.props.disabled}
-                            placeholder="PH - Right Eye"
-                            label="PH - Right Eye"
-                            value={this.props.visualRightPh}
-                            onChange={this.handleEventChange('visualRightPh')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {visualAcuityMenuItems}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            className={classes.textField}
-                            id="OI"
-                            disabled={this.props.disabled}
-                            placeholder="Left Eye"
-                            label="Left Eye"
-                            value={this.props.visualLeftEye}
-                            onChange={this.handleEventChange('visualLeftEye')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {visualAcuityMenuItems}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            className={classes.textField}
-                            id="OIPH"
-                            disabled={this.props.disabled}
-                            placeholder="PH - Left Eye"
-                            label="PH - Left Eye"
-                            value={this.props.visualLeftPh}
-                            onChange={this.handleEventChange('visualLeftPh')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {visualAcuityMenuItems}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                        <Typography variant="display1">Pupils</Typography>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            id="PDRD"
-                            disabled={this.props.disabled}
-                            placeholder="RD - Right Eye"
-                            label="RD - Right Eye"
-                            value={this.props.pupilRightEyeRD}
-                            onChange={this.handleEventChange('pupilRightEyeRD')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {pupilAssessmentMenuItem}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            id="PDRC"
-                            disabled={this.props.disabled}
-                            placeholder="RC - Right Eye"
-                            label="RC - Right Eye"
-                            value={this.props.pupilRightEyeRC}
-                            onChange={this.handleEventChange('pupilRightEyeRC')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {pupilAssessmentMenuItem}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            id="PDDPA"
-                            disabled={this.props.disabled}
-                            placeholder="DPA - Right Eye"
-                            label="DPA - Right Eye"
-                            value={this.props.pupilRightEyeDPA}
-                            onChange={this.handleEventChange('pupilRightEyeDPA')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {pupilAssessmentMenuItem}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            id="LERD"
-                            disabled={this.props.disabled}
-                            placeholder="RD - Right Eye"
-                            label="RD - Right Eye"
-                            value={this.props.pupilLeftEyeRD}
-                            onChange={this.handleEventChange('pupilLeftEyeRD')}
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {pupilAssessmentMenuItem}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            required={true}
-                            id="LERC"
-                            disabled={this.props.disabled}
-                            placeholder="1+"
-                            helperText="RC - Left Eye"
-                            value={this.props.pupilLeftEyeRC}
-                            onChange={this.handleEventChange('pupilLeftEyeRC')}
-                            label="RC - Left Eye"
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {pupilAssessmentMenuItem}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            required={true}
-                            id="PIDPA"
-                            disabled={this.props.disabled}
-                            placeholder="1+"
-                            helperText="DPA - Left Eye"
-                            value={this.props.pupilLeftEyeDPA}
-                            onChange={this.handleEventChange('pupilLeftEyeDPA')}
-                            label="DPA - Left Eye"
-                            fullWidth={true}
-                            select={true}
-                        >
-                            {pupilAssessmentMenuItem}
-                        </TextField>
-                    </Grid>
-                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                        <Typography variant="display1">Biomicroscopy</Typography>
-                        <Grid container={true} spacing={16} justify={'space-around'}>
-                            <Grid item={true} lg={10} md={10} sm={10} xs={8}>
-                                <TextField
-                                    id="new-component-name"
-                                    disabled={this.props.disabled}
-                                    value={this.state.newComponentName}
-                                    onChange={this.handleChangeNewBiomicroscopyField}
-                                    helperText="Add new Biomicroscopy field"
-                                    label="Field Name"
-                                    fullWidth={true}
-                                />
-                            </Grid>
-                            <Grid item={true} lg={2} md={2} sm={2} xs={4}>
-                                <Button
-                                    variant="outlined"
-                                    color="secondary"
-                                    disabled={this.props.disabled}
-                                    className={classes.button}
-                                    onClick={this.handleAddField}
-                                >
-                                    <AddIcon />
-                                    Add
+                                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
+                                        <Typography variant="display1">Visual Acuity</Typography>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            className={classes.textField}
+                                            id="OD"
+                                            disabled={this.props.disabled}
+                                            placeholder="Right Eye"
+                                            label="Right Eye"
+                                            value={this.props.visualRightEye}
+                                            onChange={this.handleEventChange('visualRightEye')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {visualAcuityMenuItems}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            className={classes.textField}
+                                            id="ODPH"
+                                            disabled={this.props.disabled}
+                                            placeholder="PH - Right Eye"
+                                            label="PH - Right Eye"
+                                            value={this.props.visualRightPh}
+                                            onChange={this.handleEventChange('visualRightPh')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {visualAcuityMenuItems}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            className={classes.textField}
+                                            id="OI"
+                                            disabled={this.props.disabled}
+                                            placeholder="Left Eye"
+                                            label="Left Eye"
+                                            value={this.props.visualLeftEye}
+                                            onChange={this.handleEventChange('visualLeftEye')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {visualAcuityMenuItems}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            className={classes.textField}
+                                            id="OIPH"
+                                            disabled={this.props.disabled}
+                                            placeholder="PH - Left Eye"
+                                            label="PH - Left Eye"
+                                            value={this.props.visualLeftPh}
+                                            onChange={this.handleEventChange('visualLeftPh')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {visualAcuityMenuItems}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
+                                        <Typography variant="display1">Pupils</Typography>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            id="PDRD"
+                                            disabled={this.props.disabled}
+                                            placeholder="RD - Right Eye"
+                                            label="RD - Right Eye"
+                                            value={this.props.pupilRightEyeRD}
+                                            onChange={this.handleEventChange('pupilRightEyeRD')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {pupilAssessmentMenuItem}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            id="PDRC"
+                                            disabled={this.props.disabled}
+                                            placeholder="RC - Right Eye"
+                                            label="RC - Right Eye"
+                                            value={this.props.pupilRightEyeRC}
+                                            onChange={this.handleEventChange('pupilRightEyeRC')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {pupilAssessmentMenuItem}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            id="PDDPA"
+                                            disabled={this.props.disabled}
+                                            placeholder="DPA - Right Eye"
+                                            label="DPA - Right Eye"
+                                            value={this.props.pupilRightEyeDPA}
+                                            onChange={this.handleEventChange('pupilRightEyeDPA')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {pupilAssessmentMenuItem}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            id="LERD"
+                                            disabled={this.props.disabled}
+                                            placeholder="RD - Right Eye"
+                                            label="RD - Right Eye"
+                                            value={this.props.pupilLeftEyeRD}
+                                            onChange={this.handleEventChange('pupilLeftEyeRD')}
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {pupilAssessmentMenuItem}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            required={true}
+                                            id="LERC"
+                                            disabled={this.props.disabled}
+                                            placeholder="1+"
+                                            helperText="RC - Left Eye"
+                                            value={this.props.pupilLeftEyeRC}
+                                            onChange={this.handleEventChange('pupilLeftEyeRC')}
+                                            label="RC - Left Eye"
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {pupilAssessmentMenuItem}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            required={true}
+                                            id="PIDPA"
+                                            disabled={this.props.disabled}
+                                            placeholder="1+"
+                                            helperText="DPA - Left Eye"
+                                            value={this.props.pupilLeftEyeDPA}
+                                            onChange={this.handleEventChange('pupilLeftEyeDPA')}
+                                            label="DPA - Left Eye"
+                                            fullWidth={true}
+                                            select={true}
+                                        >
+                                            {pupilAssessmentMenuItem}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
+                                        <Typography variant="display1">Biomicroscopy</Typography>
+                                        <Grid container={true} spacing={16} justify={'space-around'}>
+                                            <Grid item={true} lg={10} md={10} sm={10} xs={8}>
+                                                <TextField
+                                                    id="new-component-name"
+                                                    disabled={this.props.disabled}
+                                                    value={this.state.newComponentName}
+                                                    onChange={this.handleChangeNewBiomicroscopyField}
+                                                    helperText="Add new Biomicroscopy field"
+                                                    label="Field Name"
+                                                    fullWidth={true}
+                                                />
+                                            </Grid>
+                                            <Grid item={true} lg={2} md={2} sm={2} xs={4}>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="secondary"
+                                                    disabled={this.props.disabled}
+                                                    className={classes.button}
+                                                    onClick={this.handleAddField}
+                                                >
+                                                    <AddIcon />
+                                                    Add
                                         </Button>
-                            </Grid>
-                            {this.loadFields()}
+                                            </Grid>
+                                            {this.loadFields()}
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                                        <TextField
+                                            required={true}
+                                            id="PIO"
+                                            disabled={this.props.disabled}
+                                            helperText="Intraocular Pressure"
+                                            value={this.props.intraocularPressure}
+                                            onChange={this.handleEventChange('intraocularPressure')}
+                                            label="Intraocular Pressure"
+                                            fullWidth={true}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                    <br /><br /><br />
+                                    <Grid item={true} lg={11} md={11} sm={12} xs={12}>
+                                        {this.state.isRedirect && <Redirect to={this.state.redirect} /> }
+                                        <Button
+                                            variant="contained"
+                                            color="default"
+                                            className={classes.button}
+                                            onClick={this.handlePatientButton}
+                                        >
+                                            <ArrowBackIcon className={classes.leftIcon} />
+                                            Return to Patient
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.button}
+                                            onClick={this.props.handleSave}
+                                        >
+                                            <SaveIcon className={classes.leftIcon} />
+                                            Save
+                                        </Button>
+                                    </Grid>
+                            </Paper>
                         </Grid>
                     </Grid>
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
-                        <TextField
-                            required={true}
-                            id="PIO"
-                            disabled={this.props.disabled}
-                            helperText="Intraocular Pressure"
-                            value={this.props.intraocularPressure}
-                            onChange={this.handleEventChange('intraocularPressure')}
-                            label="Intraocular Pressure"
-                            fullWidth={true}
-                        />
-                    </Grid>
-                    </Grid>
-                    </Paper>
-                </Grid>
                 </div>
             );
         }
@@ -336,14 +371,23 @@ const OpticalEvaluationView = withStyles(styles)(
             this.props.handleChange(target, event.target.value);
         }
 
+        private handlePatientButton = (event: any) => {
+            this.setState({
+                isRedirect: true,
+                redirect: `/patient/${this.props.patientId}`,
+            })
+        }
+
         private loadFields = () => {
             const resultComponents = [];
             const arbitraryComponents = this.props.biomicroscopy;
             let id: number = 0;
             for (const key of Object.keys(arbitraryComponents)) {
                 resultComponents.push(
-                    <Grid item={true} lg={5} md={5} sm={12} xs={12}>
+                    <Grid
+                    key={Math.random()} item={true} lg={5} md={5} sm={12} xs={12}>
                         <TextField
+                            key={Math.random()}
                             id={key}
                             disabled={this.props.disabled}
                             label={key}

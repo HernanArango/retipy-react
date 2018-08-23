@@ -1,12 +1,30 @@
 import * as React from "react";
 import { IAuthProps } from "../common/IAuthProps";
+import { Endpoints } from "../configuration/Endpoints";
 import OpticalEvaluationView from "./OpticalEvaluationView";
 import { IOpticalEvaluation } from "./Patient";
+
+const cornea = 'Cornea';
+const iris = 'Iris';
+const cristalino = 'Cristalino';
+const camaraAnterior = 'Camara Anterior'
+
+function getDefaultBiomicroscopy() {
+    const biomicroscopy = new Map<string, string>();
+    biomicroscopy[cornea] = "";
+    biomicroscopy[iris] = "";
+    biomicroscopy[cristalino] = "";
+    biomicroscopy[camaraAnterior] = "";
+
+    return biomicroscopy;
+}
 
 interface IOpticalEvaluationProps extends IAuthProps {
     disabled: boolean,
     handleChange: (property: string, value: any) => void,
     patientId: number,
+    id: number,
+    history: any,
 }
 
 interface IOpticalEvaluationState extends IOpticalEvaluation {
@@ -18,10 +36,10 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
         super(props);
 
         this.state = {
-            biomicroscopy: new Map(),
+            biomicroscopy: getDefaultBiomicroscopy(),
             creationDate: "",
             evaluationId: -1,
-            id: 0,
+            id: this.props.id,
             intraocularPressure: "",
             newBiomicroscopyFieldName: "",
             pupilLeftEyeDPA: 0,
@@ -37,6 +55,10 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
             visualRightEye: "",
             visualRightPh: "",
         }
+
+        if (props.id !== 0 && props.patientId !== 0) {
+            this.fetchOpticalEvaluation();
+        }
     }
 
     public render() {
@@ -49,6 +71,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                 evaluationId={this.state.evaluationId}
                 id={this.state.id}
                 intraocularPressure={this.state.intraocularPressure}
+                patientId={this.props.patientId}
                 pupilLeftEyeDPA={this.state.pupilLeftEyeDPA}
                 pupilLeftEyeRC={this.state.pupilLeftEyeRC}
                 pupilLeftEyeRD={this.state.pupilLeftEyeRD}
@@ -62,8 +85,48 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                 visualRightEye={this.state.visualRightEye}
                 visualRightPh={this.state.visualRightPh}
                 handleChange={this.handleChange}
+                handleSave={this.saveOpticalEvaluation}
             />
         );
+    }
+
+    private fetchOpticalEvaluation = () => {
+        if (this.props.id !== 0 && this.props.token !== "") {
+            fetch(
+                Endpoints.Server + Endpoints.Patient + `/${this.props.patientId}`,
+                {
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Authorization': this.props.token,
+                        'content-type': 'application/json',
+                    },
+                    method: 'GET',
+                    mode: 'cors',
+                    referrer: 'no-referrer',
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error("Error when retrieving patient");
+                    }
+                    return response.json();
+                })
+                .then(restPatient => {
+                    let restOpticalEvaluation = null;
+                    for (const opticalEvaluation of restPatient.opticalEvaluations) {
+                        if (opticalEvaluation.id === this.props.id) {
+                            restOpticalEvaluation = opticalEvaluation;
+                            break;
+                        }
+                    }
+                    if (restOpticalEvaluation === null) {
+                        throw Error(`Optical evaluation with id ${this.props.id} not found`)
+                    }
+                    else {
+                        this.updateOpticalEvaluation(restOpticalEvaluation);
+                    }
+                })
+                .catch(error => this.props.toast(error.message));
+        }
     }
 
     private handleChange = <T extends string>(key: keyof IOpticalEvaluation, value: T) => {
@@ -72,6 +135,68 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
             [key]: value
         })
     };
+
+    private saveOpticalEvaluation = () => {
+        let message = "";
+        if (this.state.id === 0)
+        {
+            message = "New Optical Evaluation created";
+        }
+        else
+        {
+            message = "Optical Evaluation updated";
+        }
+        fetch(
+            Endpoints.Server + Endpoints.Patient + `/${this.props.patientId}` + Endpoints.OpticalEvaluation,
+            {
+                body: JSON.stringify(this.state),
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Authorization': this.props.token,
+                    'content-type': 'application/json',
+                },
+                method: 'POST',
+                mode: 'cors',
+                referrer: 'no-referrer',
+            }
+        )
+        .then(response =>
+            {
+                if(!response.ok)
+                {
+                    throw Error("There was an error saving the current patient");
+                }
+                return response.json();
+            })
+        .then(restOpticalEvaluation => {
+            this.props.toast(message);
+            this.updateOpticalEvaluation(restOpticalEvaluation);
+            this.props.history.push(`/patient/${this.props.patientId}/opticalevaluation/${restOpticalEvaluation.id}`);
+        })
+        .catch(error => this.props.toast(error.message));
+    };
+
+    private updateOpticalEvaluation = (restOpticalEvaluation: IOpticalEvaluation) => {
+        this.setState({
+            biomicroscopy: restOpticalEvaluation.biomicroscopy,
+            creationDate: restOpticalEvaluation.creationDate,
+            evaluationId: restOpticalEvaluation.evaluationId,
+            id: restOpticalEvaluation.id,
+            intraocularPressure: restOpticalEvaluation.intraocularPressure,
+            pupilLeftEyeDPA: restOpticalEvaluation.pupilLeftEyeDPA,
+            pupilLeftEyeRC: restOpticalEvaluation.pupilLeftEyeRC,
+            pupilLeftEyeRD: restOpticalEvaluation.pupilLeftEyeRD,
+            pupilRightEyeDPA: restOpticalEvaluation.pupilRightEyeDPA,
+            pupilRightEyeRC: restOpticalEvaluation.pupilRightEyeRC,
+            pupilRightEyeRD: restOpticalEvaluation.pupilRightEyeRD,
+            updateDate: restOpticalEvaluation.updateDate,
+            version: restOpticalEvaluation.version,
+            visualLeftEye: restOpticalEvaluation.visualLeftEye,
+            visualLeftPh: restOpticalEvaluation.visualLeftPh,
+            visualRightEye: restOpticalEvaluation.visualRightEye,
+            visualRightPh: restOpticalEvaluation.visualRightPh,
+        });
+    }
 }
 
 export default OpticalEvaluation;

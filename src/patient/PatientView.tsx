@@ -80,14 +80,15 @@ const familiarAutocomplete = [
 
 interface IPatientViewState {
     isLoaded: boolean,
-    isRedirect: boolean,
-    redirectTo: string,
 }
 
 interface IPatientViewProps extends WithStyles<typeof styles>, IPatient {
     disabled: boolean,
+    isRedirect: boolean,
     handleChange: (property: string, value: any) => void,
-    save: () => void,
+    handleOpenOpticalEvaluation: (target: number) => (event: any) => void,
+    handleSave: () => void,
+    redirect: string,
 }
 
 const PatientView = withStyles(styles)(
@@ -97,8 +98,6 @@ const PatientView = withStyles(styles)(
 
             this.state = {
                 isLoaded: false,
-                isRedirect: false,
-                redirectTo: "",
             }
         }
 
@@ -272,7 +271,7 @@ const PatientView = withStyles(styles)(
                                             variant="contained"
                                             color="default"
                                             className={classes.button}
-                                            onClick={this.handleOpenOpticalEvaluation(0)}
+                                            onClick={this.props.handleOpenOpticalEvaluation(0)}
                                         >
                                             <AddIcon className={classes.leftIcon} />
                                             New Optical Evaluation
@@ -281,7 +280,7 @@ const PatientView = withStyles(styles)(
                                             variant="contained"
                                             color="primary"
                                             className={classes.button}
-                                            onClick={this.props.save}
+                                            onClick={this.props.handleSave}
                                         >
                                             <SaveIcon className={classes.leftIcon} />
                                             Save
@@ -296,7 +295,7 @@ const PatientView = withStyles(styles)(
                             </Typography>
                         </Grid>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
-                            {this.state.isRedirect && <Redirect to={this.state.redirectTo} />}
+                            {this.props.isRedirect && <Redirect to={this.props.redirect} />}
                             {this.renderOpticalEvaluations()}
                         </Grid>
                     </Grid>
@@ -333,7 +332,7 @@ const PatientView = withStyles(styles)(
                                     color="secondary"
                                     size="small"
                                     className={classes.button}
-                                    onClick={this.handleOpenOpticalEvaluation(id)}
+                                    onClick={this.props.handleOpenOpticalEvaluation(id)}
                                 >
                                     Open
                                     <LaunchIcon className={classes.rightIcon} />
@@ -343,6 +342,7 @@ const PatientView = withStyles(styles)(
                                     variant="contained"
                                     color="secondary"
                                     size="small"
+                                    disabled={true}
                                 // onClick={(e) => this.props.handleCopyOpticalEvaluation(this.props.id)}
                                 >
                                     Copy
@@ -353,7 +353,7 @@ const PatientView = withStyles(styles)(
                                     variant="contained"
                                     color="secondary"
                                     size="small"
-                                    disabled={this.props.disabled}
+                                    disabled={true}
                                 // onClick={(e) => this.props.handleDeleteOpticalEvaluation(this.props.id)}
                                 >
                                     Delete
@@ -372,13 +372,6 @@ const PatientView = withStyles(styles)(
 
         private handleEventChange = (target: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
             this.props.handleChange(target, event.target.value);
-        }
-
-        private handleOpenOpticalEvaluation = (target: number) => (event: any) => {
-            this.setState({
-                isRedirect: true,
-                redirectTo: `/patient/${this.props.id}/opticalEvaluation/${target}`
-            })
         }
     }
 );
