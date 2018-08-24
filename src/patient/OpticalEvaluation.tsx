@@ -38,7 +38,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
         this.state = {
             biomicroscopy: getDefaultBiomicroscopy(),
             creationDate: "",
-            evaluationId: -1,
+            diagnostics: [],
             id: this.props.id,
             intraocularPressure: "",
             newBiomicroscopyFieldName: "",
@@ -68,7 +68,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                 biomicroscopy={this.state.biomicroscopy}
                 creationDate={this.state.creationDate}
                 disabled={this.props.disabled}
-                evaluationId={this.state.evaluationId}
+                diagnostics={this.state.diagnostics}
                 id={this.state.id}
                 intraocularPressure={this.state.intraocularPressure}
                 patientId={this.props.patientId}
@@ -180,7 +180,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
         this.setState({
             biomicroscopy: restOpticalEvaluation.biomicroscopy,
             creationDate: restOpticalEvaluation.creationDate,
-            evaluationId: restOpticalEvaluation.evaluationId,
+            diagnostics: restOpticalEvaluation.diagnostics,
             id: restOpticalEvaluation.id,
             intraocularPressure: restOpticalEvaluation.intraocularPressure,
             pupilLeftEyeDPA: restOpticalEvaluation.pupilLeftEyeDPA,

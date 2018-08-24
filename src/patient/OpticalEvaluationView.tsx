@@ -385,9 +385,9 @@ const OpticalEvaluationView = withStyles(styles)(
             for (const key of Object.keys(arbitraryComponents)) {
                 resultComponents.push(
                     <Grid
-                    key={Math.random()} item={true} lg={5} md={5} sm={12} xs={12}>
+                    key={id} item={true} lg={5} md={5} sm={12} xs={12}>
                         <TextField
-                            key={Math.random()}
+                            key={id}
                             id={key}
                             disabled={this.props.disabled}
                             label={key}

@@ -4,4 +4,5 @@ export enum Endpoints {
     Login = "/retipy/user/login",
     Token = "/retipy/user/token",
     OpticalEvaluation = '/opticalevaluation',
+    Diagnostic = "/retipy/diagnostic",
 }
