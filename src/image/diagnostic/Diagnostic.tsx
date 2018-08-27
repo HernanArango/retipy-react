@@ -1,7 +1,6 @@
 import * as React from "react";
 import { IAuthProps } from "../../common/IAuthProps";
-import { Endpoints } from "../../configuration/Endpoints";
-import { getDiagnostic } from "./DiagnosticController";
+import { getDiagnostic, saveDiagnostic } from "./DiagnosticController";
 import { DiagnosticStatus } from "./DiagnosticStatus";
 import DiagnosticView from "./DiagnosticView";
 
@@ -16,7 +15,7 @@ export interface IDisplayRoi extends IRoi {
     id: number,
 }
 
-interface IDiagnostic {
+export interface IDiagnostic {
     creationDate?: string,
     diagnostic: string,
     id: number,
@@ -51,6 +50,8 @@ interface IDiagnosticState extends IDisplayDiagnostic {
 
 interface IDiagnosticProps extends IAuthProps {
     id: number,
+    opticalEvaluationId: number,
+    patientId: number,
 }
 
 class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
@@ -208,31 +209,8 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 rois: this.state.rois as IRoi[],
                 status: DiagnosticStatus.UPDATED,
             }
+            saveDiagnostic(diagnosticData, this.props.token, this.props.toast);
 
-            fetch(
-                Endpoints.Server + Endpoints.Diagnostic,
-                {
-                    body: JSON.stringify(diagnosticData),
-                    headers:
-                    {
-                        'Access-Control-Allow-Origin': '*',
-                        'Authorization': this.props.token,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'POST',
-                    mode: 'cors',
-                    referrer: 'no-referrer',
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw Error("There was an error saving the diagnostic");
-                    }
-                    return response.json();
-                })
-                .then(restDiagnostic => {
-                    this.props.toast("Diagnostic Updated Successfully");
-                })
-                .catch(error => this.props.toast(error));
         }
     }
 

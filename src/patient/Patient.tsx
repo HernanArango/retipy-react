@@ -8,7 +8,7 @@ import PatientView from "./PatientView";
 export interface IOpticalEvaluation {
     biomicroscopy: Map<string, string>,
     creationDate: string,
-    diagnostics: any[],
+    diagnostics: number[],
     id: number,
     intraocularPressure: string,
     pupilLeftEyeDPA: number,

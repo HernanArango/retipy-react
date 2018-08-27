@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IAuthProps } from "../common/IAuthProps";
-import { Endpoints } from "../configuration/Endpoints";
+import { Endpoints, RetipyObjects } from "../configuration/Endpoints";
 import OpticalEvaluationView from "./OpticalEvaluationView";
 import { IOpticalEvaluation } from "./Patient";
 
@@ -93,7 +93,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
     private fetchOpticalEvaluation = () => {
         if (this.props.id !== 0 && this.props.token !== "") {
             fetch(
-                Endpoints.Server + Endpoints.Patient + `/${this.props.patientId}`,
+                Endpoints.Server + Endpoints.OpticalEvaluation + `/${this.props.id}`,
                 {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
@@ -110,21 +110,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                     }
                     return response.json();
                 })
-                .then(restPatient => {
-                    let restOpticalEvaluation = null;
-                    for (const opticalEvaluation of restPatient.opticalEvaluations) {
-                        if (opticalEvaluation.id === this.props.id) {
-                            restOpticalEvaluation = opticalEvaluation;
-                            break;
-                        }
-                    }
-                    if (restOpticalEvaluation === null) {
-                        throw Error(`Optical evaluation with id ${this.props.id} not found`)
-                    }
-                    else {
-                        this.updateOpticalEvaluation(restOpticalEvaluation);
-                    }
-                })
+                .then(restOpticalEvaluation => this.updateOpticalEvaluation(restOpticalEvaluation))
                 .catch(error => this.props.toast(error.message));
         }
     }
@@ -147,7 +133,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
             message = "Optical Evaluation updated";
         }
         fetch(
-            Endpoints.Server + Endpoints.Patient + `/${this.props.patientId}` + Endpoints.OpticalEvaluation,
+            Endpoints.Server + Endpoints.Patient + `/${this.props.patientId}` + RetipyObjects.OpticalEvaluation,
             {
                 body: JSON.stringify(this.state),
                 headers: {

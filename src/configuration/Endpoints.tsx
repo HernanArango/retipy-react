@@ -3,6 +3,11 @@ export enum Endpoints {
     Patient = "/retipy/patient",
     Login = "/retipy/user/login",
     Token = "/retipy/user/token",
-    OpticalEvaluation = '/opticalevaluation',
+    OpticalEvaluation = "/retipy/opticalevaluation",
     Diagnostic = "/retipy/diagnostic",
+}
+
+export enum RetipyObjects {
+    OpticalEvaluation = "/opticalevaluation",
+    Diagnostic = "/diagnostic",
 }
