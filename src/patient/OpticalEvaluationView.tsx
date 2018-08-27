@@ -60,14 +60,14 @@ const visualAcuityMenuItems = [
     { label: '20/25' },
     { label: '20/20' },
     { label: '20/15' },
-].map(suggestion => (<MenuItem value={suggestion.label}>{suggestion.label}</MenuItem>));
+].map(suggestion => (<MenuItem key={Math.random()} value={suggestion.label}>{suggestion.label}</MenuItem>));
 
 const pupilAssessmentMenuItem = [
     { label: 1 },
     { label: 2 },
     { label: 3 },
     { label: 4 },
-].map(suggestion => (<MenuItem value={suggestion.label}>{`${suggestion.label}+`}</MenuItem>));
+].map(suggestion => (<MenuItem key={suggestion.label} value={suggestion.label}>{`${suggestion.label}+`}</MenuItem>));
 
 interface IOpticalEvaluationViewState {
     isRedirect: boolean,
