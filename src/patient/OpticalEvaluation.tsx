@@ -86,6 +86,8 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                 visualRightPh={this.state.visualRightPh}
                 handleChange={this.handleChange}
                 handleSave={this.saveOpticalEvaluation}
+                toast={this.props.toast}
+                token={this.props.token}
             />
         );
     }
@@ -106,7 +108,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                 })
                 .then(response => {
                     if (!response.ok) {
-                        throw Error("Error when retrieving patient");
+                        throw Error("Error when retrieving OpticalEvaluation");
                     }
                     return response.json();
                 })

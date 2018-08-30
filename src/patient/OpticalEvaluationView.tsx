@@ -1,13 +1,22 @@
 import { Button, createStyles, Grid, MenuItem, Paper, TextField, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import DeleteIcon from '@material-ui/icons/Delete';
+import LaunchIcon from '@material-ui/icons/Launch';
 import SaveIcon from '@material-ui/icons/Save';
 import * as React from "react";
 import { Redirect } from "react-router";
+import { IAuthProps } from "../common/IAuthProps";
+import DiagnosticUpload from "../image/diagnostic/DiagnosticUpload";
 import { IOpticalEvaluation } from "./Patient";
 
 const styles = (theme: Theme) => createStyles({
     button: {
+        justify: 'center',
+        margin: theme.spacing.unit,
+    },
+    buttonSmall: {
+        align: 'right',
         justify: 'center',
         margin: theme.spacing.unit,
     },
@@ -29,6 +38,9 @@ const styles = (theme: Theme) => createStyles({
         padding: theme.spacing.unit,
         textAlign: 'center',
     },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
+    },
     root: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -38,6 +50,10 @@ const styles = (theme: Theme) => createStyles({
     textField: {
         flexGrow: 1,
         marginRight: theme.spacing.unit,
+    },
+    title: {
+        margin: theme.spacing.unit * 2,
+        verticalAlign: 'middle',
     },
 });
 
@@ -75,7 +91,7 @@ interface IOpticalEvaluationViewState {
     redirect: string,
 }
 
-interface IOpticalEvaluationViewProps extends WithStyles<typeof styles>, IOpticalEvaluation {
+interface IOpticalEvaluationViewProps extends WithStyles<typeof styles>, IOpticalEvaluation, IAuthProps {
     disabled: boolean,
     handleChange: (target: string, value: any) => void,
     handleSave: () => void,
@@ -309,29 +325,61 @@ const OpticalEvaluationView = withStyles(styles)(
                                         />
                                     </Grid>
                                 </Grid>
-                                    <br /><br /><br />
-                                    <Grid item={true} lg={11} md={11} sm={12} xs={12}>
-                                        {this.state.isRedirect && <Redirect to={this.state.redirect} /> }
-                                        <Button
-                                            variant="contained"
-                                            color="default"
-                                            className={classes.button}
-                                            onClick={this.handlePatientButton}
-                                        >
-                                            <ArrowBackIcon className={classes.leftIcon} />
-                                            Return to Patient
+                                <br /><br /><br />
+                                <Grid item={true} lg={11} md={11} sm={12} xs={12}>
+                                    {this.state.isRedirect && <Redirect to={this.state.redirect} />}
+                                    <Button
+                                        variant="contained"
+                                        color="default"
+                                        className={classes.button}
+                                        onClick={this.handlePatientButton}
+                                    >
+                                        <ArrowBackIcon className={classes.leftIcon} />
+                                        Return to Patient
                                         </Button>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            className={classes.button}
-                                            onClick={this.props.handleSave}
-                                        >
-                                            <SaveIcon className={classes.leftIcon} />
-                                            Save
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        onClick={this.props.handleSave}
+                                    >
+                                        <SaveIcon className={classes.leftIcon} />
+                                        Save
                                         </Button>
-                                    </Grid>
+                                </Grid>
                             </Paper>
+                        </Grid>
+                        <Grid item={true} lg={8} md={10} sm={12} xs={12}>
+                            <Typography variant="display1" className={classes.title}>
+                                Diagnostic Images
+                            </Typography>
+                        </Grid>
+                        <Grid item={true} lg={8} md={10} sm={12} xs={12}>
+                            <Grid container={true} >
+                            {this.props.id !== 0 &&
+                            <Grid item={true} lg={12} md={12} sm={12} xs={12}>
+                                <Paper className={classes.paper}>
+                                    <Grid container={true} >
+                                        <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                            <Typography
+                                                variant="title" gutterBottom={true} className={classes.title}
+                                            >
+                                                Upload new Diagnostic Image
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                            <DiagnosticUpload
+                                                toast={this.props.toast}
+                                                token={this.props.token}
+                                                opticalEvaluationId={this.props.id}
+                                                patientId={this.props.patientId}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            </Grid>}
+                            {this.renderDiagnostics()}
+                            </Grid>
                         </Grid>
                     </Grid>
                 </div>
@@ -371,6 +419,13 @@ const OpticalEvaluationView = withStyles(styles)(
             this.props.handleChange(target, event.target.value);
         }
 
+        private handleOpenDiagnostic = (id: number) => (event: React.MouseEvent<HTMLElement>) => {
+            this.setState({
+                isRedirect: true,
+                redirect: `/patient/${this.props.patientId}/opticalevaluation/${this.props.id}/diagnostic/${id}`,
+            })
+        }
+
         private handlePatientButton = (event: any) => {
             this.setState({
                 isRedirect: true,
@@ -385,7 +440,7 @@ const OpticalEvaluationView = withStyles(styles)(
             for (const key of Object.keys(arbitraryComponents)) {
                 resultComponents.push(
                     <Grid
-                    key={id} item={true} lg={5} md={5} sm={12} xs={12}>
+                        key={id} item={true} lg={5} md={5} sm={12} xs={12}>
                         <TextField
                             key={id}
                             id={key}
@@ -401,6 +456,56 @@ const OpticalEvaluationView = withStyles(styles)(
             }
             return (resultComponents);
         };
+
+        private renderDiagnostics = () => {
+            const diagnostics: JSX.Element[] = []
+            for (const diagnosticId of this.props.diagnostics) {
+                diagnostics.push(this.renderDiagnostic(diagnosticId, Math.random()))
+            }
+            return diagnostics;
+        }
+
+        private renderDiagnostic = (id: number, key: number) => {
+            const { classes } = this.props;
+            return (
+                <Grid key={key} item={true} lg={6} md={6} sm={12} xs={12}>
+                    <Paper className={classes.paper}>
+                        <Grid container={true} >
+                            <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                <Typography
+                                    variant="title" gutterBottom={true} className={classes.title}
+                                >
+                                    Diagnostic # {id}
+                                </Typography>
+                            </Grid>
+                            <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    size="small"
+                                    className={classes.button}
+                                    onClick={this.handleOpenDiagnostic(id)}
+                                >
+                                    Open
+                                    <LaunchIcon className={classes.rightIcon} />
+                                </Button>
+                                <Button
+                                    className={classes.buttonSmall}
+                                    variant="contained"
+                                    color="secondary"
+                                    size="small"
+                                    disabled={true}
+                                // onClick={(e) => this.props.handleDeleteOpticalEvaluation(this.props.id)}
+                                >
+                                    Delete
+                                    <DeleteIcon className={classes.rightIcon} />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+            );
+        }
     }
 );
 

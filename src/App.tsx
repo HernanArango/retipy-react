@@ -1,4 +1,4 @@
-import { AppBar, createStyles, IconButton, Snackbar, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, createStyles, IconButton, Snackbar, SvgIcon, Toolbar, Typography } from "@material-ui/core";
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { AccountCircleSharp, Home } from '@material-ui/icons';
@@ -28,6 +28,10 @@ const styles = (theme: Theme) =>
       marginBottom: -20,
       marginTop: -20,
       textAlign: 'center',
+    },
+    retipyIcon: {
+      marginRight: 20,
+      marginTop: 0,
     },
     root: {
       backgroundColor: '#EFEFEF',
@@ -120,8 +124,12 @@ class App extends React.Component<IAppProps, IAppState> {
           />
           <AppBar position="static">
             <Toolbar>
+              <SvgIcon className={classes.retipyIcon} >
+                <path d="M11.744099 1.93198q.381 0 .85725.0635.508.0317.98425.127.47625.0635.85725.15875.41275.0635.60325.127l-.508 2.57175q-.34925-.127-1.17475-.28575-.79375-.1905-2.06375-.1905-.8255 0-1.6509998.1905-.79375.15875-1.04775.22225v13.87475h-2.95275V2.97973q1.04775-.381 2.6035-.6985 1.55575-.34925 3.4924998-.34925z" fill="#2196f3" />
+                <path d="M11.397 1.5703746q.381 0 .85725.0635.508.03175.98425.127.47625.0635.85725.15875.41275.0635.60325.127l-.508 2.57175q-.34925-.127-1.17475-.28575-.79375-.1905-2.06375-.1905-.8255 0-1.6510001.1905-.79375.15875-1.04775.22225V18.429625h-2.95275V2.6181246q1.04775-.381 2.6035-.6985 1.55575-.34925 3.4925001-.34925z" />
+              </SvgIcon>
               <Typography variant="title" color="inherit" className={classes.flex}>
-                Retipy
+                retipy
               </Typography>
               <IconButton
                 onClick={this.handleHomeButton}>

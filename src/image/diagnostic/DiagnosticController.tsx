@@ -1,4 +1,4 @@
-import { Endpoints } from "../../configuration/Endpoints";
+import { Endpoints, RetipyObjects } from "../../configuration/Endpoints";
 import { IDiagnostic } from "./Diagnostic";
 
 export function getDiagnostic(diagnosticId: number, token: string): Promise<any> {
@@ -22,9 +22,16 @@ export function getDiagnostic(diagnosticId: number, token: string): Promise<any>
         });
 }
 
-export function saveDiagnostic(diagnosticData: IDiagnostic, token: string, toast: (message: string) => void): void {
+export function saveDiagnostic(
+    diagnosticData: IDiagnostic,
+    patientId: number,
+    opticalEvaluationId: number,
+    token: string,
+    toast: (message: string) => void): void {
     fetch(
-        Endpoints.Server + Endpoints.Diagnostic,
+        Endpoints.Server + Endpoints.Patient + `/${patientId}`
+            + RetipyObjects.OpticalEvaluation + `/${opticalEvaluationId}`
+            + RetipyObjects.Diagnostic,
         {
             body: JSON.stringify(diagnosticData),
             headers:

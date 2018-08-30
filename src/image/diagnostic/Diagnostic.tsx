@@ -209,7 +209,12 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 rois: this.state.rois as IRoi[],
                 status: DiagnosticStatus.UPDATED,
             }
-            saveDiagnostic(diagnosticData, this.props.token, this.props.toast);
+            saveDiagnostic(
+                diagnosticData,
+                this.props.patientId,
+                this.props.opticalEvaluationId,
+                this.props.token,
+                this.props.toast);
 
         }
     }
@@ -254,16 +259,16 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
         for (let i = 0; i < dataRoiList.length; i++) {
             const currentRoi = dataRoiList[i];
             const pointsFixed: number[] = [];
-            for (let pIndex = 0; pIndex < currentRoi.roi_x.length; pIndex++) {
-                pointsFixed.push(currentRoi.roi_x[pIndex] * ratio);
-                pointsFixed.push(currentRoi.roi_y[pIndex] * ratio);
+            for (let pIndex = 0; pIndex < currentRoi.x.length; pIndex++) {
+                pointsFixed.push(currentRoi.x[pIndex] * ratio);
+                pointsFixed.push(currentRoi.y[pIndex] * ratio);
             }
             const roi: IDisplayRoi = {
                 displayP: pointsFixed,
                 id: i,
                 notes: currentRoi.notes,
-                x: currentRoi.roi_x,
-                y: currentRoi.roi_y,
+                x: currentRoi.x,
+                y: currentRoi.y,
             }
             roiList.push(roi);
         }

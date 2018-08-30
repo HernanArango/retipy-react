@@ -267,6 +267,7 @@ const PatientView = withStyles(styles)(
                                     </Grid>
                                     <br /><br /><br />
                                     <Grid item={true} lg={11} md={11} sm={12} xs={12}>
+                                        {this.props.id !== 0 &&
                                         <Button
                                             variant="contained"
                                             color="default"
@@ -276,6 +277,7 @@ const PatientView = withStyles(styles)(
                                             <AddIcon className={classes.leftIcon} />
                                             New Optical Evaluation
                                         </Button>
+                                        }
                                         <Button
                                             variant="contained"
                                             color="primary"
