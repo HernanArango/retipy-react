@@ -1,3 +1,4 @@
+import { Paper } from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import NoSsr from '@material-ui/core/NoSsr';
@@ -23,12 +24,18 @@ const styles = theme => ({
   },
   input: {
     display: 'flex',
-    margin: theme.spacing.unit,
     padding: 0,
   },
   noOptionsMessage: {
     fontSize: 14,
     padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+  },
+  paper: {
+    left: 0,
+    marginTop: theme.spacing.unit,
+    position: 'absolute',
+    right: 0,
+    zIndex: 1,
   },
   placeholder: {
     fontSize: 14,
@@ -65,14 +72,13 @@ function inputComponent({ inputRef, ...props }) {
 function Control(props) {
   return (
     <TextField
-      multiline
       fullWidth
       InputProps={{
         inputComponent,
         inputProps: {
           children: props.children,
           className: props.selectProps.classes.input,
-          ref: props.innerRef,
+          inputRef: props.innerRef,
           ...props.innerProps,
         },
       }}
@@ -137,8 +143,18 @@ function MultiValue(props) {
   );
 }
 
+
+function Menu(props) {
+  return (
+    <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+      {props.children}
+    </Paper>
+  );
+}
+
 const components = {
   Control,
+  Menu,
   MultiValue,
   NoOptionsMessage,
   Option,
@@ -146,10 +162,6 @@ const components = {
   SingleValue,
   ValueContainer,
 };
-
-const toMultiAutocompleteData = (values) => {
-  return values.map(value => ({ value: value, label: value }));
-}
 
 const fromMultiAutocompleteData = (values) => {
   return values.map(value => value.value);
@@ -196,7 +208,7 @@ class Autocomplete extends React.Component {
             classes={classes}
             options={this.props.suggestions}
             components={components}
-            value={toMultiAutocompleteData(this.props.selection)}
+            value={this.props.toMultiAutocompleteData(this.props.selection)}
             onChange={(value) => this.props.onChange(fromMultiAutocompleteData(value))}
             placeholder={this.props.placeholder}
             isMulti
@@ -209,6 +221,11 @@ class Autocomplete extends React.Component {
 
 Autocomplete.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Autocomplete);
+Autocomplete.defaultProps = {
+  toMultiAutocompleteData: (values) => values.map(value => ({ value: value, label: value })),
+}
+
+export default withStyles(styles, {withTheme: true})(Autocomplete);

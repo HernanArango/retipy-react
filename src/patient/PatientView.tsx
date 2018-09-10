@@ -1,4 +1,4 @@
-import { Button, createStyles, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
+import { Button, Checkbox, Chip, createStyles, FormControl, Grid, Input, InputLabel, ListItemText, MenuItem, Paper, Select, TextField, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -8,6 +8,7 @@ import * as React from "react";
 import { Redirect } from "react-router";
 import Autocomplete from "../common/Autocomplete";
 import { Education } from "../common/Education";
+import { IPerson } from "../common/IPerson";
 import { Sex } from "../common/Sex";
 import { IPatient } from "./Patient";
 
@@ -20,6 +21,9 @@ const styles = (theme: Theme) =>
             align: 'right',
             justify: 'center',
             margin: theme.spacing.unit,
+        },
+        chip: {
+          margin: theme.spacing.unit / 4,
         },
         container: {
             display: 'flex',
@@ -79,10 +83,13 @@ const familiarAutocomplete = [
 }));
 
 interface IPatientViewState {
+    doctorSuggestions: any[],
     isLoaded: boolean,
+    selectedDoctors: number[],
 }
 
 interface IPatientViewProps extends WithStyles<typeof styles>, IPatient {
+    doctors: Map<number, IPerson>,
     disabled: boolean,
     isRedirect: boolean,
     handleChange: (property: string, value: any) => void,
@@ -97,8 +104,12 @@ const PatientView = withStyles(styles)(
             super(props);
 
             this.state = {
+                doctorSuggestions: [],
                 isLoaded: false,
+                selectedDoctors: [],
             }
+
+            this.renderDoctorsSelection = this.renderDoctorsSelection.bind(this);
         }
 
         public render() {
@@ -107,8 +118,9 @@ const PatientView = withStyles(styles)(
                 <div className={classes.root}>
                     <Grid container={true} spacing={16} className={classes.container} justify={'center'}>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
-                            <Typography variant="display1" className={classes.title}>Demographic
-                                Data</Typography>
+                            <Typography variant="display1" className={classes.title}>
+                                Patient: Demographic Data
+                            </Typography>
                             <Paper className={classes.paper}>
                                 <form>
                                     <Grid container={true} spacing={16} justify={'space-around'}>
@@ -124,6 +136,21 @@ const PatientView = withStyles(styles)(
                                                 fullWidth={true}
                                                 margin="normal"
                                             />
+                                        </Grid>
+                                        <Grid item={true} lg={11} md={11} sm={12} xs={12}>
+                                            <FormControl fullWidth={true}>
+                                                <InputLabel>Doctor(s) in charge</InputLabel>
+                                                <Select
+                                                    fullWidth={true}
+                                                    input={<Input id="select-doctor"/>}
+                                                    multiple={true}
+                                                    onChange={this.handleSelectDoctor}
+                                                    renderValue={this.renderDoctorsSelection}
+                                                    value={this.state.selectedDoctors}
+                                                >
+                                                {this.renderDoctorsOptions()}
+                                                </Select>
+                                            </FormControl>
                                         </Grid>
                                         <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                             <TextField
@@ -368,12 +395,39 @@ const PatientView = withStyles(styles)(
             );
         }
 
+        private renderDoctorsOptions(): React.ReactNode {
+            const menuItems: any = [];
+            this.props.doctors.forEach((doctor, id) => (
+                menuItems.push(<MenuItem
+                    key={id}
+                    value={id}
+                >
+                <Checkbox checked={this.state.selectedDoctors.indexOf(id) > -1 } />
+                <ListItemText primary={doctor.name} />
+                </MenuItem>)
+            ))
+            return menuItems;
+        }
+
+        private renderDoctorsSelection(value: string | number | boolean | Array<(string | number | boolean)> | undefined) : React.ReactNode {
+            if (value !== undefined && value instanceof Array) {
+                return value.map((currentDoctor:number) => (<Chip key={currentDoctor} label={currentDoctor} className={this.props.classes.chip} />))
+            }
+            else {
+                return []
+            }
+        }
+
         private handleChange = (target: string) => (value: any) => {
             this.props.handleChange(target, value)
         }
 
         private handleEventChange = (target: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
             this.props.handleChange(target, event.target.value);
+        }
+
+        private handleSelectDoctor = (event: any) => {
+            this.setState({selectedDoctors: event.target.value})
         }
     }
 );

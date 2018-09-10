@@ -5,9 +5,12 @@ export enum Endpoints {
     Token = "/retipy/user/token",
     OpticalEvaluation = "/retipy/opticalevaluation",
     Diagnostic = "/retipy/diagnostic",
+    Staff = "/retipy/staff",
 }
 
 export enum RetipyObjects {
     OpticalEvaluation = "/opticalevaluation",
     Diagnostic = "/diagnostic",
+    Doctor = "/doctor",
+    Resident = "/resident",
 }

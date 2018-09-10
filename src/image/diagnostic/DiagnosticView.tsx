@@ -102,11 +102,11 @@ const DiagnosticView = withStyles(styles)(
                                 </Paper>
                             </Grid>
                         </Grid>
-                        <Grid item={true} xs={6}>
+                        <Grid item={true} lg={6} md={12} sm={12} xs={12}>
                             <Paper className={classes.paper}>
                                 <Typography variant="display1">New Region of Interest</Typography>
                                 <Grid container={true}>
-                                    <Grid item={true} xs={2}>
+                                    <Grid item={true} lg={2} xs={3}>
                                         <FormControlLabel
                                             control={
                                                 <Switch
@@ -117,7 +117,7 @@ const DiagnosticView = withStyles(styles)(
                                             label="Add new"
                                         />
                                     </Grid>
-                                    <Grid item={true} xs={4}>
+                                    <Grid item={true} lg={4} xs={7} >
                                         <Button
                                             onClick={this.props.handleRoiUndoLastPoint}
                                             disabled={!this.props.isAddingRoi}
@@ -126,11 +126,12 @@ const DiagnosticView = withStyles(styles)(
                                             Undo Last Point
                                 </Button>
                                     </Grid>
-                                    <Grid item={true} xs={1}>
+                                    <Grid item={true} lg={1} xs={2}>
                                         <TextField
                                             value={this.props.newRoiPoints.length / 2}
                                             label="Points"
                                             disabled={true}
+                                            fullWidth={true}
                                         />
                                     </Grid>
                                 </Grid>
@@ -165,7 +166,7 @@ const DiagnosticView = withStyles(styles)(
                             </Button>
                             </Paper>
                         </Grid>
-                        <Grid item={true} xs={6}>
+                        <Grid item={true} lg={6} md={12} sm={12} xs={12}>
                             <Paper className={classes.paper}>
                                 <Typography variant="display1">Diagnostic Information</Typography>
                                 <Grid container={true}>

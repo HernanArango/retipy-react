@@ -4,6 +4,7 @@ import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import * as React from "react";
 import { Redirect } from "react-router";
 import { IAuthProps } from "../common/IAuthProps";
+import { IPerson } from "../common/IPerson";
 import { Endpoints } from "../configuration/Endpoints";
 
 const styles = (theme: Theme) =>
@@ -45,7 +46,7 @@ interface IPatientListState {
     disabled: boolean,
     inputValue: string,
     isRedirectEnabled: boolean,
-    list: any[],
+    patientList: IPerson[],
     redirectTarget: number,
 }
 
@@ -61,7 +62,7 @@ const PatientList = withStyles(styles)(
                 disabled: false,
                 inputValue: "",
                 isRedirectEnabled: false,
-                list: [],
+                patientList: [],
                 redirectTarget: -1,
             }
         }
@@ -112,7 +113,10 @@ const PatientList = withStyles(styles)(
                                         />
                                     </Grid>
                                     <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                                        <List component="nav" style={{ overflow: 'auto', maxHeight: 370, minHeight: 370 }} >
+                                        <List
+                                            component="nav"
+                                            style={{ overflow: 'auto', maxHeight: 370, minHeight: 370 }}
+                                        >
                                             {this.loadPatients()}
                                         </List>
                                     </Grid>
@@ -125,16 +129,20 @@ const PatientList = withStyles(styles)(
         }
 
         private loadPatients = () => {
-            const n = this.state.list.length;
+            const n = this.state.patientList.length;
             const result = []
             for (let i = 0; i < n; i++) {
-                if (this.state.list[i][1].toString().search(this.state.inputValue) >= 0) {
+                if (this.state.patientList[i].identity.search(this.state.inputValue) >= 0) {
                     result.push(
                         <div key={i}>
                             <ListItem button={true} >
-                                {this.state.redirectTarget === this.state.list[i][0] && <Redirect to={`/patient/${this.state.redirectTarget}`} />}
-                                <ListItemText primary={this.state.list[i][1]} onClick={this.handleRedirect(this.state.list[i][0])} />
-                                {this.state.list[i][2]}
+                                {this.state.redirectTarget === this.state.patientList[i].id &&
+                                <Redirect to={`/patient/${this.state.redirectTarget}`} />}
+                                <ListItemText
+                                    primary={this.state.patientList[i].identity}
+                                    onClick={this.handleRedirect(this.state.patientList[i].id)}
+                                />
+                                {this.state.patientList[i].name}
                             </ListItem>
                             <Divider light={true} />
                         </div>);
@@ -165,14 +173,9 @@ const PatientList = withStyles(styles)(
                         return response.json();
                     })
                     .then(data => {
-                        const list = [];
-                        for (const patient of data.patientList) {
-                            list.push(
-                                [patient.first, patient.second, patient.third]);
-                        }
                         this.setState(
                             {
-                                'list': list,
+                                patientList: data.patientList,
                             });
                     })
                     .catch(error => this.props.toast(error));

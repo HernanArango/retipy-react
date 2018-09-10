@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Education } from "../common/Education";
 import { IAuthProps } from "../common/IAuthProps";
+import { IPerson } from "../common/IPerson";
 import { Sex } from "../common/Sex";
-import { Endpoints } from "../configuration/Endpoints";
+import { Endpoints, RetipyObjects } from "../configuration/Endpoints";
 import PatientView from "./PatientView";
 
 export interface IOpticalEvaluation {
@@ -26,6 +27,7 @@ export interface IOpticalEvaluation {
 }
 
 export interface IPatient {
+    assignedDoctors: IPerson[],
     birthDate: string,
     education: Education,
     familiarPast: string[],
@@ -43,18 +45,24 @@ export interface IPatient {
     sex: Sex,
 }
 
+interface IPatientState extends IPatient {
+    doctors: Map<number, IPerson>,
+}
+
 interface IPatientProps extends IAuthProps {
     id: number,
     disabled: boolean,
     history: any,
 }
 
-class Patient extends React.Component<IPatientProps, IPatient> {
+class Patient extends React.Component<IPatientProps, IPatientState> {
     constructor(props: IPatientProps) {
         super(props);
 
         this.state = {
+            assignedDoctors: [],
             birthDate: "",
+            doctors: new Map(),
             education: Education.None,
             familiarPast: [],
             id: props.id,
@@ -71,6 +79,35 @@ class Patient extends React.Component<IPatientProps, IPatient> {
             sex: Sex.Female,
         }
 
+        fetch(
+            Endpoints.Server + Endpoints.Staff + RetipyObjects.Doctor,
+            {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Authorization': this.props.token,
+                    'content-type': 'application/json',
+                },
+                method: 'GET',
+                mode: 'cors',
+                referrer: 'no-referrer',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw Error("Error when retrieving patient");
+                }
+                return response.json();
+            })
+            .then(doctorList => {
+                const doctorMap = new Map();
+                for(const doctor of doctorList)
+                {
+                    doctorMap.set(doctor.id, doctor);
+                }
+
+                this.setState({ doctors: doctorMap });
+            })
+            .catch(error => this.setState({ doctors: new Map() }));
+
         if (props.id !== 0) {
             this.fetchPatient();
         }
@@ -79,8 +116,10 @@ class Patient extends React.Component<IPatientProps, IPatient> {
     public render() {
         return (
             <PatientView
+                assignedDoctors={this.state.assignedDoctors}
                 birthDate={this.state.birthDate}
                 disabled={this.props.disabled}
+                doctors={this.state.doctors}
                 education={this.state.education}
                 familiarPast={this.state.familiarPast}
                 id={this.state.id}
@@ -110,12 +149,10 @@ class Patient extends React.Component<IPatientProps, IPatient> {
     };
 
     private handleOpenOpticalEvaluation = (target: number) => (event: any) => {
-        if (this.props.id === 0)
-        {
+        if (this.props.id === 0) {
             this.props.toast("Please save the Patient before creating an Optical Evaluation");
         }
-        else
-        {
+        else {
             this.setState({
                 isRedirect: true,
                 redirect: `/patient/${this.props.id}/opticalEvaluation/${target}`,
@@ -150,12 +187,10 @@ class Patient extends React.Component<IPatientProps, IPatient> {
 
     private savePatient = () => {
         let message = "";
-        if (this.state.id === 0)
-        {
+        if (this.state.id === 0) {
             message = "New patient created";
         }
-        else
-        {
+        else {
             message = "Patient updated";
         }
         fetch(
@@ -172,26 +207,25 @@ class Patient extends React.Component<IPatientProps, IPatient> {
                 referrer: 'no-referrer',
             }
         )
-        .then(response =>
-            {
-                if(!response.ok)
-                {
+            .then(response => {
+                if (!response.ok) {
                     throw Error("There was an error saving the current patient");
                 }
                 return response.json();
             })
-        .then(restPatient => {
-            this.props.toast(message);
-            this.updatePatient(restPatient);
-            this.props.history.push(`/patient/${restPatient.id}`);
-        })
-        .catch(error => this.props.toast(error.message));
+            .then(restPatient => {
+                this.props.toast(message);
+                this.updatePatient(restPatient);
+                this.props.history.push(`/patient/${restPatient.id}`);
+            })
+            .catch(error => this.props.toast(error.message));
     };
 
     private updatePatient = (restPatient: any) => {
         const sex: string = restPatient.sex;
         const education: string = restPatient.education;
         this.setState({
+            assignedDoctors: restPatient.assignedDoctors,
             birthDate: restPatient.birthDate.substring(0, 10),
             education: Education[education],
             familiarPast: restPatient.familiarPast,

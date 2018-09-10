@@ -1,4 +1,4 @@
-import { AppBar, createStyles, IconButton, Snackbar, SvgIcon, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, createStyles, IconButton, Menu, MenuItem, Snackbar, SvgIcon, Toolbar, Typography } from "@material-ui/core";
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { AccountCircleSharp, Home } from '@material-ui/icons';
@@ -11,8 +11,8 @@ import { Endpoints } from "./configuration/Endpoints";
 import Routes from './configuration/Routes';
 import withRoot from './configuration/withRoot';
 import { RetipyContextProvider } from './context/RetipyContext';
-import Login from "./login/Login";
-import LoginError from "./login/LoginError";
+import Login from "./user/Login";
+import LoginError from "./user/LoginError";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -41,6 +41,7 @@ const styles = (theme: Theme) =>
   });
 
 interface IAppState {
+  anchorLogin: HTMLElement | null,
   isLoginDialogOpen: boolean,
   isRedirecting: boolean,
   isToastOpen: boolean,
@@ -59,6 +60,7 @@ class App extends React.Component<IAppProps, IAppState> {
     super(props);
 
     this.state = {
+      anchorLogin: null,
       isLoginDialogOpen: false,
       isRedirecting: false,
       isToastOpen: false,
@@ -79,6 +81,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
   public render() {
     const { classes } = this.props;
+    const userMenuOpen = Boolean(this.state.anchorLogin);
 
     let app = <Routes />;
     if (this.state.token === "") {
@@ -132,14 +135,37 @@ class App extends React.Component<IAppProps, IAppState> {
                 retipy
               </Typography>
               <IconButton
-                onClick={this.handleHomeButton}>
-                <Home color="inherit" />
+                color="inherit"
+                onClick={this.handleHomeButton}
+              >
+                <Home/>
               </IconButton>
               <div>
                 <IconButton
-                  onClick={this.openLoginDialog}>
+                  aria-haspopup="true"
+                  aria-owns={userMenuOpen ? 'menu-appbar' : undefined}
+                  color="inherit"
+                  onClick={this.openLoginDialog}
+                  >
                   <AccountCircleSharp color="inherit" />
                 </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={this.state.anchorLogin}
+                  anchorOrigin={{
+                    horizontal: 'right',
+                    vertical: 'top',
+                  }}
+                  transformOrigin={{
+                    horizontal: 'right',
+                    vertical: 'top',
+                  }}
+                  open={userMenuOpen}
+                  onClose={this.handleCloseUserMenu}
+                >
+                  <MenuItem onClick={this.handleCloseUserMenu}>Profile</MenuItem>
+                  <MenuItem onClick={this.handleLogout}>Log out</MenuItem>
+                </Menu>
               </div>
               {this.state.username && <Typography color="inherit">{this.state.username}</Typography>}
             </Toolbar>
@@ -198,11 +224,19 @@ class App extends React.Component<IAppProps, IAppState> {
               });
           }
           else {
-            Cookies.remove('token');
-            Cookies.remove('username');
+            this.logout()
           }
         });
     }
+  }
+
+  private logout = () => {
+    Cookies.remove('token');
+    Cookies.remove('username');
+    this.setState({
+      token: "",
+      username: "",
+    })
   }
 
   private setLoginData = (username: string, token: string) => {
@@ -252,10 +286,22 @@ class App extends React.Component<IAppProps, IAppState> {
       });
   }
 
-  private openLoginDialog = () => {
+  private openLoginDialog = (event: React.MouseEvent<HTMLElement>) => {
     if (this.state.token === "") {
       this.setState({ isLoginDialogOpen: true });
     }
+    else {
+      this.setState({anchorLogin: event.currentTarget})
+    }
+  }
+
+  private handleLogout = () => {
+    this.logout();
+    this.handleCloseUserMenu();
+  }
+
+  private handleCloseUserMenu = () => {
+    this.setState({anchorLogin: null});
   }
 }
 
