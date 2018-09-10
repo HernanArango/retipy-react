@@ -146,7 +146,7 @@ const PatientView = withStyles(styles)(
                                                     multiple={true}
                                                     onChange={this.handleSelectDoctor}
                                                     renderValue={this.renderDoctorsSelection}
-                                                    value={this.state.selectedDoctors}
+                                                    value={this.selectedDoctors()}
                                                 >
                                                 {this.renderDoctorsOptions()}
                                                 </Select>
@@ -402,7 +402,7 @@ const PatientView = withStyles(styles)(
                     key={id}
                     value={id}
                 >
-                <Checkbox checked={this.state.selectedDoctors.indexOf(id) > -1 } />
+                <Checkbox checked={this.selectedDoctors().indexOf(id) > -1 } />
                 <ListItemText primary={doctor.name} />
                 </MenuItem>)
             ))
@@ -410,12 +410,23 @@ const PatientView = withStyles(styles)(
         }
 
         private renderDoctorsSelection(value: string | number | boolean | Array<(string | number | boolean)> | undefined) : React.ReactNode {
+            const { doctors } = this.props;
             if (value !== undefined && value instanceof Array) {
-                return value.map((currentDoctor:number) => (<Chip key={currentDoctor} label={currentDoctor} className={this.props.classes.chip} />))
+                return value.map(
+                    (currentDoctor:number) => (
+                        <Chip
+                            key={doctors.get(currentDoctor)!.id}
+                            label={doctors.get(currentDoctor)!.name}
+                            className={this.props.classes.chip}
+                        />))
             }
             else {
                 return []
             }
+        }
+
+        private selectedDoctors = () => {
+            return this.props.assignedDoctors.map(person => person.id)
         }
 
         private handleChange = (target: string) => (value: any) => {
@@ -428,6 +439,13 @@ const PatientView = withStyles(styles)(
 
         private handleSelectDoctor = (event: any) => {
             this.setState({selectedDoctors: event.target.value})
+
+            const doctors: IPerson[] = []
+            for(const id of event.target.value)
+            {
+                doctors.push(this.props.doctors.get(id)!)
+            }
+            this.props.handleChange('assignedDoctors', doctors)
         }
     }
 );
