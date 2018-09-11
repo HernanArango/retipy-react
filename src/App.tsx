@@ -5,12 +5,13 @@ import { AccountCircleSharp, Home } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import * as Cookies from 'es-cookie';
 import * as React from 'react';
-import { Redirect } from "react-router";
+import { Redirect, Route } from "react-router";
 import './App.css';
 import { Endpoints } from "./configuration/Endpoints";
 import Routes from './configuration/Routes';
 import withRoot from './configuration/withRoot';
 import { RetipyContextProvider } from './context/RetipyContext';
+import About from "./status/About";
 import Login from "./user/Login";
 import LoginError from "./user/LoginError";
 
@@ -55,6 +56,10 @@ interface IAppProps {
   classes: any,
 }
 
+const renderAbout =
+    ()  =>
+        (props: any) =>
+            <About />;
 class App extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
@@ -171,6 +176,11 @@ class App extends React.Component<IAppProps, IAppState> {
             </Toolbar>
           </AppBar>
 
+          <Route
+            exact={true}
+            path="/about"
+            render={renderAbout()}
+          />
           {app}
 
           <footer className={classes.footer}>
