@@ -2,8 +2,9 @@ import { Button, FormControlLabel, Grid, Paper, Switch, TextField, Typography } 
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import * as Konva from "konva";
 import * as React from "react";
-import { Image, Layer, Line, Stage } from "react-konva";
-import PolyRoi from "../Roi";
+import { RetipyContextConsumer } from "../../context/RetipyContext";
+import EvaluationList from "../evaluation/EvaluationList";
+import Viewer from "../Viewer";
 import { IDisplayDiagnostic } from "./Diagnostic";
 
 const styles = (theme: Theme) => createStyles({
@@ -54,6 +55,7 @@ interface IDiagnosticViewProps extends WithStyles<typeof styles>, IDisplayDiagno
     imageHeight: number,
     imageWidth: number,
     isAddingRoi: boolean,
+    isEditingEnabled: boolean,
     newRoiPoints: number[],
     newRoiText: string,
 
@@ -69,39 +71,31 @@ const DiagnosticView = withStyles(styles)(
             return (
                 <div className={classes.root}>
                     <Grid container={true} spacing={16} className={classes.container}>
-                        <Grid item={true} xs={12} sm={12} > {/* Konva div */}
-                            <Grid container={true} justify="center">
-                                <Paper className={classes.paper}>
-                                    <Typography variant="display1">Diagnostic</Typography>
-                                    <Stage
-                                        width={this.props.imageWidth}
-                                        height={this.props.imageHeight}
-                                        onContentClick={this.handleMouseDown}
-                                    >
-                                        <Layer>
-                                            <Image
-                                                image={this.props.displayImage}
-                                                ref={this.setImageReference}
-                                                width={this.props.imageWidth}
-                                                height={this.props.imageWidth}
-                                            />
-                                        </Layer>
-                                        <Layer>
-                                            <Line
-                                                points={this.props.newRoiPoints}
-                                                closed={false}
-                                                stroke="white"
-                                                opacity={0.5}
-                                                visible={this.props.isAddingRoi}
-                                            />
-                                        </Layer>
-                                        <Layer>
-                                            {this.renderExistingRoi()}
-                                        </Layer>
-                                    </Stage>
-                                </Paper>
-                            </Grid>
-                        </Grid>
+                        <Viewer
+                            classes={classes}
+                            displayImage={this.props.displayImage}
+                            handleMouseDown={this.handleMouseDown}
+                            imageHeight={this.props.imageHeight}
+                            imageWidth={this.props.imageWidth}
+                            isAddingRoi={this.props.isAddingRoi}
+                            newRoiPoints={this.props.newRoiPoints}
+                            rois={this.props.rois}
+                            setImageReference={this.setImageReference}
+                        />
+
+
+                        {!this.props.isEditingEnabled &&
+                        <RetipyContextConsumer>
+                            {retipyContext => retipyContext &&
+                                <EvaluationList
+                                    id={this.props.id}
+                                    toast={retipyContext.toast}
+                                    token={retipyContext.token}
+                                />}
+                        </RetipyContextConsumer>
+                        }
+
+                        {this.props.isEditingEnabled &&
                         <Grid item={true} lg={6} md={12} sm={12} xs={12}>
                             <Paper className={classes.paper}>
                                 <Typography variant="display1">New Region of Interest</Typography>
@@ -166,6 +160,7 @@ const DiagnosticView = withStyles(styles)(
                             </Button>
                             </Paper>
                         </Grid>
+                        }{this.props.isEditingEnabled &&
                         <Grid item={true} lg={6} md={12} sm={12} xs={12}>
                             <Paper className={classes.paper}>
                                 <Typography variant="display1">Diagnostic Information</Typography>
@@ -209,6 +204,7 @@ const DiagnosticView = withStyles(styles)(
                                 </Grid>
                             </Paper>
                         </Grid>
+                        }
                     </Grid>
                 </div>
             );
@@ -216,20 +212,6 @@ const DiagnosticView = withStyles(styles)(
 
         private setImageReference = (reference: Konva.Image | null) => {
             this.image = reference;
-        }
-
-        private renderExistingRoi = () => {
-            const renderedRoi: JSX.Element[] = [];
-            for (const currentRoi of this.props.rois) {
-                renderedRoi.push(<PolyRoi
-                    id={currentRoi.id}
-                    tooltip={String(currentRoi.id)}
-                    text={currentRoi.notes}
-                    key={currentRoi.id}
-                    points={currentRoi.displayP}
-                    visible={true} />);
-            }
-            return renderedRoi;
         }
 
         private handleMouseDown = () => {

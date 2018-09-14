@@ -1,5 +1,10 @@
 import * as React from "react";
 import { Line, Text } from "react-konva";
+export interface IRoi {
+    x: number[],
+    y: number[],
+    notes: string,
+}
 
 interface IPolyRoiState {
     isTooltipVisible: boolean,
@@ -12,6 +17,7 @@ interface IPolyRoiState {
 }
 
 interface IPolyRoiProps {
+    color: string,
     id: number,
     points: number[],
     text: string,
@@ -50,7 +56,7 @@ export default class PolyRoi extends React.Component<IPolyRoiProps, IPolyRoiStat
                 points={this.state.points}
                 key={"r" + this.state.key}
                 closed={true}
-                fill="black"
+                fill={this.props.color}
                 opacity={0.5}
             />,
             <Text

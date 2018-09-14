@@ -110,7 +110,7 @@ const DiagnosticUpload = withStyles(styles)(
                   this.setState({
                       isRedirect: true,
                       isUploading: false,
-                      redirect: `/patient/${this.props.patientId}/opticalEvaluation/${this.props.opticalEvaluationId}/diagnostic/${diagnostic.id}`,
+                      redirect: `/patient/${this.props.patientId}/opticalEvaluation/${this.props.opticalEvaluationId}/diagnostic/${diagnostic.id}/edit`,
                       uploadButtonText: this.UPLOAD_BUTTON_TEXT,
                     });
                 })

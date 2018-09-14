@@ -2,9 +2,20 @@ import * as React from "react";
 import { Route } from "react-router-dom";
 import { RetipyContextConsumer } from "../context/RetipyContext";
 import Diagnostic from "../image/diagnostic/Diagnostic";
+import Evaluation from "../image/evaluation/Evaluation";
 import OpticalEvaluation from "../patient/OpticalEvaluation";
 import Patient from "../patient/Patient";
 import PatientList from "../patient/PatientList";
+
+const renderEvaluation =
+    (token: string,
+        toast: (message: string) => any) =>
+        (props: any) =>
+            <Evaluation
+                token={token}
+                toast={toast}
+                id={parseInt(props.match.params.id, 10)}
+            />;
 
 const renderPatientList =
     (token: string,
@@ -37,7 +48,8 @@ const renderOpticalEvaluation =
 
 const renderDiagnostic =
     (token: string,
-        toast: (message: string) => any) =>
+        toast: (message: string) => any,
+        editable: boolean) =>
         (props: any) =>
             <Diagnostic
                 token={token}
@@ -46,6 +58,7 @@ const renderDiagnostic =
                 opticalEvaluationId={parseInt(props.match.params.opticalEvaluationId, 10)}
                 patientId={parseInt(props.match.params.patientId, 10)}
                 disabled={false}
+                editable={editable}
                 {...props} />;
 
 const Routes: React.SFC = (props) => {
@@ -71,7 +84,17 @@ const Routes: React.SFC = (props) => {
                     <Route
                         exact={true}
                         path="/patient/:patientId/opticalevaluation/:opticalEvaluationId/diagnostic/:id"
-                        render={renderDiagnostic(retipyContext.token, retipyContext.toast)}
+                        render={renderDiagnostic(retipyContext.token, retipyContext.toast, false)}
+                    />
+                    <Route
+                        exact={true}
+                        path="/patient/:patientId/opticalevaluation/:opticalEvaluationId/diagnostic/:id/edit"
+                        render={renderDiagnostic(retipyContext.token, retipyContext.toast, true)}
+                    />
+                    <Route
+                        exact={true}
+                        path="/evaluation/:id"
+                        render={renderEvaluation(retipyContext.token, retipyContext.toast)}
                     />
                 </div>
             )}

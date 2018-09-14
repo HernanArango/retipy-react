@@ -13,4 +13,5 @@ export enum RetipyObjects {
     Diagnostic = "/diagnostic",
     Doctor = "/doctor",
     Resident = "/resident",
+    RetipyEvaluation = "/evaluation",
 }

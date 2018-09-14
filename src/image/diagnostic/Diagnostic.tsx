@@ -1,14 +1,9 @@
 import * as React from "react";
 import { IAuthProps } from "../../common/IAuthProps";
+import { IRoi } from "../Roi";
 import { getDiagnostic, saveDiagnostic } from "./DiagnosticController";
 import { DiagnosticStatus } from "./DiagnosticStatus";
 import DiagnosticView from "./DiagnosticView";
-
-interface IRoi {
-    x: number[],
-    y: number[],
-    notes: string,
-}
 
 export interface IDisplayRoi extends IRoi {
     displayP: number[],
@@ -36,7 +31,6 @@ export interface IDisplayDiagnostic {
 }
 
 interface IDiagnosticState extends IDisplayDiagnostic {
-    diagnostic: string,
     displayImage: HTMLImageElement,
     imageHeight: number,
     imageWidth: number,
@@ -52,6 +46,7 @@ interface IDiagnosticProps extends IAuthProps {
     id: number,
     opticalEvaluationId: number,
     patientId: number,
+    editable: boolean,
 }
 
 class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
@@ -72,7 +67,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
             ratio: 1,
             roiCount: 0,
             rois: [],
-            status: DiagnosticStatus.CREATED,
+            status: DiagnosticStatus.Created,
             updateDate: "",
         }
 
@@ -84,6 +79,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
     public render(): JSX.Element {
         return (
             <DiagnosticView
+                isEditingEnabled={this.props.editable}
                 creationDate={this.state.creationDate}
                 diagnostic={this.state.diagnostic}
                 displayImage={this.state.displayImage}
@@ -207,7 +203,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 id: this.state.id,
                 image: this.state.image,
                 rois: this.state.rois as IRoi[],
-                status: DiagnosticStatus.UPDATED,
+                status: DiagnosticStatus.Updated,
             }
             saveDiagnostic(
                 diagnosticData,

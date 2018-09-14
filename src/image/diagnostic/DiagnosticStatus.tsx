@@ -1,5 +1,5 @@
 export enum DiagnosticStatus {
-    CREATED,
-    UPDATED,
-    COMPLETED,
+    Created,
+    Updated,
+    Completed,
 }
