@@ -2,7 +2,9 @@ import { Button, FormControlLabel, Grid, Paper, Switch, TextField, Typography } 
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import * as Konva from "konva";
 import * as React from "react";
+import Redirector from "../../common/Redirector";
 import { RetipyContextConsumer } from "../../context/RetipyContext";
+import EvaluationAdd from "../evaluation/EvaluationAdd";
 import EvaluationList from "../evaluation/EvaluationList";
 import Viewer from "../Viewer";
 import { IDisplayDiagnostic } from "./Diagnostic";
@@ -19,6 +21,9 @@ const styles = (theme: Theme) => createStyles({
         display: 'flex',
         flexWrap: 'wrap',
         margin: theme.spacing.unit,
+    },
+    leftIcon: {
+        marginRight: theme.spacing.unit,
     },
     paper: {
         color: theme.palette.text.secondary,
@@ -58,6 +63,9 @@ interface IDiagnosticViewProps extends WithStyles<typeof styles>, IDisplayDiagno
     isEditingEnabled: boolean,
     newRoiPoints: number[],
     newRoiText: string,
+    diagnosticId: number,
+    opticalEvaluationId: number,
+    patientId: number,
 
 }
 
@@ -70,7 +78,12 @@ const DiagnosticView = withStyles(styles)(
             const { classes } = this.props;
             return (
                 <div className={classes.root}>
-                    <Grid container={true} spacing={16} className={classes.container}>
+                    <Grid
+                        container={true}
+                        spacing={16}
+                        className={classes.container}
+                        justify="center"
+                    >
                         <Viewer
                             classes={classes}
                             displayImage={this.props.displayImage}
@@ -83,6 +96,16 @@ const DiagnosticView = withStyles(styles)(
                             setImageReference={this.setImageReference}
                         />
 
+                        {!this.props.isEditingEnabled &&
+                        <RetipyContextConsumer>
+                            {retipyContext => retipyContext &&
+                                <EvaluationAdd
+                                    diagnosticId={this.props.id}
+                                    toast={retipyContext.toast}
+                                    token={retipyContext.token}
+                                />}
+                        </RetipyContextConsumer>
+                        }
 
                         {!this.props.isEditingEnabled &&
                         <RetipyContextConsumer>
@@ -91,6 +114,9 @@ const DiagnosticView = withStyles(styles)(
                                     id={this.props.id}
                                     toast={retipyContext.toast}
                                     token={retipyContext.token}
+                                    patientId={this.props.patientId}
+                                    diagnosticId={this.props.diagnosticId}
+                                    opticalEvaluationId={this.props.opticalEvaluationId}
                                 />}
                         </RetipyContextConsumer>
                         }
@@ -205,6 +231,12 @@ const DiagnosticView = withStyles(styles)(
                             </Paper>
                         </Grid>
                         }
+                        <Grid item={true} lg={6} md={12} sm={12} xs={12}>
+                            <Redirector
+                                redirect={`/patient/${this.props.patientId}/opticalevaluation/${this.props.opticalEvaluationId}`}
+                                text="Back to Optical Evaluation"
+                            />
+                        </Grid>
                     </Grid>
                 </div>
             );

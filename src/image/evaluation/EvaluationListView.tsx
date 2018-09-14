@@ -23,6 +23,9 @@ interface IEvaluationViewState {
 interface IEvaluationViewProps extends WithStyles<typeof styles> {
     evaluationList: IEvaluationSimple[],
     toast: (message: string) => any,
+    diagnosticId: number,
+    opticalEvaluationId: number,
+    patientId: number,
 }
 
 const EvaluationListView = withStyles(styles)(
@@ -38,7 +41,7 @@ const EvaluationListView = withStyles(styles)(
         public render() {
             const { classes } = this.props;
             return(
-                <Grid item={true} lg={6} md={12} sm={12} xs={12}>
+                <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                     {this.state.isRedirect && <Redirect to={this.state.redirect}/>}
                     <Paper className={classes.paper}>
                         <Typography variant="display1">
@@ -57,12 +60,11 @@ const EvaluationListView = withStyles(styles)(
             if (status === EvaluationStatus.Complete) {
                 this.setState({
                     isRedirect: true,
-                    redirect: `/evaluation/${id}`
+                    redirect: `/patient/${this.props.patientId}/opticalevaluation/${this.props.opticalEvaluationId}/diagnostic/${this.props.diagnosticId}/evaluation/${id}`
                 });
             }
             else {
-                this.props.toast(`${status}`);
-                // this.props.toast("Selected Evaluation is not Completed");
+                this.props.toast("Selected Evaluation is not Completed");
             }
         }
 

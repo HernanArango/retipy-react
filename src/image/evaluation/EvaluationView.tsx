@@ -1,7 +1,9 @@
-import { Grid, Paper, TextField, Typography } from "@material-ui/core";
+import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import * as React from "react";
 import { Image, Layer, Stage } from "react-konva";
+import { Redirect } from "react-router";
 import PolyRoi from "../Roi";
 import { IDisplayEvaluation } from "./Evaluation";
 
@@ -17,6 +19,9 @@ const styles = (theme: Theme) => createStyles({
         display: 'flex',
         flexWrap: 'wrap',
         margin: theme.spacing.unit,
+    },
+    leftIcon: {
+        marginRight: theme.spacing.unit,
     },
     paper: {
         color: theme.palette.text.secondary,
@@ -40,30 +45,43 @@ const styles = (theme: Theme) => createStyles({
     },
 });
 
+interface IEvaluationViewState {
+    isRedirect: boolean,
+    redirect: string,
+}
 interface IEvaluationViewProps extends WithStyles<typeof styles>, IDisplayEvaluation {
+    diagnosticId: number,
     imageHeight: number,
     imageWidth: number,
+    opticalEvaluationId: number,
+    patientId: number,
 }
 
 const EvaluationView = withStyles(styles)(
-    class extends React.Component<IEvaluationViewProps, {}>{
-        public shouldComponentUpdate(nextProps: Readonly<IEvaluationViewProps>, nextState: Readonly<{}>) {
-            if (nextProps.displayRois.length !== this.props.displayRois.length){
-                return true;
-            }
-            else {
-                return false;
+    class extends React.Component<IEvaluationViewProps, IEvaluationViewState>{
+        constructor(props: IEvaluationViewProps) {
+            super(props);
+
+            this.state = {
+                isRedirect: false,
+                redirect: "",
             }
         }
+
         public render(): JSX.Element {
             const { classes } = this.props;
             return (
                 <div className={classes.root}>
-                    <Grid container={true} spacing={16} className={classes.container}>
+                    <Grid
+                        container={true}
+                        spacing={16}
+                        className={classes.container}
+                        justify="center"
+                    >
                         <Grid item={true} xs={12} sm={12} > {/* Konva div */}
                             <Grid container={true} justify="center">
                                 <Paper className={this.props.classes.paper}>
-                                    <Typography variant="display1">Diagnostic</Typography>
+                                    <Typography variant="display1">Evaluation</Typography>
                                     <Stage
                                         width={this.props.imageWidth}
                                         height={this.props.imageHeight}
@@ -111,12 +129,31 @@ const EvaluationView = withStyles(styles)(
                                             disabled={true}
                                         />
                                     </Grid>
+                                    <Grid item={true} xs={12}>
+                                    {this.state.isRedirect && <Redirect to={this.state.redirect} />}
+                                    <Button
+                                        variant="contained"
+                                        color="default"
+                                        className={classes.button}
+                                        onClick={this.handleDiagnosticButton}
+                                    >
+                                        <ArrowBackIcon className={classes.leftIcon} />
+                                        Return to Diagnostic
+                                    </Button>
+                                    </Grid>
                                 </Grid>
                             </Paper>
                         </Grid>
                     </Grid>
                 </div>
             );
+        }
+
+        private handleDiagnosticButton = () => {
+            this.setState({
+                isRedirect: true,
+                redirect: `/patient/${this.props.patientId}/opticalevaluation/${this.props.opticalEvaluationId}/diagnostic/${this.props.diagnosticId}`
+            })
         }
 
         private renderExistingRoi = () => {

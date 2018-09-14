@@ -11,7 +11,10 @@ export interface IEvaluationSimple {
 }
 
 interface IDiagnosticProps extends IAuthProps {
+    diagnosticId: number,
     id: number,
+    opticalEvaluationId: number,
+    patientId: number,
 }
 
 interface IEvaluationListState {
@@ -34,6 +37,9 @@ class EvaluationList extends React.Component<IDiagnosticProps, IEvaluationListSt
             <EvaluationListView
                 evaluationList={this.state.evaluationList}
                 toast={this.props.toast}
+                diagnosticId={this.props.diagnosticId}
+                opticalEvaluationId={this.props.opticalEvaluationId}
+                patientId={this.props.opticalEvaluationId}
             />
         );
     }

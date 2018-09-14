@@ -121,6 +121,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                 gutterBottom={true}
                             >
                                 Examination - {this.props.creationDate.substring(0, 10)}
+                                <br />
                                 Version {this.props.version}
                             </Typography>
                             <Paper className={classes.paper} >
@@ -336,7 +337,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     >
                                         <ArrowBackIcon className={classes.leftIcon} />
                                         Return to Patient
-                                        </Button>
+                                    </Button>
                                     <Button
                                         variant="contained"
                                         color="primary"
@@ -419,10 +420,14 @@ const OpticalEvaluationView = withStyles(styles)(
             this.props.handleChange(target, event.target.value);
         }
 
-        private handleOpenDiagnostic = (id: number) => (event: React.MouseEvent<HTMLElement>) => {
+        private handleOpenDiagnostic = (id: number, edit: boolean) => (event: React.MouseEvent<HTMLElement>) => {
+            let redirectString: string = `/patient/${this.props.patientId}/opticalevaluation/${this.props.id}/diagnostic/${id}`;
+            if (edit) {
+                redirectString = redirectString + "/edit"
+            }
             this.setState({
                 isRedirect: true,
-                redirect: `/patient/${this.props.patientId}/opticalevaluation/${this.props.id}/diagnostic/${id}`,
+                redirect: redirectString,
             })
         }
 
@@ -484,9 +489,19 @@ const OpticalEvaluationView = withStyles(styles)(
                                     color="secondary"
                                     size="small"
                                     className={classes.button}
-                                    onClick={this.handleOpenDiagnostic(id)}
+                                    onClick={this.handleOpenDiagnostic(id, false)}
                                 >
-                                    Open
+                                    View
+                                    <LaunchIcon className={classes.rightIcon} />
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    size="small"
+                                    className={classes.button}
+                                    onClick={this.handleOpenDiagnostic(id, true)}
+                                >
+                                    Edit
                                     <LaunchIcon className={classes.rightIcon} />
                                 </Button>
                                 <Button

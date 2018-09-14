@@ -74,6 +74,10 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
         if (props.id !== 0) {
             this.fetchDiagnostic();
         }
+        else
+        {
+            this.props.toast("Wrong diagnostic id");
+        }
     }
 
     public render(): JSX.Element {
@@ -101,6 +105,9 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 rois={this.state.rois}
                 status={this.state.status}
                 updateDate={this.state.updateDate}
+                diagnosticId={this.props.id}
+                opticalEvaluationId={this.props.opticalEvaluationId}
+                patientId={this.props.patientId}
             />);
     }
 

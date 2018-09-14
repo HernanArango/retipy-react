@@ -31,7 +31,10 @@ export interface IDisplayEvaluation extends IEvaluation {
 }
 
 interface IEvaluationProps extends IAuthProps {
+    diagnosticId: number,
     id: number,
+    opticalEvaluationId: number,
+    patientId: number,
 }
 
 class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
@@ -75,6 +78,8 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
                 status={this.state.status}
                 updateDate={this.state.updateDate}
                 ratio={this.state.ratio}
+                opticalEvaluationId={this.props.opticalEvaluationId}
+                patientId={this.props.patientId}
             />
         );
     }
@@ -160,6 +165,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
         this.setState(
             {
                 creationDate: restDiagnostic.creationDate,
+                diagnosticId: restDiagnostic.diagnosticId,
                 'displayImage': displayImage,
                 displayRois: roiList,
                 image: restDiagnostic.image,
