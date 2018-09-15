@@ -163,8 +163,7 @@ const PatientView = withStyles(styles)(
                                                 label="Identity"
                                                 fullWidth={true}
                                                 margin="normal"
-                                                type="number"
-                                                helperText="National ID"
+                                                helperText="National ID/Passport Number"
                                             />
                                         </Grid>
                                         <Grid item={true} lg={5} md={5} sm={12} xs={12}>
