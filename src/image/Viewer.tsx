@@ -2,8 +2,7 @@ import { Grid, Paper, Typography } from '@material-ui/core';
 import * as Konva from "konva";
 import * as React from 'react';
 import { Image, Layer, Line, Stage } from "react-konva";
-import { IDisplayRoi } from './diagnostic/Diagnostic';
-import PolyRoi from './Roi';
+import PolyRoi, { IDisplayRoi } from './Roi';
 
 interface IViewerProps {
     classes: any,
@@ -20,7 +19,7 @@ interface IViewerProps {
 export default class Viewer extends React.Component<IViewerProps> {
     public render() {
         return (
-            <Grid item={true} xs={12} sm={12} > {/* Konva div */}
+            <Grid item={true} lg={7} md={12} sm={12} xs={12} > {/* Konva div */}
                 <Grid container={true} justify="center">
                     <Paper className={this.props.classes.paper}>
                         <Typography variant="display1">Diagnostic</Typography>
@@ -28,13 +27,14 @@ export default class Viewer extends React.Component<IViewerProps> {
                             width={this.props.imageWidth}
                             height={this.props.imageHeight}
                             onContentClick={this.props.handleMouseDown}
+                            onContentTouchStart={this.props.handleMouseDown}
                         >
                             <Layer>
                                 <Image
                                     image={this.props.displayImage}
                                     ref={this.props.setImageReference}
                                     width={this.props.imageWidth}
-                                    height={this.props.imageWidth}
+                                    height={this.props.imageHeight}
                                 />
                             </Layer>
                             <Layer>
@@ -66,7 +66,7 @@ export default class Viewer extends React.Component<IViewerProps> {
                 key={currentRoi.id}
                 points={currentRoi.displayP}
                 visible={true}
-                color={"black"} />);
+                color={currentRoi.color} />);
         }
         return renderedRoi;
     }

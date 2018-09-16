@@ -39,7 +39,7 @@ class EvaluationList extends React.Component<IDiagnosticProps, IEvaluationListSt
                 toast={this.props.toast}
                 diagnosticId={this.props.diagnosticId}
                 opticalEvaluationId={this.props.opticalEvaluationId}
-                patientId={this.props.opticalEvaluationId}
+                patientId={this.props.patientId}
             />
         );
     }

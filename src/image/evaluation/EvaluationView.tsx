@@ -90,7 +90,7 @@ const EvaluationView = withStyles(styles)(
                                             <Image
                                                 image={this.props.displayImage}
                                                 width={this.props.imageWidth}
-                                                height={this.props.imageWidth}
+                                                height={this.props.imageHeight}
                                             />
                                         </Layer>
                                         <Layer>
@@ -166,7 +166,7 @@ const EvaluationView = withStyles(styles)(
                     key={currentRoi.id}
                     points={currentRoi.displayP}
                     visible={true}
-                    color={"white"} />);
+                    color={currentRoi.color} />);
             }
             return renderedRoi;
         }

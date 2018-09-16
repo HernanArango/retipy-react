@@ -49,6 +49,9 @@ const EvaluationAddView = withStyles(styles)(
                             <MenuItem key={RetipyTask.TortuosityFractal} value={RetipyTask.TortuosityFractal}>
                                 Tortuosity by Fractal Algorithm
                             </MenuItem>
+                            <MenuItem key={RetipyTask.LandmarksClassification} value={RetipyTask.LandmarksClassification}>
+                                Landmarks and Bifurcations
+                            </MenuItem>
                         </TextField>
                         <Button
                             className={classes.button}

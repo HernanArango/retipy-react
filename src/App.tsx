@@ -260,6 +260,10 @@ class App extends React.Component<IAppProps, IAppState> {
 
   private toast = (message: string) => {
     this.setState({
+      isToastOpen: false,
+      toast: "",
+    })
+    this.setState({
       isToastOpen: true,
       toast: message,
     })

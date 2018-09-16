@@ -1,9 +1,15 @@
 import * as React from "react";
 import { Line, Text } from "react-konva";
 export interface IRoi {
+    color: string,
+    notes: string,
     x: number[],
     y: number[],
-    notes: string,
+}
+
+export interface IDisplayRoi extends IRoi {
+    displayP: number[],
+    id: number,
 }
 
 interface IPolyRoiState {

@@ -6,6 +6,7 @@ import EvaluationAddView from './EvaluationAddView';
 export enum RetipyTask {
     TortuosityDensity = "TortuosityDensity",
     TortuosityFractal = "TortuosityFractal",
+    LandmarksClassification = "LandmarksClassification",
 }
 
 interface IEvaluationAddState {

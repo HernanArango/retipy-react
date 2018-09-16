@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { IAuthProps } from '../../common/IAuthProps';
 import { Endpoints, RetipyObjects } from '../../configuration/Endpoints';
-import { IDisplayRoi } from "../diagnostic/Diagnostic";
-import { IRoi } from "../Roi";
+import { IDisplayRoi, IRoi } from "../Roi";
 import EvaluationView from './EvaluationView';
 
 export enum EvaluationStatus {
@@ -124,21 +123,28 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
         const { displayImage } = this.state;
         const initialWidth = displayImage.naturalWidth;
         const initialHeight = displayImage.naturalHeight;
+        let imageWidth = this.state.imageWidth;
+        let imageHeight = this.state.imageHeight;
+        if (window.innerWidth < imageWidth)
+        {
+            imageWidth = window.innerWidth - 5;
+            imageHeight = window.innerWidth - 5;
+        }
         let ratio = 1;
         let width = displayImage.naturalWidth;
         let height = displayImage.naturalHeight;
-        if (width > this.state.imageWidth) {
-            ratio = this.state.imageWidth / initialWidth;
+        if (width > imageWidth) {
+            ratio = imageHeight / initialWidth;
             height = initialHeight * ratio;
             width = initialWidth * ratio;
-            if (height > this.state.imageHeight) {
-                ratio = this.state.imageHeight / initialHeight;
+            if (height > imageHeight) {
+                ratio = imageHeight / initialHeight;
                 width = initialWidth * ratio;
                 height = initialHeight * ratio;
             }
         }
-        else if (height > this.state.imageHeight) {
-            ratio = this.state.imageHeight / initialHeight;
+        else if (height > imageHeight) {
+            ratio = imageHeight / initialHeight;
             width = initialWidth * ratio;
             height = initialHeight * ratio;
         }
@@ -154,6 +160,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
                 pointsFixed.push(currentRoi.y[pIndex] * ratio);
             }
             const roi: IDisplayRoi = {
+                color: currentRoi.color,
                 displayP: pointsFixed,
                 id: i,
                 notes: currentRoi.notes,

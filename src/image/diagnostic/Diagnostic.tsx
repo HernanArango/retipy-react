@@ -1,14 +1,9 @@
 import * as React from "react";
 import { IAuthProps } from "../../common/IAuthProps";
-import { IRoi } from "../Roi";
+import { IDisplayRoi, IRoi } from "../Roi";
 import { getDiagnostic, saveDiagnostic } from "./DiagnosticController";
 import { DiagnosticStatus } from "./DiagnosticStatus";
 import DiagnosticView from "./DiagnosticView";
-
-export interface IDisplayRoi extends IRoi {
-    displayP: number[],
-    id: number,
-}
 
 export interface IDiagnostic {
     creationDate?: string,
@@ -35,6 +30,7 @@ interface IDiagnosticState extends IDisplayDiagnostic {
     imageHeight: number,
     imageWidth: number,
     isAddingRoi: boolean,
+    newRoiColor: string,
     newRoiPoints: number[],
     newRoiText: string,
     notes: string,
@@ -61,6 +57,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
             imageHeight: 600,
             imageWidth: 600,
             isAddingRoi: false,
+            newRoiColor: "black",
             newRoiPoints: [],
             newRoiText: "",
             notes: "",
@@ -87,9 +84,11 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 creationDate={this.state.creationDate}
                 diagnostic={this.state.diagnostic}
                 displayImage={this.state.displayImage}
+                handleRoiAddColor={this.handleRoiAddColor}
                 handleRoiAddNotes={this.handleRoiAddNotes}
                 handleRoiAddPoints={this.handleRoiAddPoints}
                 handleRoiClear={this.handleRoiClear}
+                handleRoiDelete={this.handleRoiDelete}
                 handleRoiEnableCreate={this.handleRoiEnableCreate}
                 handleRoiSave={this.handleRoiSave}
                 handleRoiUndoLastPoint={this.handleRoiUndoLastPoint}
@@ -100,6 +99,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 imageHeight={this.state.imageHeight}
                 imageWidth={this.state.imageWidth}
                 isAddingRoi={this.state.isAddingRoi}
+                newRoiColor={this.state.newRoiColor}
                 newRoiPoints={this.state.newRoiPoints}
                 newRoiText={this.state.newRoiText}
                 rois={this.state.rois}
@@ -121,6 +121,12 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
         this.setState({
             diagnostic: event.target.value,
         });
+    }
+
+    private handleRoiAddColor = (event: any) => {
+        this.setState({
+            newRoiColor: event.target.value,
+        })
     }
 
     private handleRoiAddNotes = (event: any) => {
@@ -166,8 +172,9 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 roiY.push(roiPoints[i + 1] / this.state.ratio);
             }
             const roi: IDisplayRoi = {
+                color: this.state.newRoiColor,
                 displayP: roiPoints,
-                id: pointCount,
+                id: Math.random(),
                 notes: this.state.newRoiText,
                 x: roiX,
                 y: roiY,
@@ -182,6 +189,20 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
 
             this.props.toast("ROI added successfully");
         }
+    }
+
+    private handleRoiDelete = (id:number) => (event: React.MouseEvent<HTMLElement>) => {
+        const newRoiList: IDisplayRoi[] = []
+        for (const roi of this.state.rois)
+        {
+            if (roi.id !== id)
+            {
+                newRoiList.push(roi)
+            }
+        }
+        this.setState({
+            rois: newRoiList,
+        })
     }
 
     private handleRoiUndoLastPoint = () => {
@@ -237,21 +258,28 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
         const { displayImage } = this.state;
         const initialWidth = displayImage.naturalWidth;
         const initialHeight = displayImage.naturalHeight;
+        let imageWidth = this.state.imageWidth;
+        let imageHeight = this.state.imageHeight;
+        if (window.innerWidth < imageWidth)
+        {
+            imageWidth = window.innerWidth - 5;
+            imageHeight = window.innerWidth - 5;
+        }
         let ratio = 1;
         let width = displayImage.naturalWidth;
         let height = displayImage.naturalHeight;
-        if (width > this.state.imageWidth) {
-            ratio = this.state.imageWidth / initialWidth;
+        if (width > imageWidth) {
+            ratio = imageHeight / initialWidth;
             height = initialHeight * ratio;
             width = initialWidth * ratio;
-            if (height > this.state.imageHeight) {
-                ratio = this.state.imageHeight / initialHeight;
+            if (height > imageHeight) {
+                ratio = imageHeight / initialHeight;
                 width = initialWidth * ratio;
                 height = initialHeight * ratio;
             }
         }
-        else if (height > this.state.imageHeight) {
-            ratio = this.state.imageHeight / initialHeight;
+        else if (height > imageHeight) {
+            ratio = imageHeight / initialHeight;
             width = initialWidth * ratio;
             height = initialHeight * ratio;
         }
@@ -259,16 +287,16 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
         // extra data load
         const dataRoiList = restDiagnostic.rois;
         const roiList: IDisplayRoi[] = [];
-        for (let i = 0; i < dataRoiList.length; i++) {
-            const currentRoi = dataRoiList[i];
+        for (const currentRoi of dataRoiList) {
             const pointsFixed: number[] = [];
             for (let pIndex = 0; pIndex < currentRoi.x.length; pIndex++) {
                 pointsFixed.push(currentRoi.x[pIndex] * ratio);
                 pointsFixed.push(currentRoi.y[pIndex] * ratio);
             }
             const roi: IDisplayRoi = {
+                color: currentRoi.color,
                 displayP: pointsFixed,
-                id: i,
+                id: Math.random(),
                 notes: currentRoi.notes,
                 x: currentRoi.x,
                 y: currentRoi.y,
