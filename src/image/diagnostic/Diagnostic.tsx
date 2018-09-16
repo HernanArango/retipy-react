@@ -209,7 +209,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
         const pointCount = this.state.newRoiPoints.length;
         if (pointCount >= 2) {
             this.setState({
-                newRoiPoints: this.state.newRoiPoints.splice(-1, 2),
+                newRoiPoints: this.state.newRoiPoints.slice(0, -2),
             })
         }
         else {
