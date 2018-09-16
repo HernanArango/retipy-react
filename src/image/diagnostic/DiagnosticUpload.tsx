@@ -141,7 +141,7 @@ const DiagnosticUpload = withStyles(styles)(
                             });
                             this.props.toast("Image Selected");
                         })
-                        .catch(error => this.props.toast(error));
+                        .catch(error => this.props.toast(error.message));
                 }
             }
 

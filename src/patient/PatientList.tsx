@@ -178,7 +178,7 @@ const PatientList = withStyles(styles)(
                                 patientList: data.patientList,
                             });
                     })
-                    .catch(error => this.props.toast(error));
+                    .catch(error => this.props.toast(error.message));
             }
         }
 

@@ -114,7 +114,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
     private fetchDiagnostic = () => {
         getDiagnostic(this.state.id, this.props.token)
             .then(data => this.updateDiagnostic(data))
-            .catch(error => this.props.toast(error));
+            .catch(error => this.props.toast(error.message));
     }
 
     private handleUpdateDiagnostic = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

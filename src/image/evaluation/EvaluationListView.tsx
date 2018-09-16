@@ -1,4 +1,5 @@
-import { createStyles, Grid, List, ListItem, ListItemText, Paper, Theme, Typography, WithStyles, withStyles } from "@material-ui/core";
+import { createStyles, Grid, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, Paper, Theme, Typography, WithStyles, withStyles } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { EvaluationStatus } from "./Evaluation";
@@ -24,6 +25,7 @@ interface IEvaluationViewProps extends WithStyles<typeof styles> {
     evaluationList: IEvaluationSimple[],
     toast: (message: string) => any,
     diagnosticId: number,
+    handleDeleteEvaluation: (id: number) => (event: React.MouseEvent<HTMLElement>) => void,
     opticalEvaluationId: number,
     patientId: number,
 }
@@ -84,6 +86,14 @@ const EvaluationListView = withStyles(styles)(
                             primary={evaluation.name}
                             secondary={evaluation.status}
                         />
+
+                        <ListItemSecondaryAction>
+                            <IconButton
+                                aria-label="Delete"
+                                onClick={this.props.handleDeleteEvaluation(evaluation.id)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
                     </ListItem>
                 );
             }

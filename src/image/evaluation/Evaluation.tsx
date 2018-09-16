@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IAuthProps } from '../../common/IAuthProps';
-import { Endpoints, RetipyObjects } from '../../configuration/Endpoints';
 import { IDisplayRoi, IRoi } from "../Roi";
+import { deleteEvaluation, getEvaluation } from './EvaluationController';
 import EvaluationView from './EvaluationView';
 
 export enum EvaluationStatus {
@@ -68,6 +68,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
                 diagnosticId={this.state.diagnosticId}
                 displayImage={this.state.displayImage}
                 displayRois={this.state.displayRois}
+                handleDeleteEvaluation={this.deleteEvaluation}
                 id={this.state.id}
                 image={this.state.image}
                 imageHeight={this.state.imageHeight}
@@ -83,28 +84,15 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
         );
     }
 
+    private deleteEvaluation = () => {
+        return deleteEvaluation(this.props.id, this.props.token)
+    }
+
     private fetchEvaluation = () => {
         if (this.props.token !== "") {
-        fetch(
-            Endpoints.Server + "/retipy" + RetipyObjects.RetipyEvaluation + `/${this.props.id}`,
-            {
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Authorization': this.props.token,
-                    'content-type': 'application/json',
-                },
-                method: 'GET',
-                mode: 'cors',
-                referrer: 'no-referrer',
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw Error("There was an error retrieving the evaluation data");
-                }
-                return response.json();
-            })
-            .then(data => this.setEvaluation(data))
-            .catch(error => this.props.toast(error));
+            getEvaluation(this.props.id, this.props.token)
+                .then(data => this.setEvaluation(data))
+                .catch(error => this.props.toast(error.message));
         }
     }
 

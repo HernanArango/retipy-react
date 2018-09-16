@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IAuthProps } from '../../common/IAuthProps';
-import { Endpoints, RetipyObjects } from '../../configuration/Endpoints';
 import { EvaluationStatus } from './Evaluation';
+import { deleteEvaluation, getEvaluationList } from './EvaluationController';
 import EvaluationListView from './EvaluationListView';
 
 export interface IEvaluationSimple {
@@ -38,42 +38,36 @@ class EvaluationList extends React.Component<IDiagnosticProps, IEvaluationListSt
                 evaluationList={this.state.evaluationList}
                 toast={this.props.toast}
                 diagnosticId={this.props.diagnosticId}
+                handleDeleteEvaluation={this.deleteEvaluation}
                 opticalEvaluationId={this.props.opticalEvaluationId}
                 patientId={this.props.patientId}
             />
         );
     }
 
+    private deleteEvaluation = (id: number) => (event: React.MouseEvent<HTMLElement>) => {
+        deleteEvaluation(id, this.props.token)
+            .then(response => {
+                if (response.ok) {
+                    this.props.toast(`Removed evaluation ${id}`);
+                    this.fetchEvaluationList();
+                }
+                else {
+                    this.props.toast(`There was an error removing evaluation ${id}`);
+                }
+            });
+    }
+
     private fetchEvaluationList = () => {
         if (this.props.token !== "") {
-            fetch(
-                Endpoints.Server
-                + Endpoints.Diagnostic
-                + `/${this.props.id}`
-                + RetipyObjects.RetipyEvaluation,
-                {
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Authorization': this.props.token,
-                        'content-type': 'application/json',
-                    },
-                    method: 'GET',
-                    mode: 'cors',
-                    referrer: 'no-referrer',
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw Error("Error when retrieving retipy evaluation list");
-                    }
-                    return response.json();
-                })
+            getEvaluationList(this.props.id, this.props.token)
                 .then(data => {
                     this.setState(
                         {
                             evaluationList: data.evaluationList,
                         });
                 })
-                .catch(error => this.props.toast(error));
+                .catch(error => this.props.toast(error.message));
         }
     }
 }

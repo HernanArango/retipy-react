@@ -1,6 +1,7 @@
-import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
+import { Button, Grid, IconButton, Paper, TextField, Typography } from "@material-ui/core";
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import DeleteIcon from "@material-ui/icons/Delete";
 import * as React from "react";
 import { Image, Layer, Stage } from "react-konva";
 import { Redirect } from "react-router";
@@ -51,6 +52,7 @@ interface IEvaluationViewState {
 }
 interface IEvaluationViewProps extends WithStyles<typeof styles>, IDisplayEvaluation {
     diagnosticId: number,
+    handleDeleteEvaluation: () => Promise<Response>,
     imageHeight: number,
     imageWidth: number,
     opticalEvaluationId: number,
@@ -102,8 +104,19 @@ const EvaluationView = withStyles(styles)(
                         </Grid>
                         <Grid item={true} lg={6} md={12} sm={12} xs={12}>
                             <Paper className={classes.paper}>
-                                <Typography variant="display1">Evaluation Information</Typography>
                                 <Grid container={true}>
+                                    <Grid item={true} lg={10} md={10} sm={10} xs={10}>
+                                        <Typography variant="display1">
+                                            Evaluation Information
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item={true} lg={2} md={2} sm={2} xs={2}>
+                                        <IconButton
+                                            aria-label="Delete"
+                                            onClick={this.handleDelete}>
+                                        <DeleteIcon />
+                                        </IconButton>
+                                    </Grid>
                                     <Grid item={true} xs={6}>
                                         <TextField
                                             value={this.props.rois.length}
@@ -147,6 +160,15 @@ const EvaluationView = withStyles(styles)(
                     </Grid>
                 </div>
             );
+        }
+
+        private handleDelete = () => {
+            this.props.handleDeleteEvaluation()
+                .then(response => {
+                    if (response.ok) {
+                        this.handleDiagnosticButton()
+                    }
+                })
         }
 
         private handleDiagnosticButton = () => {

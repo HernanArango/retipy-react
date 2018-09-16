@@ -33,6 +33,8 @@ const EvaluationAddView = withStyles(styles)(
                         <Typography variant="display1">
                             Run Automated Algorithm
                         </Typography>
+                        <br />
+                        <Typography variant="body1">Most algorithms require a successful segmentation before calling them</Typography>
                         <TextField
                             required={true}
                             id="algorithm-selection"
@@ -43,6 +45,9 @@ const EvaluationAddView = withStyles(styles)(
                             fullWidth={true}
                             select={true}
                         >
+                            <MenuItem key={RetipyTask.Segmentation} value={RetipyTask.Segmentation}>
+                                Segmentation
+                            </MenuItem>
                             <MenuItem key={RetipyTask.TortuosityDensity} value={RetipyTask.TortuosityDensity}>
                                 Tortuosity by Density Algorithm
                             </MenuItem>

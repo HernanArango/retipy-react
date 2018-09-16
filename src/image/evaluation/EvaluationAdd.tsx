@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { IAuthProps } from '../../common/IAuthProps';
-import { Endpoints, RetipyObjects } from '../../configuration/Endpoints';
 import EvaluationAddView from './EvaluationAddView';
+import { createEvaluationForDiagnostic } from './EvaluationController';
 
 export enum RetipyTask {
     TortuosityDensity = "TortuosityDensity",
     TortuosityFractal = "TortuosityFractal",
     LandmarksClassification = "LandmarksClassification",
+    Segmentation = "Segmentation",
+
 }
 
 interface IEvaluationAddState {
@@ -22,7 +24,7 @@ class EvaluationAdd extends React.Component<IEvaluationAddProps, IEvaluationAddS
         super(props);
 
         this.state = {
-            selection: RetipyTask.TortuosityDensity,
+            selection: RetipyTask.Segmentation,
         }
     }
 
@@ -44,22 +46,10 @@ class EvaluationAdd extends React.Component<IEvaluationAddProps, IEvaluationAddS
 
     private handleSend = () => {
         if (this.props.token !== "") {
-            fetch(
-                Endpoints.Server
-                + Endpoints.Diagnostic
-                + `/${this.props.diagnosticId}`
-                + RetipyObjects.RetipyEvaluation,
-                {
-                    body: this.state.selection.toString(),
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Authorization': this.props.token,
-                        'content-type': 'text/plain',
-                    },
-                    method: 'POST',
-                    mode: 'cors',
-                    referrer: 'no-referrer',
-                })
+            createEvaluationForDiagnostic(
+                this.props.diagnosticId,
+                this.state.selection.toString(),
+                this.props.token)
                 .then(response => {
                     if (!response.ok) {
                         throw Error("Error when sending new evaluation request");
@@ -69,7 +59,7 @@ class EvaluationAdd extends React.Component<IEvaluationAddProps, IEvaluationAddS
                             "New evaluation request successfully created, come back later to check the results");
                     }
                 })
-                .catch(error => this.props.toast(error));
+                .catch(error => this.props.toast(error.message));
         }
     }
 }

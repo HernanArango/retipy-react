@@ -53,5 +53,5 @@ export function saveDiagnostic(
         .then(restDiagnostic => {
             toast("Diagnostic Updated Successfully");
         })
-        .catch(error => toast(error));
+        .catch(error => toast(error.message));
 }
