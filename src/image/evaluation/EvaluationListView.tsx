@@ -86,7 +86,6 @@ const EvaluationListView = withStyles(styles)(
                             primary={evaluation.name}
                             secondary={evaluation.status}
                         />
-
                         <ListItemSecondaryAction>
                             <IconButton
                                 aria-label="Delete"

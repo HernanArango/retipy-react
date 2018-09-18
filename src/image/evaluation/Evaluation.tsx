@@ -6,6 +6,7 @@ import EvaluationView from './EvaluationView';
 
 export enum EvaluationStatus {
     Pending = "Pending",
+    Running = "Running",
     Complete = "Complete",
     Error = "Error"
 }
