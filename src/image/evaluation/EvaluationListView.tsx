@@ -46,7 +46,7 @@ const EvaluationListView = withStyles(styles)(
                 <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                     {this.state.isRedirect && <Redirect to={this.state.redirect}/>}
                     <Paper className={classes.paper}>
-                        <Typography variant="display1">
+                        <Typography variant="h4">
                             Evaluation List
                         </Typography>
                         <List>

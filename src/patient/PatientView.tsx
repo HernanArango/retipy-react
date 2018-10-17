@@ -118,7 +118,7 @@ const PatientView = withStyles(styles)(
                 <div className={classes.root}>
                     <Grid container={true} spacing={16} className={classes.container} justify={'center'}>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
-                            <Typography variant="display1" className={classes.title}>
+                            <Typography variant="h4" className={classes.title}>
                                 Patient: Demographic Data
                             </Typography>
                             <Paper className={classes.paper}>
@@ -318,7 +318,7 @@ const PatientView = withStyles(styles)(
                             </Paper>
                         </Grid>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
-                            <Typography variant="display1" className={classes.title}>
+                            <Typography variant="h4" className={classes.title}>
                                 Optical Evaluations
                             </Typography>
                         </Grid>
@@ -349,7 +349,7 @@ const PatientView = withStyles(styles)(
                         <Grid container={true} >
                             <Grid item={true} lg={6} md={6} sm={6} xs={12}>
                                 <Typography
-                                    variant="title" gutterBottom={true} className={classes.title}
+                                    variant="h6" gutterBottom={true} className={classes.title}
                                 >
                                     Date: {date.substring(0, 10)}
                                 </Typography>

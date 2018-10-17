@@ -88,6 +88,7 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                 handleSave={this.saveOpticalEvaluation}
                 toast={this.props.toast}
                 token={this.props.token}
+                user={this.props.user}
             />
         );
     }

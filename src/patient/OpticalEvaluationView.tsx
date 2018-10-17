@@ -85,6 +85,38 @@ const pupilAssessmentMenuItem = [
     { label: 4 },
 ].map(suggestion => (<MenuItem key={suggestion.label} value={suggestion.label}>{`${suggestion.label}+`}</MenuItem>));
 
+const intraocularPressureMenuItem = [
+    { label: 10 },
+    { label: 11 },
+    { label: 12 },
+    { label: 13 },
+    { label: 14 },
+    { label: 15 },
+    { label: 16 },
+    { label: 17 },
+    { label: 18 },
+    { label: 19 },
+    { label: 20 },
+    { label: 21 },
+    { label: 22 },
+    { label: 23 },
+    { label: 24 },
+    { label: 25 },
+    { label: 26 },
+    { label: 27 },
+    { label: 28 },
+    { label: 29 },
+    { label: 30 },
+    { label: 31},
+].map(suggestion => {
+    if (suggestion.label === 31) {
+        return <MenuItem key={suggestion.label} value={31}>{`>30`}</MenuItem>
+    }
+    else {
+        return <MenuItem key={suggestion.label} value={suggestion.label}>{`${suggestion.label}`}</MenuItem>
+    }
+    });
+
 interface IOpticalEvaluationViewState {
     isRedirect: boolean,
     newComponentName: string,
@@ -117,7 +149,7 @@ const OpticalEvaluationView = withStyles(styles)(
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                             <Typography
                                 className={classes.heading}
-                                variant="display1"
+                                variant="h4"
                                 gutterBottom={true}
                             >
                                 Examination - {this.props.creationDate.substring(0, 10)}
@@ -131,7 +163,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                         &nbsp;&nbsp;&nbsp;
                         </Grid>
                                     <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                                        <Typography variant="display1">Visual Acuity</Typography>
+                                        <Typography variant="h4">Visual Acuity</Typography>
                                     </Grid>
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
@@ -151,7 +183,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
                                             className={classes.textField}
-                                            id="ODPH"
+                                            id="opticalDiscPH"
                                             disabled={this.props.disabled}
                                             placeholder="PH - Right Eye"
                                             label="PH - Right Eye"
@@ -181,7 +213,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
                                             className={classes.textField}
-                                            id="OIPH"
+                                            id="leftEyePH"
                                             disabled={this.props.disabled}
                                             placeholder="PH - Left Eye"
                                             label="PH - Left Eye"
@@ -194,11 +226,11 @@ const OpticalEvaluationView = withStyles(styles)(
                                         </TextField>
                                     </Grid>
                                     <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                                        <Typography variant="display1">Pupils</Typography>
+                                        <Typography variant="h4">Pupils</Typography>
                                     </Grid>
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
-                                            id="PDRD"
+                                            id="rightPupilRD"
                                             disabled={this.props.disabled}
                                             placeholder="RD - Right Eye"
                                             label="RD - Right Eye"
@@ -212,7 +244,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     </Grid>
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
-                                            id="PDRC"
+                                            id="rightPupilRC"
                                             disabled={this.props.disabled}
                                             placeholder="RC - Right Eye"
                                             label="RC - Right Eye"
@@ -226,7 +258,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     </Grid>
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
-                                            id="PDDPA"
+                                            id="rightPupilDPA"
                                             disabled={this.props.disabled}
                                             placeholder="DPA - Right Eye"
                                             label="DPA - Right Eye"
@@ -240,10 +272,10 @@ const OpticalEvaluationView = withStyles(styles)(
                                     </Grid>
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
-                                            id="LERD"
+                                            id="leftEyeRD"
                                             disabled={this.props.disabled}
-                                            placeholder="RD - Right Eye"
-                                            label="RD - Right Eye"
+                                            placeholder="RD - Left Eye"
+                                            label="RD - Left Eye"
                                             value={this.props.pupilLeftEyeRD}
                                             onChange={this.handleEventChange('pupilLeftEyeRD')}
                                             fullWidth={true}
@@ -255,7 +287,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
                                             required={true}
-                                            id="LERC"
+                                            id="leftEyeRC"
                                             disabled={this.props.disabled}
                                             placeholder="1+"
                                             helperText="RC - Left Eye"
@@ -271,7 +303,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     <Grid item={true} lg={5} md={5} sm={12} xs={12}>
                                         <TextField
                                             required={true}
-                                            id="PIDPA"
+                                            id="leftEyeDPA"
                                             disabled={this.props.disabled}
                                             placeholder="1+"
                                             helperText="DPA - Left Eye"
@@ -285,7 +317,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                         </TextField>
                                     </Grid>
                                     <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                                        <Typography variant="display1">Biomicroscopy</Typography>
+                                        <Typography variant="h4">Biomicroscopy</Typography>
                                         <Grid container={true} spacing={16} justify={'space-around'}>
                                             <Grid item={true} lg={10} md={10} sm={10} xs={8}>
                                                 <TextField
@@ -323,7 +355,10 @@ const OpticalEvaluationView = withStyles(styles)(
                                             onChange={this.handleEventChange('intraocularPressure')}
                                             label="Intraocular Pressure"
                                             fullWidth={true}
-                                        />
+                                            select={true}
+                                        >
+                                            {intraocularPressureMenuItem}
+                                        </TextField>
                                     </Grid>
                                 </Grid>
                                 <br /><br /><br />
@@ -351,7 +386,7 @@ const OpticalEvaluationView = withStyles(styles)(
                             </Paper>
                         </Grid>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
-                            <Typography variant="display1" className={classes.title}>
+                            <Typography variant="h4" className={classes.title}>
                                 Diagnostic Images
                             </Typography>
                         </Grid>
@@ -363,7 +398,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                     <Grid container={true} >
                                         <Grid item={true} lg={6} md={6} sm={6} xs={12}>
                                             <Typography
-                                                variant="title" gutterBottom={true} className={classes.title}
+                                                variant="h6" gutterBottom={true} className={classes.title}
                                             >
                                                 Upload new Diagnostic Image
                                             </Typography>
@@ -372,6 +407,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                             <DiagnosticUpload
                                                 toast={this.props.toast}
                                                 token={this.props.token}
+                                                user={this.props.user}
                                                 opticalEvaluationId={this.props.id}
                                                 patientId={this.props.patientId}
                                             />
@@ -478,7 +514,7 @@ const OpticalEvaluationView = withStyles(styles)(
                         <Grid container={true} >
                             <Grid item={true} lg={6} md={6} sm={6} xs={12}>
                                 <Typography
-                                    variant="title" gutterBottom={true} className={classes.title}
+                                    variant="h6" gutterBottom={true} className={classes.title}
                                 >
                                     Diagnostic # {id}
                                 </Typography>

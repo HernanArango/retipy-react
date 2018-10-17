@@ -64,7 +64,7 @@ const DiagnosticUpload = withStyles(styles)(
                         </Button>
                     </label>
                     <Button
-                        variant="raised"
+                        variant="contained"
                         component="span"
                         className={classes.buttonUploadFile}
                         onClick={this.handleButtonUpload}

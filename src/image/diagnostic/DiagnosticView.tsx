@@ -109,6 +109,7 @@ const DiagnosticView = withStyles(styles)(
                                         diagnosticId={this.props.id}
                                         toast={retipyContext.toast}
                                         token={retipyContext.token}
+                                        user={retipyContext.user}
                                     />}
                             </RetipyContextConsumer>
                         }
@@ -120,6 +121,7 @@ const DiagnosticView = withStyles(styles)(
                                         id={this.props.id}
                                         toast={retipyContext.toast}
                                         token={retipyContext.token}
+                                        user={retipyContext.user}
                                         patientId={this.props.patientId}
                                         diagnosticId={this.props.diagnosticId}
                                         opticalEvaluationId={this.props.opticalEvaluationId}
@@ -130,7 +132,7 @@ const DiagnosticView = withStyles(styles)(
                         {this.props.isEditingEnabled &&
                             <Grid item={true} lg={5} md={12} sm={12} xs={12}>
                                 <Paper className={classes.paper}>
-                                    <Typography variant="display1">
+                                    <Typography variant="h4">
                                         Roi List
                                     </Typography>
                                     <List
@@ -145,7 +147,7 @@ const DiagnosticView = withStyles(styles)(
                         {this.props.isEditingEnabled &&
                             <Grid item={true} lg={6} md={12} sm={12} xs={12}>
                                 <Paper className={classes.paper}>
-                                    <Typography variant="display1">New Region of Interest</Typography>
+                                    <Typography variant="h4">New Region of Interest</Typography>
                                     <Grid container={true}>
                                         <Grid item={true} lg={2} xs={3}>
                                             <FormControlLabel
@@ -201,7 +203,7 @@ const DiagnosticView = withStyles(styles)(
                                         fullWidth={true}
                                     />
                                     <Button
-                                        variant="raised"
+                                        variant="contained"
                                         type="submit"
                                         onClick={this.props.handleRoiSave}
                                         disabled={!this.props.isAddingRoi}
@@ -222,7 +224,7 @@ const DiagnosticView = withStyles(styles)(
                         }{this.props.isEditingEnabled &&
                             <Grid item={true} lg={6} md={12} sm={12} xs={12}>
                                 <Paper className={classes.paper}>
-                                    <Typography variant="display1">Diagnostic Information</Typography>
+                                    <Typography variant="h4">Diagnostic Information</Typography>
                                     <Grid container={true}>
                                         <Grid item={true} xs={6}>
                                             <TextField
@@ -252,7 +254,7 @@ const DiagnosticView = withStyles(styles)(
                                         </Grid>
                                         <Grid item={true} xs={12}>
                                             <Button
-                                                variant="raised"
+                                                variant="contained"
                                                 color="primary"
                                                 className={classes.button}
                                                 onClick={this.props.handleSaveDiagnostic}

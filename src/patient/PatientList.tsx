@@ -84,7 +84,7 @@ const PatientList = withStyles(styles)(
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                             <Grid container={true} spacing={16} justify={'space-around'}>
                                 <Grid item={true} lg={9} md={9} sm={8} xs={8}>
-                                    <Typography variant="display1" className={classes.title} >Patient List</Typography>
+                                    <Typography variant="h4" className={classes.title} >Patient List</Typography>
                                 </Grid>
                                 <Grid item={true} lg={3} md={3} sm={4} xs={4}>
                                     {this.state.isRedirectEnabled && <Redirect to="/patient/0" />}

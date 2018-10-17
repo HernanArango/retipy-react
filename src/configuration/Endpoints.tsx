@@ -1,7 +1,7 @@
 export enum Endpoints {
     Server = "http://localhost:8080",
     Patient = "/retipy/patient",
-    Login = "/retipy/user/login",
+    User = "/retipy/user",
     Token = "/retipy/user/token",
     OpticalEvaluation = "/retipy/opticalevaluation",
     Diagnostic = "/retipy/diagnostic",

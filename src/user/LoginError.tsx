@@ -25,7 +25,7 @@ const styles = (theme: Theme) =>
 const LoginError = withStyles(styles)(({ classes }: WithStyles<typeof styles>) => (
     <div className={classes.root}>
     <Grid container={true} spacing={16} className={classes.container} justify={'center'}>
-        <Typography variant="display1" className={classes.title}>You are not logged in</Typography>
+        <Typography variant="h4" className={classes.title}>You are not logged in</Typography>
     </Grid>
     </div>
 ));

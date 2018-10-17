@@ -7,12 +7,15 @@ import * as Cookies from 'es-cookie';
 import * as React from 'react';
 import { Redirect } from "react-router";
 import './App.css';
+import { emptyUser, IUserData, userFromToken } from "./common/IAuthProps";
 import { Endpoints } from "./configuration/Endpoints";
 import Routes from './configuration/Routes';
 import withRoot from './configuration/withRoot';
 import { RetipyContextProvider } from './context/RetipyContext';
-import Login from "./user/Login";
+import CreateUserDialog from "./user/CreateUserDialog";
 import LoginError from "./user/LoginError";
+import Profile from "./user/profile/Profile";
+import { Role } from "./user/Roles";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -42,13 +45,14 @@ const styles = (theme: Theme) =>
 
 interface IAppState {
   anchorLogin: HTMLElement | null,
-  isLoginDialogOpen: boolean,
+  isCreateUserOpen: boolean,
+  isProfileOpen: boolean,
   isRedirecting: boolean,
   isToastOpen: boolean,
   redirect: string,
   toast: string,
   token: string,
-  username: string,
+  user: IUserData,
 }
 
 interface IAppProps {
@@ -61,13 +65,14 @@ class App extends React.Component<IAppProps, IAppState> {
 
     this.state = {
       anchorLogin: null,
-      isLoginDialogOpen: false,
+      isCreateUserOpen: false,
+      isProfileOpen: false,
       isRedirecting: false,
       isToastOpen: false,
       redirect: "",
       toast: "",
       'token': "",
-      'username': "",
+      user: emptyUser,
 
     }
     this.refreshToken();
@@ -75,7 +80,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
   public componentDidUpdate() {
     if (this.state.isRedirecting) {
-      this.setState({redirect: "", isRedirecting: false});
+      this.setState({ redirect: "", isRedirecting: false });
     }
   }
 
@@ -94,13 +99,27 @@ class App extends React.Component<IAppProps, IAppState> {
           {
             toast: this.toast,
             token: this.state.token,
-            username: this.state.username,
+            user: this.state.user,
           }
         }
       >
         <div className={classes.root}>
           {this.state.isRedirecting && <Redirect to={this.state.redirect} />}
-          <Login open={this.state.isLoginDialogOpen} closeDialog={this.closeDialog} setLoginData={this.setLoginData} />
+          <Profile
+            open={this.state.isProfileOpen}
+            closeDialog={this.closeProfileDialog}
+            setLoginData={this.setLoginData}
+            toast={this.toast}
+            token={this.state.token}
+            user={this.state.user}
+          />
+          <CreateUserDialog
+            open={this.state.isCreateUserOpen}
+            closeDialog={this.closeCreateUserDialog}
+            toast={this.toast}
+            token={this.state.token}
+            user={this.state.user}
+          />
           <Snackbar
             anchorOrigin={{
               horizontal: 'left',
@@ -131,14 +150,14 @@ class App extends React.Component<IAppProps, IAppState> {
                 <path d="M11.744099 1.93198q.381 0 .85725.0635.508.0317.98425.127.47625.0635.85725.15875.41275.0635.60325.127l-.508 2.57175q-.34925-.127-1.17475-.28575-.79375-.1905-2.06375-.1905-.8255 0-1.6509998.1905-.79375.15875-1.04775.22225v13.87475h-2.95275V2.97973q1.04775-.381 2.6035-.6985 1.55575-.34925 3.4924998-.34925z" fill="#2196f3" />
                 <path d="M11.397 1.5703746q.381 0 .85725.0635.508.03175.98425.127.47625.0635.85725.15875.41275.0635.60325.127l-.508 2.57175q-.34925-.127-1.17475-.28575-.79375-.1905-2.06375-.1905-.8255 0-1.6510001.1905-.79375.15875-1.04775.22225V18.429625h-2.95275V2.6181246q1.04775-.381 2.6035-.6985 1.55575-.34925 3.4925001-.34925z" />
               </SvgIcon>
-              <Typography variant="title" color="inherit" className={classes.flex}>
+              <Typography variant="h6" color="inherit" className={classes.flex}>
                 retipy
               </Typography>
               <IconButton
                 color="inherit"
                 onClick={this.handleHomeButton}
               >
-                <Home/>
+                <Home />
               </IconButton>
               <div>
                 <IconButton
@@ -146,7 +165,7 @@ class App extends React.Component<IAppProps, IAppState> {
                   aria-owns={userMenuOpen ? 'menu-appbar' : undefined}
                   color="inherit"
                   onClick={this.openLoginDialog}
-                  >
+                >
                   <AccountCircleSharp color="inherit" />
                 </IconButton>
                 <Menu
@@ -163,20 +182,23 @@ class App extends React.Component<IAppProps, IAppState> {
                   open={userMenuOpen}
                   onClose={this.handleCloseUserMenu}
                 >
-                  <MenuItem onClick={this.handleCloseUserMenu}>Profile</MenuItem>
+                  <MenuItem onClick={this.openProfileDialog}>Profile</MenuItem>
+                  {this.state.user.scope.indexOf(Role.Administrator) > -1 &&
+                    <MenuItem onClick={this.openCreateUserDialog}>Create User</MenuItem>
+                  }
                   <MenuItem onClick={this.handleLogout}>Log out</MenuItem>
                 </Menu>
               </div>
-              {this.state.username && <Typography color="inherit">{this.state.username}</Typography>}
+              {this.state.user.sub !== "" && <Typography color="inherit">{this.state.user.sub}</Typography>}
             </Toolbar>
           </AppBar>
 
           {app}
 
           <footer className={classes.footer}>
-          <br/>
+            <br />
             <p>retipy <a href="https://github.com/alevalv/retipy-react">v0.0.1</a>
-              <br />Copyright © 2018 Alejandro Valdes - Alejandra Aguiar - Felipe Castaño
+              <br />Copyright © 2018 - Retipy Development Team
           <br />Licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a></p>
             <br />
           </footer>
@@ -186,10 +208,8 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   private async refreshToken() {
-    let username = Cookies.get('username');
     let token = Cookies.get('token');
-    if (username === undefined || token === undefined) {
-      username = "";
+    if (token === undefined) {
       token = "";
     }
     else {
@@ -216,11 +236,10 @@ class App extends React.Component<IAppProps, IAppState> {
         .then((newToken: string) => {
           if (newToken !== "") {
             Cookies.set('token', newToken);
-            Cookies.set('username', username!);
             this.setState(
               {
                 'token': newToken,
-                username: username!,
+                user: userFromToken(newToken),
               });
           }
           else {
@@ -232,18 +251,18 @@ class App extends React.Component<IAppProps, IAppState> {
 
   private logout = () => {
     Cookies.remove('token');
-    Cookies.remove('username');
     this.setState({
       token: "",
-      username: "",
+      user: emptyUser,
     })
+    this.redirect("/");
   }
 
-  private setLoginData = (username: string, token: string) => {
+  private setLoginData = (token: string) => {
     this.setState({
-      isLoginDialogOpen: false,
+      isProfileOpen: false,
       'token': token,
-      'username': username,
+      user: userFromToken(token),
     })
   }
 
@@ -269,7 +288,9 @@ class App extends React.Component<IAppProps, IAppState> {
     })
   }
 
-  private closeDialog = () => { this.setState({ isLoginDialogOpen: false }) };
+  private closeProfileDialog = () => { this.setState({ isProfileOpen: false }) };
+
+  private closeCreateUserDialog = () => { this.setState({ isCreateUserOpen: false }) };
 
   private closeSnackbar = (event: React.SyntheticEvent<any>, reason: string) => {
     if (reason === 'clickaway') {
@@ -292,11 +313,25 @@ class App extends React.Component<IAppProps, IAppState> {
 
   private openLoginDialog = (event: React.MouseEvent<HTMLElement>) => {
     if (this.state.token === "") {
-      this.setState({ isLoginDialogOpen: true });
+      this.setState({ isProfileOpen: true });
     }
     else {
-      this.setState({anchorLogin: event.currentTarget})
+      this.setState({ anchorLogin: event.currentTarget })
     }
+  }
+
+  private openProfileDialog = (event: React.MouseEvent<HTMLElement>) => {
+    this.setState({
+      isProfileOpen: true
+    });
+    this.handleCloseUserMenu();
+  }
+
+  private openCreateUserDialog = (event: React.MouseEvent<HTMLElement>) => {
+    this.setState({
+      isCreateUserOpen: true
+    });
+    this.handleCloseUserMenu();
   }
 
   private handleLogout = () => {
@@ -305,7 +340,7 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   private handleCloseUserMenu = () => {
-    this.setState({anchorLogin: null});
+    this.setState({ anchorLogin: null });
   }
 }
 

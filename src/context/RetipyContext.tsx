@@ -1,8 +1,9 @@
 import * as React from "react";
+import { IUserData } from "../common/IAuthProps";
 
 interface IRetipyContext {
     token: string,
-    username: string,
+    user: IUserData,
     toast: (message: string) => void,
 }
 

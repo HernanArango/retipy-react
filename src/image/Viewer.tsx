@@ -22,7 +22,7 @@ export default class Viewer extends React.Component<IViewerProps> {
             <Grid item={true} lg={7} md={12} sm={12} xs={12} > {/* Konva div */}
                 <Grid container={true} justify="center">
                     <Paper className={this.props.classes.paper}>
-                        <Typography variant="display1">Diagnostic</Typography>
+                        <Typography variant="h4">Diagnostic</Typography>
                         <Stage
                             width={this.props.imageWidth}
                             height={this.props.imageHeight}

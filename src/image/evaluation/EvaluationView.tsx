@@ -83,7 +83,7 @@ const EvaluationView = withStyles(styles)(
                         <Grid item={true} xs={12} sm={12} > {/* Konva div */}
                             <Grid container={true} justify="center">
                                 <Paper className={this.props.classes.paper}>
-                                    <Typography variant="display1">Evaluation</Typography>
+                                    <Typography variant="h4">Evaluation</Typography>
                                     <Stage
                                         width={this.props.imageWidth}
                                         height={this.props.imageHeight}
@@ -106,7 +106,7 @@ const EvaluationView = withStyles(styles)(
                             <Paper className={classes.paper}>
                                 <Grid container={true}>
                                     <Grid item={true} lg={10} md={10} sm={10} xs={10}>
-                                        <Typography variant="display1">
+                                        <Typography variant="h4">
                                             Evaluation Information
                                         </Typography>
                                     </Grid>

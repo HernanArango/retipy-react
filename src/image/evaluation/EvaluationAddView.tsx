@@ -30,11 +30,11 @@ const EvaluationAddView = withStyles(styles)(
             return (
                 <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                     <Paper className={classes.paper}>
-                        <Typography variant="display1">
+                        <Typography variant="h4">
                             Run Automated Algorithm
                         </Typography>
                         <br />
-                        <Typography variant="body1">Most algorithms require a successful segmentation before calling them</Typography>
+                        <Typography variant="body2">Most algorithms require a successful segmentation before calling them</Typography>
                         <TextField
                             required={true}
                             id="algorithm-selection"
@@ -60,7 +60,7 @@ const EvaluationAddView = withStyles(styles)(
                         </TextField>
                         <Button
                             className={classes.button}
-                            variant="raised"
+                            variant="contained"
                             color="primary"
                             onClick={this.props.handleSend}>
                             Send

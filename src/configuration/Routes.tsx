@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Route } from "react-router-dom";
+import { IUserData } from "../common/IAuthProps";
 import { RetipyContextConsumer } from "../context/RetipyContext";
 import Diagnostic from "../image/diagnostic/Diagnostic";
 import Evaluation from "../image/evaluation/Evaluation";
@@ -9,11 +10,14 @@ import PatientList from "../patient/PatientList";
 
 const renderEvaluation =
     (token: string,
-        toast: (message: string) => any) =>
+    toast: (message: string) => any,
+    user: IUserData,
+        ) =>
         (props: any) =>
             <Evaluation
                 token={token}
                 toast={toast}
+                user={user}
                 id={parseInt(props.match.params.id, 10)}
                 diagnosticId={parseInt(props.match.params.diagnosticId, 10)}
                 opticalEvaluationId={parseInt(props.match.params.opticalEvaluationId, 10)}
@@ -22,9 +26,10 @@ const renderEvaluation =
 
 const renderPatientList =
     (token: string,
-        toast: (message: string) => any) =>
+        toast: (message: string) => any,
+        user: IUserData) =>
         (props: any) =>
-            <PatientList token={token} toast={toast} />;
+            <PatientList token={token} toast={toast} user={user} />;
 
 const renderPatient =
     (token: string,
@@ -72,7 +77,7 @@ const Routes: React.SFC = (props) => {
                     <Route
                         exact={true}
                         path="/"
-                        render={renderPatientList(retipyContext.token, retipyContext.toast)}
+                        render={renderPatientList(retipyContext.token, retipyContext.toast, retipyContext.user)}
                     />
                     <Route
                         exact={true}
@@ -97,7 +102,7 @@ const Routes: React.SFC = (props) => {
                     <Route
                         exact={true}
                         path="/patient/:patientId/opticalevaluation/:opticalEvaluationId/diagnostic/:diagnosticId/evaluation/:id"
-                        render={renderEvaluation(retipyContext.token, retipyContext.toast)}
+                        render={renderEvaluation(retipyContext.token, retipyContext.toast, retipyContext.user)}
                     />
                 </div>
             )}
