@@ -70,6 +70,9 @@ const PasswordHandler = withStyles(styles)(
                             value={this.state.newPassword}
                             onChange={this.handlePasswordFieldChange}
                             error={this.state.passwordHasError}
+                            inputProps={{
+                                maxLength: 50
+                            }}
                         />
                     </Grid>
                     <Grid item={true} lg={11} md={11} sm={11} xs={11} >
@@ -83,6 +86,9 @@ const PasswordHandler = withStyles(styles)(
                             value={this.state.confirmPassword}
                             onChange={this.handleConfirmPasswordChange}
                             error={this.state.passwordHasError}
+                            inputProps={{
+                                maxLength: 50
+                            }}
                         />
                     </Grid>
                     <Grid item={true} lg={11} md={11} sm={11} xs={11} >
