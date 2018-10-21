@@ -1,7 +1,8 @@
 retipy-react
 ============
+[![Build Status](https://travis-ci.org/alevalv/retipy-react.svg?branch=master)](https://travis-ci.org/alevalv/retipy-react)
 
-retipy-react is part of the [retipy](https://github.com/alevalv/retipy-rest) project.
+retipy-react is part of the [retipy](https://github.com/alevalv/retipy) project.
 
 UI implementation that relies on [retipy-rest](https://github.com/alevalv/retipy-rest)
 REST api to provide a good UX when using retipy.
