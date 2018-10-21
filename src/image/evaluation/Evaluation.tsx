@@ -27,6 +27,7 @@ export interface IDisplayEvaluation extends IEvaluation {
     displayImage: HTMLImageElement,
     imageHeight: number,
     imageWidth: number,
+    isImageLoaded: boolean,
     ratio: number,
 }
 
@@ -50,6 +51,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
             image: "",
             imageHeight: 600,
             imageWidth: 600,
+            isImageLoaded: false,
             name: "",
             ratio: 1,
             rois: [],
@@ -74,6 +76,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
                 image={this.state.image}
                 imageHeight={this.state.imageHeight}
                 imageWidth={this.state.imageWidth}
+                isImageLoaded={this.state.isImageLoaded}
                 name={this.state.name}
                 rois={this.state.rois}
                 status={this.state.status}
@@ -167,6 +170,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
                 image: restDiagnostic.image,
                 imageHeight: height,
                 imageWidth: width,
+                isImageLoaded: true,
                 name: restDiagnostic.name,
                 'ratio': ratio,
                 rois: restDiagnostic.rois,

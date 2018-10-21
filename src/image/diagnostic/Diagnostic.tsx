@@ -30,6 +30,7 @@ interface IDiagnosticState extends IDisplayDiagnostic {
     imageHeight: number,
     imageWidth: number,
     isAddingRoi: boolean,
+    isImageLoaded: boolean,
     newRoiColor: string,
     newRoiPoints: number[],
     newRoiText: string,
@@ -57,6 +58,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
             imageHeight: 600,
             imageWidth: 600,
             isAddingRoi: false,
+            isImageLoaded: false,
             newRoiColor: "black",
             newRoiPoints: [],
             newRoiText: "",
@@ -99,6 +101,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 imageHeight={this.state.imageHeight}
                 imageWidth={this.state.imageWidth}
                 isAddingRoi={this.state.isAddingRoi}
+                isImageLoaded={this.state.isImageLoaded}
                 newRoiColor={this.state.newRoiColor}
                 newRoiPoints={this.state.newRoiPoints}
                 newRoiText={this.state.newRoiText}
@@ -310,6 +313,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 image: restDiagnostic.image,
                 imageHeight: height,
                 imageWidth: width,
+                isImageLoaded: true,
                 'ratio': ratio,
                 rois: roiList,
             });

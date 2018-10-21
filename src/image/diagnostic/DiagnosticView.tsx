@@ -33,6 +33,9 @@ const styles = (theme: Theme) => createStyles({
         padding: theme.spacing.unit * 2,
         textAlign: 'center',
     },
+    progress: {
+        margin: theme.spacing.unit * 2,
+    },
     roiButton: {
         margin: theme.spacing.unit / 2,
     },
@@ -66,6 +69,7 @@ interface IDiagnosticViewProps extends WithStyles<typeof styles>, IDisplayDiagno
     imageWidth: number,
     isAddingRoi: boolean,
     isEditingEnabled: boolean,
+    isImageLoaded: boolean,
     newRoiColor: string,
     newRoiPoints: number[],
     newRoiText: string,
@@ -97,11 +101,11 @@ const DiagnosticView = withStyles(styles)(
                             imageHeight={this.props.imageHeight}
                             imageWidth={this.props.imageWidth}
                             isAddingRoi={this.props.isAddingRoi}
+                            isImageLoaded={this.props.isImageLoaded}
                             newRoiPoints={this.props.newRoiPoints}
                             rois={this.props.rois}
                             setImageReference={this.setImageReference}
                         />
-
                         {!this.props.isEditingEnabled &&
                             <RetipyContextConsumer>
                                 {retipyContext => retipyContext &&

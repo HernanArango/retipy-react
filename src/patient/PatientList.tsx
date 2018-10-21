@@ -6,6 +6,7 @@ import { Redirect } from "react-router";
 import { IAuthProps } from "../common/IAuthProps";
 import { IPerson } from "../common/IPerson";
 import { Endpoints } from "../configuration/Endpoints";
+import { Role } from "../user/Roles";
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -86,17 +87,19 @@ const PatientList = withStyles(styles)(
                                 <Grid item={true} lg={9} md={9} sm={8} xs={8}>
                                     <Typography variant="h4" className={classes.title} >Patient List</Typography>
                                 </Grid>
-                                <Grid item={true} lg={3} md={3} sm={4} xs={4}>
-                                    {this.state.isRedirectEnabled && <Redirect to="/patient/0" />}
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        className={classes.button}
-                                        onClick={this.createPatient}
-                                    >
-                                        New Patient
-                                    </Button>
-                                </Grid>
+                                {this.props.user.scope.indexOf(Role.Resident) === -1 &&
+                                    <Grid item={true} lg={3} md={3} sm={4} xs={4}>
+                                        {this.state.isRedirectEnabled && <Redirect to="/patient/0" />}
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.button}
+                                            onClick={this.createPatient}
+                                        >
+                                            New Patient
+                                        </Button>
+                                    </Grid>
+                                }
                             </Grid>
                             <Paper className={classes.paper}>
                                 <Grid container={true} spacing={16} justify={'space-around'}>
