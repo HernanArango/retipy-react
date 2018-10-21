@@ -4,6 +4,7 @@ node_js:
 script:
   - yarn install
   - sed -i 's,http://localhost:8080,https://retipy-rest.avaldes.co,g' src/configuration/Endpoints.tsx
+  - sed -i 's,BrowserRouter,HashRouter,g' src/index.tsx
   - yarn build
 
 deploy:
