@@ -15,4 +15,4 @@ deploy:
   on:
     branch: typescript
   target-branch: gh-pages
-fqdn: retipy.avaldes.co
+  fqdn: retipy.avaldes.co
