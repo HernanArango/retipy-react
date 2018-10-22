@@ -13,5 +13,5 @@ FROM nginx:mainline-alpine
 RUN rm -rf /etc/nginx/conf.d
 COPY docker/conf /etc/nginx
 COPY --from=builder /opt/app/build /usr/share/nginx/html
-EXPOSE 80
+EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
