@@ -1,12 +1,11 @@
 import { Button, createStyles, Grid, MenuItem, Paper, TextField, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import DeleteIcon from '@material-ui/icons/Delete';
-import LaunchIcon from '@material-ui/icons/Launch';
 import SaveIcon from '@material-ui/icons/Save';
 import * as React from "react";
 import { Redirect } from "react-router";
 import { IAuthProps } from "../common/IAuthProps";
+import DiagnosticList from "../image/diagnostic/DiagnosticList";
 import DiagnosticUpload from "../image/diagnostic/DiagnosticUpload";
 import { IOpticalEvaluation } from "./Patient";
 
@@ -107,7 +106,7 @@ const intraocularPressureMenuItem = [
     { label: 28 },
     { label: 29 },
     { label: 30 },
-    { label: 31},
+    { label: 31 },
 ].map(suggestion => {
     if (suggestion.label === 31) {
         return <MenuItem key={suggestion.label} value={31}>{`>30`}</MenuItem>
@@ -115,7 +114,7 @@ const intraocularPressureMenuItem = [
     else {
         return <MenuItem key={suggestion.label} value={suggestion.label}>{`${suggestion.label}`}</MenuItem>
     }
-    });
+});
 
 interface IOpticalEvaluationViewState {
     isRedirect: boolean,
@@ -392,30 +391,36 @@ const OpticalEvaluationView = withStyles(styles)(
                         </Grid>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                             <Grid container={true} >
-                            {this.props.id !== 0 &&
-                            <Grid item={true} lg={12} md={12} sm={12} xs={12}>
-                                <Paper className={classes.paper}>
-                                    <Grid container={true} >
-                                        <Grid item={true} lg={6} md={6} sm={6} xs={12}>
-                                            <Typography
-                                                variant="h6" gutterBottom={true} className={classes.title}
-                                            >
-                                                Upload new Diagnostic Image
+                                {this.props.id !== 0 &&
+                                    <Grid item={true} lg={12} md={12} sm={12} xs={12}>
+                                        <Paper className={classes.paper}>
+                                            <Grid container={true} >
+                                                <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                                    <Typography
+                                                        variant="h6" gutterBottom={true} className={classes.title}
+                                                    >
+                                                        Upload new Diagnostic Image
                                             </Typography>
-                                        </Grid>
-                                        <Grid item={true} lg={6} md={6} sm={6} xs={12}>
-                                            <DiagnosticUpload
-                                                toast={this.props.toast}
-                                                token={this.props.token}
-                                                user={this.props.user}
-                                                opticalEvaluationId={this.props.id}
-                                                patientId={this.props.patientId}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
-                            </Grid>}
-                            {this.renderDiagnostics()}
+                                                </Grid>
+                                                <Grid item={true} lg={6} md={6} sm={6} xs={12}>
+                                                    <DiagnosticUpload
+                                                        toast={this.props.toast}
+                                                        token={this.props.token}
+                                                        user={this.props.user}
+                                                        opticalEvaluationId={this.props.id}
+                                                        patientId={this.props.patientId}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        </Paper>
+                                    </Grid>}
+                                <DiagnosticList
+                                    toast={this.props.toast}
+                                    token={this.props.token}
+                                    user={this.props.user}
+                                    opticalEvaluationId={this.props.id}
+                                    patientId={this.props.patientId}
+                                />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -456,17 +461,6 @@ const OpticalEvaluationView = withStyles(styles)(
             this.props.handleChange(target, event.target.value);
         }
 
-        private handleOpenDiagnostic = (id: number, edit: boolean) => (event: React.MouseEvent<HTMLElement>) => {
-            let redirectString: string = `/patient/${this.props.patientId}/opticalevaluation/${this.props.id}/diagnostic/${id}`;
-            if (edit) {
-                redirectString = redirectString + "/edit"
-            }
-            this.setState({
-                isRedirect: true,
-                redirect: redirectString,
-            })
-        }
-
         private handlePatientButton = (event: any) => {
             this.setState({
                 isRedirect: true,
@@ -497,66 +491,6 @@ const OpticalEvaluationView = withStyles(styles)(
             }
             return (resultComponents);
         };
-
-        private renderDiagnostics = () => {
-            const diagnostics: JSX.Element[] = []
-            for (const diagnosticId of this.props.diagnostics) {
-                diagnostics.push(this.renderDiagnostic(diagnosticId, Math.random()))
-            }
-            return diagnostics;
-        }
-
-        private renderDiagnostic = (id: number, key: number) => {
-            const { classes } = this.props;
-            return (
-                <Grid key={key} item={true} lg={6} md={6} sm={12} xs={12}>
-                    <Paper className={classes.paper}>
-                        <Grid container={true} >
-                            <Grid item={true} lg={6} md={6} sm={6} xs={12}>
-                                <Typography
-                                    variant="h6" gutterBottom={true} className={classes.title}
-                                >
-                                    Diagnostic # {id}
-                                </Typography>
-                            </Grid>
-                            <Grid item={true} lg={6} md={6} sm={6} xs={12}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    size="small"
-                                    className={classes.button}
-                                    onClick={this.handleOpenDiagnostic(id, false)}
-                                >
-                                    View
-                                    <LaunchIcon className={classes.rightIcon} />
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    size="small"
-                                    className={classes.button}
-                                    onClick={this.handleOpenDiagnostic(id, true)}
-                                >
-                                    Edit
-                                    <LaunchIcon className={classes.rightIcon} />
-                                </Button>
-                                <Button
-                                    className={classes.buttonSmall}
-                                    variant="contained"
-                                    color="secondary"
-                                    size="small"
-                                    disabled={true}
-                                // onClick={(e) => this.props.handleDeleteOpticalEvaluation(this.props.id)}
-                                >
-                                    Delete
-                                    <DeleteIcon className={classes.rightIcon} />
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
-            );
-        }
     }
 );
 
