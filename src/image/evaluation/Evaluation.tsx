@@ -153,6 +153,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
             }
             const roi: IDisplayRoi = {
                 color: currentRoi.color,
+                disabled: false,
                 displayP: pointsFixed,
                 id: i,
                 notes: currentRoi.notes,

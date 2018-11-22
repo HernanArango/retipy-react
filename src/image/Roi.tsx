@@ -10,6 +10,7 @@ export interface IRoi {
 export interface IDisplayRoi extends IRoi {
     displayP: number[],
     id: number,
+    disabled: boolean,
 }
 
 interface IPolyRoiState {

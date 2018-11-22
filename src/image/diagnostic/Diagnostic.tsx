@@ -93,6 +93,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 handleRoiDelete={this.handleRoiDelete}
                 handleRoiEnableCreate={this.handleRoiEnableCreate}
                 handleRoiSave={this.handleRoiSave}
+                handleRoiToggleVisibility={this.handleRoiToggleVisibility}
                 handleRoiUndoLastPoint={this.handleRoiUndoLastPoint}
                 handleSaveDiagnostic={this.saveDiagnostic}
                 handleUpdateDiagnostic={this.handleUpdateDiagnostic}
@@ -176,6 +177,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
             }
             const roi: IDisplayRoi = {
                 color: this.state.newRoiColor,
+                disabled: false,
                 displayP: roiPoints,
                 id: Math.random(),
                 notes: this.state.newRoiText,
@@ -201,6 +203,32 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
             if (roi.id !== id)
             {
                 newRoiList.push(roi)
+            }
+        }
+        this.setState({
+            rois: newRoiList,
+        })
+    }
+
+    private handleRoiToggleVisibility = (id:number) => (event: React.MouseEvent<HTMLElement>) => {
+        const newRoiList: IDisplayRoi[] = []
+        for (const roi of this.state.rois)
+        {
+            if (roi.id !== id)
+            {
+                newRoiList.push(roi)
+            }
+            else {
+                const newRoi: IDisplayRoi = {
+                    color: roi.color,
+                    disabled: !roi.disabled,
+                    displayP: roi.displayP,
+                    id: roi.id,
+                    notes: roi.notes,
+                    x: roi.x,
+                    y: roi.y,
+                }
+                newRoiList.push(newRoi);
             }
         }
         this.setState({
@@ -298,6 +326,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
             }
             const roi: IDisplayRoi = {
                 color: currentRoi.color,
+                disabled: false,
                 displayP: pointsFixed,
                 id: Math.random(),
                 notes: currentRoi.notes,

@@ -2,6 +2,8 @@ import { Avatar, Button, FormControlLabel, Grid, IconButton, List, ListItem, Lis
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import DeleteIcon from "@material-ui/icons/Delete";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import * as Konva from "konva";
 import * as React from "react";
 import Redirector from "../../common/Redirector";
@@ -62,6 +64,7 @@ interface IDiagnosticViewProps extends WithStyles<typeof styles>, IDisplayDiagno
     handleRoiDelete: (id: number) => (event: React.MouseEvent<HTMLElement>) => void,
     handleRoiEnableCreate: (event: any) => void,
     handleRoiSave: () => void,
+    handleRoiToggleVisibility: (id:number) => (event: React.MouseEvent<HTMLElement>) => void,
     handleRoiUndoLastPoint: () => void,
     handleSaveDiagnostic: () => void,
     handleUpdateDiagnostic: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void,
@@ -301,6 +304,12 @@ const DiagnosticView = withStyles(styles)(
                                 aria-label="Delete"
                                 onClick={this.props.handleRoiDelete(roi.id)}>
                                 <DeleteIcon />
+                            </IconButton>
+                            <IconButton
+                                aria-label="Toggle Visibility"
+                                onClick={this.props.handleRoiToggleVisibility(roi.id)}>
+                                {!roi.disabled && <VisibilityIcon />}
+                                {roi.disabled && <VisibilityOffIcon />}
                             </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>

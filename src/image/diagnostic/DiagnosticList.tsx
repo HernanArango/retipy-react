@@ -137,7 +137,8 @@ const DiagnosticList = withStyles(styles)(
                 }
             )
                 .then(__ => {
-                    this.props.toast("Diagnostic deleted succesfully")
+                    this.props.toast("Diagnostic deleted successfully")
+                    this.fetchDiagnosticList()
                 })
                 .catch(error => this.props.toast(error.message));
         }
