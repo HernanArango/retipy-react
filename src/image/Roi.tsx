@@ -26,6 +26,7 @@ interface IPolyRoiState {
 interface IPolyRoiProps {
     color: string,
     id: number,
+    fillVisible: boolean,
     points: number[],
     text: string,
     tooltip: string,
@@ -64,7 +65,10 @@ export default class PolyRoi extends React.Component<IPolyRoiProps, IPolyRoiStat
                 key={"r" + this.state.key}
                 closed={true}
                 fill={this.props.color}
+                fillEnabled={this.props.fillVisible}
                 opacity={0.5}
+                stroke="black"
+                strokeWidth={1}
             />,
             <Text
                 key={"t" + this.state.key}

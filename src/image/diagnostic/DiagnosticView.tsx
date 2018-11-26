@@ -64,7 +64,7 @@ interface IDiagnosticViewProps extends WithStyles<typeof styles>, IDisplayDiagno
     handleRoiDelete: (id: number) => (event: React.MouseEvent<HTMLElement>) => void,
     handleRoiEnableCreate: (event: any) => void,
     handleRoiSave: () => void,
-    handleRoiToggleVisibility: (id:number) => (event: React.MouseEvent<HTMLElement>) => void,
+    handleRoiToggleVisibility: (id: number) => (event: React.MouseEvent<HTMLElement>) => void,
     handleRoiUndoLastPoint: () => void,
     handleSaveDiagnostic: () => void,
     handleUpdateDiagnostic: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void,
@@ -286,8 +286,7 @@ const DiagnosticView = withStyles(styles)(
 
         private renderRoiList = (rois: IDisplayRoi[]) => {
             const renderedList: JSX.Element[] = [];
-            for (const roi of rois)
-            {
+            for (const roi of rois) {
                 renderedList.push(
                     <ListItem key={roi.id}>
                         <ListItemAvatar>
@@ -296,7 +295,7 @@ const DiagnosticView = withStyles(styles)(
                             </Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                            primary={"Name: " + roi.notes === "" ? "No note defined": roi.notes}
+                            primary={"Name: " + roi.notes === "" ? "No note defined" : roi.notes}
                             secondary={`color: ${roi.color}`}
                         />
                         <ListItemSecondaryAction>

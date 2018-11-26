@@ -199,7 +199,8 @@ const EvaluationView = withStyles(styles)(
                             key={currentRoi.id}
                             points={currentRoi.displayP}
                             visible={true}
-                            color={currentRoi.color} />);
+                            color={currentRoi.color}
+                            fillVisible={true} />);
                     }
                     return renderedRoi;
                 }

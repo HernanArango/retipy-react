@@ -1,4 +1,4 @@
-import { CircularProgress, createStyles, Grid, Paper, Theme, Typography, WithStyles, withStyles } from '@material-ui/core';
+import { CircularProgress, createStyles, FormControlLabel, Grid, Paper, Switch, Theme, Typography, WithStyles, withStyles } from '@material-ui/core';
 import * as Konva from "konva";
 import * as React from 'react';
 import { Image, Layer, Line, Stage } from "react-konva";
@@ -22,8 +22,19 @@ interface IViewerProps extends WithStyles<typeof styles> {
     handleMouseDown: () => any,
 }
 
+interface IViewerState {
+    isFillVisible: boolean,
+}
+
 const Viewer = withStyles(styles)(
-    class extends React.Component<IViewerProps> {
+    class extends React.Component<IViewerProps, IViewerState> {
+        constructor(props: IViewerProps) {
+            super(props);
+            this.state = {
+                isFillVisible: true,
+            }
+        }
+
         public render() {
             const { classes } = this.props;
             return (
@@ -64,6 +75,15 @@ const Viewer = withStyles(styles)(
                                         {this.renderExistingRoi()}
                                     </Layer>
                                 </Stage>
+                                <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={this.state.isFillVisible}
+                                                color="primary"
+                                                onChange={this.toggleRoiFill}
+                                            />}
+                                        label="Roi Fill"
+                                    />
                             </Paper>
                         }
                     </Grid>
@@ -82,10 +102,18 @@ const Viewer = withStyles(styles)(
                         key={currentRoi.id}
                         points={currentRoi.displayP}
                         visible={true}
-                        color={currentRoi.color} />);
+                        color={currentRoi.color}
+                        fillVisible={this.state.isFillVisible}
+                         />);
                 }
             }
             return renderedRoi;
+        }
+
+        private toggleRoiFill = () => {
+            this.setState({
+                isFillVisible: !this.state.isFillVisible,
+            })
         }
     });
 
