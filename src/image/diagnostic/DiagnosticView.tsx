@@ -60,6 +60,7 @@ interface IDiagnosticViewProps extends WithStyles<typeof styles>, IDisplayDiagno
     handleRoiAddColor: (event: any) => void,
     handleRoiAddNotes: (event: any) => void,
     handleRoiAddPoints: (x: number, y: number) => void,
+    handleRoiCancel: () => void,
     handleRoiClear: () => void,
     handleRoiDelete: (id: number) => (event: React.MouseEvent<HTMLElement>) => void,
     handleRoiEnableCreate: (event: any) => void,
@@ -79,13 +80,24 @@ interface IDiagnosticViewProps extends WithStyles<typeof styles>, IDisplayDiagno
     diagnosticId: number,
     opticalEvaluationId: number,
     patientId: number,
+}
 
+interface IDiagnosticViewState {
+    isDrawing: boolean,
 }
 
 const DiagnosticView = withStyles(styles)(
-    class extends React.Component<IDiagnosticViewProps, {}>{
+    class extends React.Component<IDiagnosticViewProps, IDiagnosticViewState>{
 
         private image: Konva.Image | null = null;
+
+        constructor(props: IDiagnosticViewProps) {
+            super(props);
+
+            this.state = {
+                isDrawing: false,
+            }
+        }
 
         public render(): JSX.Element {
             const { classes } = this.props;
@@ -101,6 +113,8 @@ const DiagnosticView = withStyles(styles)(
                             classes={classes}
                             displayImage={this.props.displayImage}
                             handleMouseDown={this.handleMouseDown}
+                            handleMouseMove={this.handleMouseMove}
+                            handleMouseUp={this.handleMouseUp}
                             imageHeight={this.props.imageHeight}
                             imageWidth={this.props.imageWidth}
                             isAddingRoi={this.props.isAddingRoi}
@@ -156,7 +170,7 @@ const DiagnosticView = withStyles(styles)(
                                 <Paper className={classes.paper}>
                                     <Typography variant="h4">New Region of Interest</Typography>
                                     <Grid container={true}>
-                                        <Grid item={true} lg={2} xs={3}>
+                                        <Grid item={true} lg={2} md={2} sm={2} xs={3}>
                                             <FormControlLabel
                                                 control={
                                                     <Switch
@@ -167,16 +181,27 @@ const DiagnosticView = withStyles(styles)(
                                                 label="Add new"
                                             />
                                         </Grid>
-                                        <Grid item={true} lg={4} xs={7} >
+                                        <Grid item={true} lg={3} md={3} sm={3} xs={5} >
                                             <Button
                                                 onClick={this.props.handleRoiUndoLastPoint}
                                                 disabled={!this.props.isAddingRoi}
                                                 className={classes.roiButton}
+                                                variant="outlined"
                                             >
                                                 Undo Last Point
-                                </Button>
+                                            </Button>
                                         </Grid>
-                                        <Grid item={true} lg={1} xs={2}>
+                                        <Grid item={true} lg={3} md={3} sm={3} xs={5} >
+                                            <Button
+                                                onClick={this.props.handleRoiClear}
+                                                disabled={!this.props.isAddingRoi}
+                                                className={classes.roiButton}
+                                                variant="outlined"
+                                            >
+                                                Clear
+                                            </Button>
+                                        </Grid>
+                                        <Grid item={true} lg={1} md={2} xs={2}>
                                             <TextField
                                                 value={this.props.newRoiPoints.length / 2}
                                                 label="Points"
@@ -220,7 +245,7 @@ const DiagnosticView = withStyles(styles)(
                             </Button>
                                     <Button
                                         color="primary"
-                                        onClick={this.props.handleRoiClear}
+                                        onClick={this.props.handleRoiCancel}
                                         disabled={!this.props.isAddingRoi}
                                         className={classes.roiButton}
                                     >
@@ -323,12 +348,28 @@ const DiagnosticView = withStyles(styles)(
 
         private handleMouseDown = () => {
             if (this.props.isAddingRoi) {
+                this.setState({
+                    isDrawing: true,
+                })
                 if (this.image !== null) {
                     const stage = this.image.getStage();
                     const point = stage.getPointerPosition();
                     this.props.handleRoiAddPoints(point.x, point.y);
                 }
             }
+        }
+
+        private handleMouseMove = () => {
+            if (this.state.isDrawing && this.image !== null) {
+                const point = this.image.getStage().getPointerPosition();
+                this.props.handleRoiAddPoints(point.x, point.y);
+            }
+        }
+
+        private handleMouseUp = () => {
+            this.setState({
+                isDrawing: false,
+            })
         }
     });
 

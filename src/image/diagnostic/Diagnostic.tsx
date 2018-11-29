@@ -89,6 +89,7 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
                 handleRoiAddColor={this.handleRoiAddColor}
                 handleRoiAddNotes={this.handleRoiAddNotes}
                 handleRoiAddPoints={this.handleRoiAddPoints}
+                handleRoiCancel={this.handleRoiCancel}
                 handleRoiClear={this.handleRoiClear}
                 handleRoiDelete={this.handleRoiDelete}
                 handleRoiEnableCreate={this.handleRoiEnableCreate}
@@ -152,9 +153,15 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
         });
     }
 
-    private handleRoiClear = () => {
+    private handleRoiCancel = () => {
         this.setState({
             isAddingRoi: false,
+            newRoiPoints: [],
+        });
+    }
+
+    private handleRoiClear = () => {
+        this.setState({
             newRoiPoints: [],
         });
     }

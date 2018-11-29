@@ -61,7 +61,7 @@ class Patient extends React.Component<IPatientProps, IPatientState> {
 
         this.state = {
             assignedDoctors: [],
-            birthDate: "",
+            birthDate: new Date().toJSON().slice(0,10),
             doctors: new Map(),
             education: Education.None,
             familiarPast: [],
@@ -209,7 +209,7 @@ class Patient extends React.Component<IPatientProps, IPatientState> {
         )
             .then(response => {
                 if (!response.ok) {
-                    throw Error("There was an error saving the current patient");
+                    throw Error(response.statusText);
                 }
                 return response.json();
             })

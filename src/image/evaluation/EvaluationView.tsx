@@ -200,7 +200,9 @@ const EvaluationView = withStyles(styles)(
                             points={currentRoi.displayP}
                             visible={true}
                             color={currentRoi.color}
-                            fillVisible={true} />);
+                            fillVisible={true}
+                            tooltipVisible={true}
+                            />);
                     }
                     return renderedRoi;
                 }

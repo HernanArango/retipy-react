@@ -20,10 +20,13 @@ interface IViewerProps extends WithStyles<typeof styles> {
     isAddingRoi: boolean,
     rois: IDisplayRoi[],
     handleMouseDown: () => any,
+    handleMouseMove: () => any,
+    handleMouseUp: () => any,
 }
 
 interface IViewerState {
     isFillVisible: boolean,
+    isTooltipVisible: boolean,
 }
 
 const Viewer = withStyles(styles)(
@@ -32,6 +35,7 @@ const Viewer = withStyles(styles)(
             super(props);
             this.state = {
                 isFillVisible: true,
+                isTooltipVisible: true,
             }
         }
 
@@ -40,52 +44,70 @@ const Viewer = withStyles(styles)(
             return (
                 <Grid item={true} lg={7} md={12} sm={12} xs={12} > {/* Konva div */}
                     <Grid container={true} justify="center">
-                        {!this.props.isImageLoaded &&
-                            <Paper className={this.props.classes.paper}>
-                                <CircularProgress className={classes.progress} />
-                            </Paper>
-                        }
-                        {this.props.isImageLoaded &&
-                            <Paper className={this.props.classes.paper}>
+                        <Paper className={this.props.classes.paper}>
+                            <Grid item={true} lg={12} md={12} sm={12} xs={12}>
                                 <Typography variant="h4">Diagnostic</Typography>
-                                <Stage
-                                    width={this.props.imageWidth}
-                                    height={this.props.imageHeight}
-                                    onContentClick={this.props.handleMouseDown}
-                                    onContentTouchStart={this.props.handleMouseDown}
-                                >
-                                    <Layer>
-                                        <Image
-                                            image={this.props.displayImage}
-                                            ref={this.props.setImageReference}
-                                            width={this.props.imageWidth}
-                                            height={this.props.imageHeight}
-                                        />
-                                    </Layer>
-                                    <Layer>
-                                        <Line
-                                            points={this.props.newRoiPoints}
-                                            closed={false}
-                                            stroke="white"
-                                            opacity={0.5}
-                                            visible={this.props.isAddingRoi}
-                                        />
-                                    </Layer>
-                                    <Layer>
-                                        {this.renderExistingRoi()}
-                                    </Layer>
-                                </Stage>
+                            </Grid>
+                            <Grid item={true} lg={12} md={12} sm={12} xs={12}>
+                                {!this.props.isImageLoaded &&
+                                    <CircularProgress className={classes.progress} />
+                                }
+                                {this.props.isImageLoaded &&
+                                    <Stage
+                                        width={this.props.imageWidth}
+                                        height={this.props.imageHeight}
+                                        onContentMouseDown={this.props.handleMouseDown}
+                                        onContentTouchStart={this.props.handleMouseDown}
+                                        onContentTouchMove={this.props.handleMouseMove}
+                                        onContentMouseMove={this.props.handleMouseMove}
+                                        onContentMouseUp={this.props.handleMouseUp}
+                                        onContentTouchEnd={this.props.handleMouseUp}
+                                    >
+                                        <Layer>
+                                            <Image
+                                                image={this.props.displayImage}
+                                                ref={this.props.setImageReference}
+                                                width={this.props.imageWidth}
+                                                height={this.props.imageHeight}
+                                            />
+                                        </Layer>
+                                        <Layer>
+                                            <Line
+                                                points={this.props.newRoiPoints}
+                                                closed={false}
+                                                stroke="white"
+                                                opacity={0.5}
+                                                visible={this.props.isAddingRoi}
+                                            />
+                                        </Layer>
+                                        <Layer>
+                                            {this.renderExistingRoi()}
+                                        </Layer>
+                                    </Stage>
+                                }
+                            </Grid>
+                            <Grid item={true} lg={12} md={12} sm={12} xs={12} >
                                 <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={this.state.isFillVisible}
-                                                color="primary"
-                                                onChange={this.toggleRoiFill}
-                                            />}
-                                        label="Roi Fill"
-                                    />
-                            </Paper>
-                        }
+                                    control={
+                                        <Switch
+                                            checked={this.state.isFillVisible}
+                                            color="primary"
+                                            onChange={this.toggleRoiFill}
+                                        />}
+                                    label="Roi Fill"
+                                />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={this.state.isTooltipVisible}
+                                            color="primary"
+                                            onChange={this.toggleRoiTooltips}
+                                        />}
+                                    label="Roi Tooltips"
+                                />
+                            </Grid>
+                        </Paper>
                     </Grid>
                 </Grid>
             );
@@ -104,7 +126,8 @@ const Viewer = withStyles(styles)(
                         visible={true}
                         color={currentRoi.color}
                         fillVisible={this.state.isFillVisible}
-                         />);
+                        tooltipVisible={this.state.isTooltipVisible}
+                    />);
                 }
             }
             return renderedRoi;
@@ -113,6 +136,12 @@ const Viewer = withStyles(styles)(
         private toggleRoiFill = () => {
             this.setState({
                 isFillVisible: !this.state.isFillVisible,
+            })
+        }
+
+        private toggleRoiTooltips = () => {
+            this.setState({
+                isTooltipVisible: !this.state.isTooltipVisible,
             })
         }
     });

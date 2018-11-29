@@ -14,7 +14,6 @@ export interface IDisplayRoi extends IRoi {
 }
 
 interface IPolyRoiState {
-    isTooltipVisible: boolean,
     key: number,
     points: number[],
     text: string,
@@ -30,37 +29,53 @@ interface IPolyRoiProps {
     points: number[],
     text: string,
     tooltip: string,
+    tooltipVisible: boolean,
     visible: boolean,
 }
 
 export default class PolyRoi extends React.Component<IPolyRoiProps, IPolyRoiState>
 {
-    private roiReference:any = null;
-
     constructor(props: IPolyRoiProps) {
         super(props);
 
+        const pointLength = props.points.length;
+        let xmin = Number.MAX_SAFE_INTEGER;
+        let ymin = Number.MAX_SAFE_INTEGER;
+        let xmax = 0;
+        let ymax = 0;
+        for (let i=0; i < pointLength; i=i+2) {
+            if (xmin > props.points[i]) {
+                xmin = props.points[i];
+            }
+            if (ymin > props.points[i+1]) {
+                ymin = props.points[i + 1];
+            }
+            if (xmax < props.points[i]) {
+                xmax = props.points[i];
+            }
+            if (ymax < props.points[i+1]) {
+                ymax = props.points[i + 1];
+            }
+        }
+        if (pointLength > 2) {
+            xmin += (xmax - xmin)/2
+            ymin += (ymax - ymin)/2
+        }
+
         this.state = {
-            isTooltipVisible: false,
             key: props.id,
             points: props.points,
             text: props.text,
             tooltip: props.tooltip,
-            tooltipX: 0,
-            tooltipY: 0,
+            tooltipX: xmin - 10,
+            tooltipY: ymin - 10,
         }
-    }
-
-    public componentDidMount(): void {
-        const stage = this.roiReference.getStage();
-        this.roiReference.on("mousemove", this.updateTooltipPosition(stage));
-        this.roiReference.on("mouseout", this.hideTooltip);
     }
 
     public render(): JSX.Element[] {
         return(
             [
-            <Line ref={this.setRoiReference}
+            <Line
                 points={this.state.points}
                 key={"r" + this.state.key}
                 closed={true}
@@ -75,7 +90,7 @@ export default class PolyRoi extends React.Component<IPolyRoiProps, IPolyRoiStat
                 x={this.state.tooltipX}
                 y={this.state.tooltipY}
                 text={this.state.text}
-                visible={this.state.isTooltipVisible}
+                visible={this.props.tooltipVisible}
                 fill="white"
                 shadowColor="black"
                 shadowOpacity={1}
@@ -83,26 +98,5 @@ export default class PolyRoi extends React.Component<IPolyRoiProps, IPolyRoiStat
             />
             ]
         );
-    }
-
-    private hideTooltip = (event: any) => {
-        this.setState({
-            isTooltipVisible: false
-        });
-    }
-
-    private updateTooltipPosition = (stage: any) => (event: any) => {
-        const pointer = stage.getPointerPosition();
-        if (pointer !== undefined) {
-            this.setState({
-                isTooltipVisible: true,
-                tooltipX: pointer.x + 10,
-                tooltipY: pointer.y + 10,
-            });
-        }
-    }
-
-    private setRoiReference = (element:any) => {
-        this.roiReference = element
     }
 }
