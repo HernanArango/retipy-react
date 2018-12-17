@@ -164,6 +164,10 @@ const DiagnosticList = withStyles(styles)(
 
         private renderDiagnostic = (diagnostic: ISimpleDiagnostic, key: number) => {
             const { classes } = this.props;
+            let diagnosticName = "<no diagnostic>";
+            if (diagnostic.name && diagnostic.name.length > 0) {
+                diagnosticName = diagnostic.name;
+            }
             return (
                 <Grid key={key} item={true} lg={6} md={6} sm={12} xs={12} justify="center">
                     {this.state.isRedirect && <Redirect to={this.state.redirect} />}
@@ -173,8 +177,8 @@ const DiagnosticList = withStyles(styles)(
                                 <Typography
                                     variant="h6" gutterBottom={true} className={classes.title}
                                 >
-                                    Diagnostic: {diagnostic.name} <br />
-                                    Date: {diagnostic.date.substr(0, 10)}
+                                    Diagnostic: { diagnosticName } <br />
+                                    Date: { diagnostic.date.substr(0, 10) }
                                 </Typography>
                             </Grid>
                             <Grid item={true} lg={6} md={6} sm={6} xs={12} justify="center">
