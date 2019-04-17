@@ -4,7 +4,7 @@ import BookmarkIcon from "@material-ui/icons/Bookmark";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import * as Konva from "konva";
+import Konva from "konva";
 import * as React from "react";
 import Redirector from "../../common/Redirector";
 import { RetipyContextConsumer } from "../../context/RetipyContext";

@@ -67,9 +67,6 @@ const Login = withStyles(styles)(
                                     value={this.state.password}
                                     onChange={this.setPassword}
                                     onKeyDown={this.handleEnterKey}
-                                    inputProps={{
-                                        maxLength: 50
-                                    }}
                                 />
                             </form>
                         </Grid>

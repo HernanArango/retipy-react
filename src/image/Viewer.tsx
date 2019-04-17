@@ -1,5 +1,5 @@
 import { CircularProgress, createStyles, FormControlLabel, Grid, Paper, Switch, Theme, Typography, WithStyles, withStyles } from '@material-ui/core';
-import * as Konva from "konva";
+import Konva from "konva";
 import * as React from 'react';
 import { Image, Layer, Line, Stage } from "react-konva";
 import PolyRoi, { IDisplayRoi } from './Roi';
