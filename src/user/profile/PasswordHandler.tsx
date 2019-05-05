@@ -169,14 +169,16 @@ const PasswordHandler = withStyles(styles)(
                         mode: 'cors',
                         referrer: 'no-referrer',
                     })
+                    .then(response => response.json())
                     .then(response => {
-                        if (!response.ok) {
-                            throw Error("Old password does not match");
+                        if (response.status === 400) {
+                            this.props.toast(response.message);
                         }
-                        this.props.toast("Password Changed")
-                        this.props.closeDialog()
-                    })
-                    .catch(error => this.props.toast(error.message));
+                        else {     
+                            this.props.toast("Password Changed");
+                            this.props.closeDialog();
+                        }
+                    });
             }
         }
     }

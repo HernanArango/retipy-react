@@ -112,16 +112,20 @@ const Login = withStyles(styles)(
                 .then(response => {
                     if (!response.ok)
                     {
-                        throw Error(response.statusText)
+                        return response.json();
                     }
                     return response.text();
                 })
                 .then(token => {
-                    Cookies.set('token', token);
-                    this.setState({ password: "" });
-                    this.props.setLoginData(token)
-                })
-                .catch(() => this.setState({ hasError: true }))
+                    if (token.status === 401) {
+                        this.setState({ hasError: true });
+                    }
+                    else {
+                        Cookies.set('token', token);
+                        this.setState({ password: "" });
+                        this.props.setLoginData(token);
+                    }
+                });
         }
 
         private setUsername = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

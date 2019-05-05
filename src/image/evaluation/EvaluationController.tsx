@@ -28,12 +28,7 @@ export function getEvaluation(id: number, token: string): Promise<any> {
             mode: 'cors',
             referrer: 'no-referrer',
         })
-        .then(response => {
-            if (!response.ok) {
-                throw Error("There was an error retrieving the evaluation data");
-            }
-            return response.json();
-        });
+        .then(response => response.json());
 }
 
 export function getEvaluationList(id: number, token: string): Promise<any> {
@@ -52,12 +47,7 @@ export function getEvaluationList(id: number, token: string): Promise<any> {
             mode: 'cors',
             referrer: 'no-referrer',
         })
-        .then(response => {
-            if (!response.ok) {
-                throw Error("Error when retrieving retipy evaluation list");
-            }
-            return response.json();
-        })
+        .then(response => response.json());
 }
 
 export function createEvaluationForDiagnostic(diagnosticId: number, evaluationTask: string, token: string): Promise<any> {

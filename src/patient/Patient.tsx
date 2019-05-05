@@ -91,22 +91,21 @@ class Patient extends React.Component<IPatientProps, IPatientState> {
                 mode: 'cors',
                 referrer: 'no-referrer',
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw Error("Error when retrieving patient");
-                }
-                return response.json();
-            })
-            .then(doctorList => {
-                const doctorMap = new Map();
-                for(const doctor of doctorList)
-                {
-                    doctorMap.set(doctor.id, doctor);
-                }
+            .then(response => response.json())
 
-                this.setState({ doctors: doctorMap });
-            })
-            .catch(error => this.setState({ doctors: new Map() }));
+            .then(response => {
+                if (response.status === 400) {
+                    this.props.toast(response.message);
+                    this.setState({ doctors: new Map() });
+                }
+                else {
+                    const doctorMap = new Map();
+                    for (const doctor of response) {
+                        doctorMap.set(doctor.id, doctor);
+                    }
+                    this.setState({ doctors: doctorMap });
+                }
+            });
 
         if (props.id !== 0) {
             this.fetchPatient();
@@ -175,13 +174,16 @@ class Patient extends React.Component<IPatientProps, IPatientState> {
                     referrer: 'no-referrer',
                 })
                 .then(response => {
-                    if (!response.ok) {
-                        throw Error("Error when retrieving patient");
-                    }
                     return response.json();
                 })
-                .then(restPatient => this.updatePatient(restPatient))
-                .catch(error => this.props.toast(error.message));
+                .then(response => {
+                    if (response.status === 400) {
+                        this.props.toast(response.message);
+                    }
+                    else {
+                        this.updatePatient(response);
+                    }
+                });
         }
     }
 
@@ -208,17 +210,18 @@ class Patient extends React.Component<IPatientProps, IPatientState> {
             }
         )
             .then(response => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
                 return response.json();
             })
-            .then(restPatient => {
-                this.props.toast(message);
-                this.updatePatient(restPatient);
-                this.props.history.push(`/patient/${restPatient.id}`);
-            })
-            .catch(error => this.props.toast(error.message));
+            .then((response:any)  => {
+                if (response.status === 400) {
+                    this.props.toast(response.message);
+                }
+                else {
+                    this.props.toast(message);
+                    this.updatePatient(response);
+                    this.props.history.push(`/patient/${response.id}`);
+                }
+            });
     };
 
     private updatePatient = (restPatient: any) => {

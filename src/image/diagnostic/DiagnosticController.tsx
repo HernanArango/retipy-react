@@ -14,12 +14,7 @@ export function getDiagnostic(diagnosticId: number, token: string): Promise<any>
             mode: 'cors',
             referrer: 'no-referrer',
         })
-        .then(response => {
-            if (!response.ok) {
-                throw Error("There was an error retrieving the diagnostic data");
-            }
-            return response.json();
-        });
+        .then(response => response.json());
 }
 
 export function saveDiagnostic(
@@ -44,14 +39,13 @@ export function saveDiagnostic(
             mode: 'cors',
             referrer: 'no-referrer',
         })
+        .then(response => response.json())
         .then(response => {
-            if (!response.ok) {
-                throw Error("There was an error saving the diagnostic");
+            if (response.status === 400) {
+                toast(response.message);
             }
-            return response.json();
-        })
-        .then(restDiagnostic => {
-            toast("Diagnostic Updated Successfully");
-        })
-        .catch(error => toast(error.message));
+            else {
+                toast("Diagnostic Updated Successfully");
+            }
+        });
 }

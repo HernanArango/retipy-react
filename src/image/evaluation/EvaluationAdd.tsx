@@ -50,16 +50,16 @@ class EvaluationAdd extends React.Component<IEvaluationAddProps, IEvaluationAddS
                 this.props.diagnosticId,
                 this.state.selection.toString(),
                 this.props.token)
+                .then(response => response.json())
                 .then(response => {
-                    if (!response.ok) {
-                        throw Error("Error when sending new evaluation request");
+                    if (response.status === 400) {
+                        this.props.toast(response.message);
                     }
                     else {
                         this.props.toast(
                             "New evaluation request successfully created, come back later to check the results");
                     }
-                })
-                .catch(error => this.props.toast(error.message));
+                });
         }
     }
 }

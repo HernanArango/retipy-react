@@ -61,13 +61,16 @@ class EvaluationList extends React.Component<IDiagnosticProps, IEvaluationListSt
     private fetchEvaluationList = () => {
         if (this.props.token !== "") {
             getEvaluationList(this.props.id, this.props.token)
-                .then(data => {
-                    this.setState(
-                        {
-                            evaluationList: data.evaluationList,
+                .then(response => {
+                    if (response.status === 400) {  
+                        this.props.toast(response.message); 
+                    }   
+                    else {
+                        this.setState({
+                            evaluationList: response.evaluationList,
                         });
-                })
-                .catch(error => this.props.toast(error.message));
+                    }
+                });
         }
     }
 }

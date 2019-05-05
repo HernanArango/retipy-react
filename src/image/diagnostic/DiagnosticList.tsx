@@ -110,16 +110,17 @@ const DiagnosticList = withStyles(styles)(
                         mode: 'cors',
                         referrer: 'no-referrer',
                     })
+                    .then(response => response.json())
                     .then(response => {
-                        if (!response.ok) {
-                            throw Error("Error when retrieving OpticalEvaluation");
+                        if (response.status === 400) {
+                            this.props.toast(response.message);
                         }
-                        return response.json();
-                    })
-                    .then(diagnosticList => this.setState({
-                        diagnostics: diagnosticList.diagnosticList,
-                    }))
-                    .catch(error => this.props.toast(error.message));
+                        else {
+                            this.setState({
+                                diagnostics: response.diagnosticList,
+                            });
+                        }
+                    });
             }
         }
         private handleDeleteDiagnostic = (diagnosticId: number) => (_: React.MouseEvent<HTMLElement>) => {

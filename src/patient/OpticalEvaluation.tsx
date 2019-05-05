@@ -107,14 +107,15 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                     mode: 'cors',
                     referrer: 'no-referrer',
                 })
+                .then(response => response.json())
                 .then(response => {
-                    if (!response.ok) {
-                        throw Error("Error when retrieving OpticalEvaluation");
+                    if (response.status === 400) {
+                        this.props.toast(response.message);
                     }
-                    return response.json();
-                })
-                .then(restOpticalEvaluation => this.updateOpticalEvaluation(restOpticalEvaluation))
-                .catch(error => this.props.toast(error.message));
+                    else {
+                        this.updateOpticalEvaluation(response);
+                    }
+                });
         }
     }
 
@@ -149,20 +150,17 @@ class OpticalEvaluation extends React.Component<IOpticalEvaluationProps, IOptica
                 referrer: 'no-referrer',
             }
         )
-        .then(response =>
-            {
-                if(!response.ok)
-                {
-                    throw Error("There was an error saving the current patient");
-                }
-                return response.json();
-            })
-        .then(restOpticalEvaluation => {
-            this.props.toast(message);
-            this.updateOpticalEvaluation(restOpticalEvaluation);
-            this.props.history.push(`/patient/${this.props.patientId}/opticalevaluation/${restOpticalEvaluation.id}`);
-        })
-        .catch(error => this.props.toast(error.message));
+        .then(response => response.json())
+        .then(response => {
+            if (response.status === 400) {
+                this.props.toast(response.message);
+            }
+            else {
+                this.props.toast(message);
+                this.updateOpticalEvaluation(response);
+                this.props.history.push(`/patient/${this.props.patientId}/opticalevaluation/${response.id}`);
+            }
+        });
     };
 
     private updateOpticalEvaluation = (restOpticalEvaluation: IOpticalEvaluation) => {

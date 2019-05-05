@@ -98,28 +98,25 @@ const DiagnosticUpload = withStyles(styles)(
                     },
                     method: 'POST',
                     mode: 'cors',
-                }).then(response => {
-                    if (!response.ok)
-                    {
-                        throw Error("Error when uploading diagnostic");
+                })
+                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 400) {
+                        this.props.toast(response.message);
+                        this.setState({
+                            isUploading: false,
+                            uploadButtonText: this.UPLOAD_BUTTON_TEXT,
+                         });
                     }
-                    return response.json();
-                })
-                .then(diagnostic => {
-                  this.props.toast("Upload Successful");
-                  this.setState({
-                      isRedirect: true,
-                      isUploading: false,
-                      redirect: `/patient/${this.props.patientId}/opticalEvaluation/${this.props.opticalEvaluationId}/diagnostic/${diagnostic.id}/edit`,
-                      uploadButtonText: this.UPLOAD_BUTTON_TEXT,
-                    });
-                })
-                .catch(error => {
-                  this.props.toast("Error when uploading diagnostic");
-                  this.setState({
-                    isUploading: false,
-                    uploadButtonText: this.UPLOAD_BUTTON_TEXT,
-                 });
+                    else {
+                        this.props.toast("Upload Successful");
+                        this.setState({
+                            isRedirect: true,
+                            isUploading: false,
+                            redirect: `/patient/${this.props.patientId}/opticalEvaluation/${this.props.opticalEvaluationId}/diagnostic/${response.id}/edit`,
+                            uploadButtonText: this.UPLOAD_BUTTON_TEXT,
+                        });
+                    }
                 });
             }
             else {

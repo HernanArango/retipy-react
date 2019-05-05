@@ -172,14 +172,16 @@ const CreateUserDialog = withStyles(styles)(
                         mode: 'cors',
                         referrer: 'no-referrer',
                     })
+                    .then(response => response.json())
                     .then(response => {
-                        if (!response.ok) {
-                            throw Error("Error when creating user");
-                        }
+                    if (response.status === 400) {
+                        this.props.toast(response.message);
+                    }
+                    else {
                         this.props.toast("User created successfully")
                         this.props.closeDialog()
-                    })
-                    .catch(error => this.props.toast(error.message));
+                    }
+                    });
             }
         }
 

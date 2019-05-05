@@ -118,8 +118,14 @@ class Diagnostic extends React.Component<IDiagnosticProps, IDiagnosticState> {
 
     private fetchDiagnostic = () => {
         getDiagnostic(this.state.id, this.props.token)
-            .then(data => this.updateDiagnostic(data))
-            .catch(error => this.props.toast(error.message));
+            .then(response => {
+                if (response.status === 400) {
+                    this.props.toast(response.message);
+                }
+                else {
+                    this.updateDiagnostic(response);
+                }
+            });
     }
 
     private handleUpdateDiagnostic = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

@@ -95,8 +95,14 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
     private fetchEvaluation = () => {
         if (this.props.token !== "") {
             getEvaluation(this.props.id, this.props.token)
-                .then(data => this.setEvaluation(data))
-                .catch(error => this.props.toast(error.message));
+                .then(response => {
+                    if (response.status === 400) {
+                        this.props.toast(response.message);
+                    }
+                    else {
+                        this.setEvaluation(response);
+                    }
+                });
         }
     }
 

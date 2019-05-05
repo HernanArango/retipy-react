@@ -169,19 +169,17 @@ const PatientList = withStyles(styles)(
                         mode: 'cors',
                         referrer: 'no-referrer',
                     })
+                    .then(response => response.json())
                     .then(response => {
-                        if (!response.ok) {
-                            throw Error("Not logged in");
+                        if (response.status === 400) {
+                            this.props.toast(response.message);
                         }
-                        return response.json();
-                    })
-                    .then(data => {
-                        this.setState(
-                            {
-                                patientList: data.patientList,
+                        else {
+                            this.setState({
+                                patientList: response.patientList,
                             });
-                    })
-                    .catch(error => this.props.toast(error.message));
+                        }
+                    });
             }
         }
 
