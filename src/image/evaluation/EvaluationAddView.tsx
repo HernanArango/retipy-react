@@ -57,6 +57,9 @@ const EvaluationAddView = withStyles(styles)(
                             <MenuItem key={RetipyTask.LandmarksClassification} value={RetipyTask.LandmarksClassification}>
                                 Landmarks and Bifurcations
                             </MenuItem>
+                            <MenuItem key={RetipyTask.VesselsClassification} value={RetipyTask.VesselsClassification}>
+                                Vessel Classification
+                            </MenuItem>
                         </TextField>
                         <Button
                             className={classes.button}

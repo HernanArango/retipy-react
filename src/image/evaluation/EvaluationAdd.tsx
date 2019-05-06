@@ -8,6 +8,7 @@ export enum RetipyTask {
     TortuosityFractal = "TortuosityFractal",
     LandmarksClassification = "LandmarksClassification",
     Segmentation = "Segmentation",
+    VesselsClassification = "VesselsClassification",
 
 }
 
@@ -50,7 +51,13 @@ class EvaluationAdd extends React.Component<IEvaluationAddProps, IEvaluationAddS
                 this.props.diagnosticId,
                 this.state.selection.toString(),
                 this.props.token)
-                .then(response => response.json())
+                .then(response => {
+                    if(!response.ok) {
+                        return response.json();
+                    } else {
+                        return response.text();
+                    }
+                })
                 .then(response => {
                     if (response.status === 400) {
                         this.props.toast(response.message);
