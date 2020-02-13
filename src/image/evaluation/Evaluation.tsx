@@ -16,10 +16,13 @@ export interface IEvaluation {
     diagnosticId: number,
     id: number,
     image: string,
+    // information: string,
+    information: [],
     name: string,
     rois: IRoi[],
     status: EvaluationStatus,
     updateDate: string,
+
 }
 
 export interface IDisplayEvaluation extends IEvaluation {
@@ -51,12 +54,14 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
             image: "",
             imageHeight: 600,
             imageWidth: 600,
+            information: [],
             isImageLoaded: false,
             name: "",
             ratio: 1,
             rois: [],
             status: EvaluationStatus.Error,
             updateDate: "",
+
         }
 
         if (this.props.id !== 0) {
@@ -84,6 +89,7 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
                 ratio={this.state.ratio}
                 opticalEvaluationId={this.props.opticalEvaluationId}
                 patientId={this.props.patientId}
+                information = {this.state.information}
             />
         );
     }
@@ -111,9 +117,12 @@ class Evaluation extends React.Component<IEvaluationProps, IDisplayEvaluation> {
         const { displayImage } = this.state;
         displayImage.onload = this.updateEvaluationImageOnLoad(restEvaluation);
         displayImage.src = "data:image/png;base64," + restEvaluation.image;
+        // restEvaluation.information.split(",")
         this.setState({
             'displayImage': displayImage,
+            'information' : restEvaluation.information.split(",")
         });
+
         this.props.toast("Evaluation Loaded Successfully");
     }
 

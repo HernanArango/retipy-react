@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, IconButton, Paper, TextField, Typography } from "@material-ui/core";
+import { Button, CircularProgress, Grid, IconButton, ListItem, ListItemText,Paper, TextField, Typography,   } from "@material-ui/core";
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -153,6 +153,19 @@ const EvaluationView = withStyles(styles)(
                                                 disabled={true}
                                             />
                                         </Grid>
+                                        {this.props.information &&
+                                            <Grid item={true} xs={12}>
+                                            <Typography variant="h6">Aditional Information</Typography>
+
+                                                {this.props.information.map(item => (
+                                                  <ListItem key={`item-${item}-${item}`}>
+                                                    <ListItemText primary={item} />
+                                                  </ListItem>
+                                                ))}
+
+
+                                            </Grid>
+                                        }
                                         <Grid item={true} xs={12}>
                                             {this.state.isRedirect && <Redirect to={this.state.redirect} />}
                                             <Button
@@ -172,7 +185,7 @@ const EvaluationView = withStyles(styles)(
                 </div>
                     );
                 }
-        
+
         private handleDelete = () => {
                         this.props.handleDeleteEvaluation()
                             .then(response => {
@@ -188,6 +201,7 @@ const EvaluationView = withStyles(styles)(
                             redirect: `/patient/${this.props.patientId}/opticalevaluation/${this.props.opticalEvaluationId}/diagnostic/${this.props.diagnosticId}`
                         })
                     }
+
 
                     private renderExistingRoi = () => {
             const renderedRoi: JSX.Element[] = [];
@@ -207,5 +221,5 @@ const EvaluationView = withStyles(styles)(
                     return renderedRoi;
                 }
             });
-        
+
         export default EvaluationView;

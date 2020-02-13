@@ -9,6 +9,8 @@ export enum RetipyTask {
     LandmarksClassification = "LandmarksClassification",
     Segmentation = "Segmentation",
     VesselsClassification = "VesselsClassification",
+    DrusenClassificationBySize = "DrusenClassificationBySize",
+    
 
 }
 

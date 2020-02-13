@@ -60,6 +60,9 @@ const EvaluationAddView = withStyles(styles)(
                             <MenuItem key={RetipyTask.VesselsClassification} value={RetipyTask.VesselsClassification}>
                                 Vessel Classification
                             </MenuItem>
+			   <MenuItem key={RetipyTask.DrusenClassificationBySize} value={RetipyTask.DrusenClassificationBySize}>
+				Drusen Segmentation and Size Classification
+                            </MenuItem>
                         </TextField>
                         <Button
                             className={classes.button}
