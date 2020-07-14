@@ -8,11 +8,11 @@ const styles = (theme: Theme) =>
     createStyles({
         button: {
             justify: 'center',
-            margin: theme.spacing.unit * 2,
+            margin: theme.spacing() * 2,
         },
         textField: {
-            marginLeft: theme.spacing.unit,
-            marginRight: theme.spacing.unit,
+            marginLeft: theme.spacing(),
+            marginRight: theme.spacing(),
         },
     });
 

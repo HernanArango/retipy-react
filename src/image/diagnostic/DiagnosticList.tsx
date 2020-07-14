@@ -9,17 +9,17 @@ import { Endpoints, RetipyObjects } from "../../configuration/Endpoints";
 const styles = (theme: Theme) => createStyles({
     button: {
         justify: 'center',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     buttonSmall: {
         align: 'right',
         justify: 'center',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     heading: {
         align: "left",
@@ -27,15 +27,15 @@ const styles = (theme: Theme) => createStyles({
         justify: "center",
     },
     leftIcon: {
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(),
     },
     paper: {
         color: theme.palette.text.secondary,
-        padding: theme.spacing.unit,
+        padding: theme.spacing(),
         textAlign: 'center',
     },
     rightIcon: {
-        marginLeft: theme.spacing.unit,
+        marginLeft: theme.spacing(),
     },
     root: {
         display: 'flex',
@@ -45,10 +45,10 @@ const styles = (theme: Theme) => createStyles({
     },
     textField: {
         flexGrow: 1,
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(),
     },
     title: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing(2),
         verticalAlign: 'middle',
     },
 });
@@ -85,7 +85,7 @@ const DiagnosticList = withStyles(styles)(
         public render() {
             const { classes } = this.props;
             return (
-                <Grid container={true} spacing={16} justify={'center'} className={classes.container} >
+                <Grid container={true} spacing={10} justify={'center'} className={classes.container} >
                     <Grid item={true} lg={12} md={12} sm={12} xs={12}>
                         <Grid container={true} >
                             {this.renderDiagnostics()}
@@ -205,7 +205,7 @@ const DiagnosticList = withStyles(styles)(
                                 </Button>
                                 <Button
                                     className={classes.buttonSmall}
-                                    variant="flat"
+                                    variant="text"
                                     color="secondary"
                                     size="small"
                                     onClick={this.handleDeleteDiagnostic(diagnostic.id)}

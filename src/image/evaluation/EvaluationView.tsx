@@ -1,39 +1,40 @@
-import { Button, CircularProgress, Grid, IconButton, ListItem, ListItemText,Paper, TextField, Typography,   } from "@material-ui/core";
+import { Button, CircularProgress, Grid, IconButton, ListItem, ListItemText,Paper, TextField, Typography } from "@material-ui/core";
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import DeleteIcon from "@material-ui/icons/Delete";
 import * as React from "react";
-import { Image, Layer, Stage } from "react-konva";
+import PanZoom from 'react-image-leaflet';
 import { Redirect } from "react-router";
 import PolyRoi from "../Roi";
 import { IDisplayEvaluation } from "./Evaluation";
 
+
 const styles = (theme: Theme) => createStyles({
     button: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     close: {
-        height: theme.spacing.unit * 4,
-        width: theme.spacing.unit * 4,
+        height: theme.spacing() * 4,
+        width: theme.spacing() * 4,
     },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     leftIcon: {
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(),
     },
     paper: {
         color: theme.palette.text.secondary,
-        padding: theme.spacing.unit * 2,
+        padding: theme.spacing() * 2,
         textAlign: 'center',
     },
     progress: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing() * 2,
     },
     roiButton: {
-        margin: theme.spacing.unit / 2,
+        margin: theme.spacing() / 2,
     },
     root: {
         backgroundColor: theme.palette.background.paper,
@@ -43,8 +44,8 @@ const styles = (theme: Theme) => createStyles({
         overflow: 'hidden',
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(),
+        marginRight: theme.spacing(),
         width: 200,
     },
 });
@@ -76,16 +77,20 @@ const EvaluationView = withStyles(styles)(
 
         public render(): JSX.Element {
             const { classes } = this.props;
+
             return (
                 <div className={classes.root}>
                     <Grid
                         container={true}
-                        spacing={16}
+                        spacing={10}
                         className={classes.container}
                         justify="center"
                     >
                         <Grid item={true} xs={12} sm={12} > {/* Konva div */}
+
                             <Grid container={true} justify="center">
+
+
                                 {!this.props.isImageLoaded &&
                                     <Paper className={this.props.classes.paper}>
                                         <CircularProgress className={classes.progress} />
@@ -94,22 +99,23 @@ const EvaluationView = withStyles(styles)(
                                 {this.props.isImageLoaded &&
                                     <Paper className={this.props.classes.paper}>
                                         <Typography variant="h4">Evaluation</Typography>
-                                        <Stage
-                                            width={this.props.imageWidth}
-                                            height={this.props.imageHeight}
-                                        >
-                                            <Layer>
-                                                <Image
-                                                    image={this.props.displayImage}
-                                                    width={this.props.imageWidth}
-                                                    height={this.props.imageHeight}
-                                                />
-                                            </Layer>
-                                            <Layer>
-                                                {this.renderExistingRoi()}
-                                            </Layer>
-                                        </Stage>
+
+                                        <div style={{ width: `${this.props.imageWidth}px`, height: `${this.props.imageHeight}px` }}>
+                                        <PanZoom
+                                            url={this.props.displayImage.src}
+                                        />
+
+                                        </div>
+                                        {this.renderExistingRoi()}
+
+                                       <a href={this.props.displayImage.src} download={"Drusen"+this.props.creationDate}>
+                                       <input type="button" value="Download" style={{height: "30px", marginTop:"15px"}}/></a>
+
+
                                     </Paper>
+
+
+
                                 }
                             </Grid>
                         </Grid>

@@ -7,11 +7,11 @@ import { IEvaluationSimple } from './EvaluationList';
 
 const styles = (theme: Theme) => createStyles({
     button: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     paper: {
         color: theme.palette.text.secondary,
-        padding: theme.spacing.unit * 2,
+        padding: theme.spacing() * 2,
         textAlign: 'center',
     },
 });

@@ -5,10 +5,10 @@ import { Redirect } from 'react-router';
 
 const styles = (theme: Theme) => createStyles({
     button: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
     },
     leftIcon: {
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(1),
     },
 });
 

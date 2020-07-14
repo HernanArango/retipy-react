@@ -8,7 +8,7 @@ const styles = (theme: Theme) =>
         container: {
             display: 'flex',
             flexWrap: 'wrap',
-            margin: theme.spacing.unit,
+            margin: theme.spacing(),
         },
         root: {
             display: 'flex',
@@ -18,13 +18,13 @@ const styles = (theme: Theme) =>
             overflow: 'hidden',
         },
         title: {
-            margin: theme.spacing.unit * 2,
+            margin: theme.spacing() * 2,
         },
     });
 
 const LoginError = withStyles(styles)(({ classes }: WithStyles<typeof styles>) => (
     <div className={classes.root}>
-    <Grid container={true} spacing={16} className={classes.container} justify={'center'}>
+    <Grid container={true} spacing={10} className={classes.container} justify={'center'}>
         <Typography variant="h4" className={classes.title}>You are not logged in</Typography>
     </Grid>
     </div>

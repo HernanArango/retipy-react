@@ -16,30 +16,30 @@ import { IDisplayDiagnostic } from "./Diagnostic";
 
 const styles = (theme: Theme) => createStyles({
     button: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     close: {
-        height: theme.spacing.unit * 4,
-        width: theme.spacing.unit * 4,
+        height: theme.spacing() * 4,
+        width: theme.spacing() * 4,
     },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     leftIcon: {
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(),
     },
     paper: {
         color: theme.palette.text.secondary,
-        padding: theme.spacing.unit * 2,
+        padding: theme.spacing() * 2,
         textAlign: 'center',
     },
     progress: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing() * 2,
     },
     roiButton: {
-        margin: theme.spacing.unit / 2,
+        margin: theme.spacing() / 2,
     },
     root: {
         backgroundColor: theme.palette.background.paper,
@@ -49,8 +49,8 @@ const styles = (theme: Theme) => createStyles({
         overflow: 'hidden',
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(),
+        marginRight: theme.spacing(),
         width: 200,
     },
 });
@@ -105,7 +105,7 @@ const DiagnosticView = withStyles(styles)(
                 <div className={classes.root}>
                     <Grid
                         container={true}
-                        spacing={16}
+                        spacing={10}
                         className={classes.container}
                         justify="center"
                     >
@@ -352,17 +352,30 @@ const DiagnosticView = withStyles(styles)(
                     isDrawing: true,
                 })
                 if (this.image !== null) {
+                    
                     const stage = this.image.getStage();
-                    const point = stage.getPointerPosition();
-                    this.props.handleRoiAddPoints(point.x, point.y);
+
+                    if (stage !== null) {
+                        const point = stage.getPointerPosition();
+                        if (point !== null) {
+                            this.props.handleRoiAddPoints(point.x, point.y);
+                        }
+                    }
+                    
                 }
             }
         }
 
         private handleMouseMove = () => {
             if (this.state.isDrawing && this.image !== null) {
-                const point = this.image.getStage().getPointerPosition();
-                this.props.handleRoiAddPoints(point.x, point.y);
+                const stage = this.image.getStage();
+                if (stage !== null) {
+                    const point = stage.getPointerPosition();
+                    if (point !== null) {
+                        this.props.handleRoiAddPoints(point.x, point.y);
+                    }
+                }
+                
             }
         }
 

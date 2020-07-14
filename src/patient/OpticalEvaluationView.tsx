@@ -12,17 +12,17 @@ import { IOpticalEvaluation } from "./Patient";
 const styles = (theme: Theme) => createStyles({
     button: {
         justify: 'center',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     buttonSmall: {
         align: 'right',
         justify: 'center',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     heading: {
         align: "left",
@@ -30,15 +30,15 @@ const styles = (theme: Theme) => createStyles({
         justify: "center",
     },
     leftIcon: {
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(),
     },
     paper: {
         color: theme.palette.text.secondary,
-        padding: theme.spacing.unit,
+        padding: theme.spacing(),
         textAlign: 'center',
     },
     rightIcon: {
-        marginLeft: theme.spacing.unit,
+        marginLeft: theme.spacing(),
     },
     root: {
         display: 'flex',
@@ -48,10 +48,10 @@ const styles = (theme: Theme) => createStyles({
     },
     textField: {
         flexGrow: 1,
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(),
     },
     title: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing() * 2,
         verticalAlign: 'middle',
     },
 });
@@ -144,7 +144,7 @@ const OpticalEvaluationView = withStyles(styles)(
             const { classes } = this.props;
             return (
                 <div className={classes.root}>
-                    <Grid container={true} spacing={16} justify={'center'} className={classes.container} >
+                    <Grid container={true} spacing={10} justify={'center'} className={classes.container} >
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                             <Typography
                                 className={classes.heading}
@@ -156,7 +156,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                 Version {this.props.version}
                             </Typography>
                             <Paper className={classes.paper} >
-                                <Grid container={true} spacing={16} justify={'space-around'} >
+                                <Grid container={true} spacing={10} justify={'space-around'} >
                                     <Grid item={true} lg={12} md={12} sm={12} xs={12}>
 
                                         &nbsp;&nbsp;&nbsp;
@@ -317,8 +317,8 @@ const OpticalEvaluationView = withStyles(styles)(
                                     </Grid>
                                     <Grid item={true} lg={12} md={12} sm={12} xs={12}>
                                         <Typography variant="h4">Biomicroscopy</Typography>
-                                        <Grid container={true} spacing={16} justify={'space-around'}>
-                                            <Grid item={true} lg={10} md={10} sm={10} xs={8}>
+                                        <Grid container={true} spacing={10} justify={'space-around'}>
+                                            <Grid item={true} lg={9} md={9} sm={9} xs={8}>
                                                 <TextField
                                                     id="new-component-name"
                                                     disabled={this.props.disabled}
@@ -339,7 +339,7 @@ const OpticalEvaluationView = withStyles(styles)(
                                                 >
                                                     <AddIcon />
                                                     Add
-                                        </Button>
+                                                </Button>
                                             </Grid>
                                             {this.loadFields()}
                                         </Grid>

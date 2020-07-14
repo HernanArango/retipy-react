@@ -6,7 +6,7 @@ import PolyRoi, { IDisplayRoi } from './Roi';
 
 const styles = (theme: Theme) => createStyles({
     progress: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing() * 2,
     },
 });
 interface IViewerProps extends WithStyles<typeof styles> {

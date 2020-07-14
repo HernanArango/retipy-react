@@ -16,7 +16,6 @@ export interface IEvaluation {
     diagnosticId: number,
     id: number,
     image: string,
-    // information: string,
     information: [],
     name: string,
     rois: IRoi[],

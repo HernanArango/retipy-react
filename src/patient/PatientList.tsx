@@ -13,17 +13,17 @@ const styles = (theme: Theme) =>
         button: {
             alignContent: 'right',
             float: 'right',
-            margin: theme.spacing.unit,
-            paddingLeft: theme.spacing.unit,
+            margin: theme.spacing(),
+            paddingLeft: theme.spacing(),
         },
         container: {
             display: 'flex',
             flexWrap: 'wrap',
-            margin: theme.spacing.unit,
+            margin: theme.spacing(),
         },
         paper: {
             color: theme.palette.text.secondary,
-            padding: theme.spacing.unit,
+            padding: theme.spacing(),
             textAlign: 'center',
         },
         root: {
@@ -35,11 +35,11 @@ const styles = (theme: Theme) =>
             overflow: 'hidden',
         },
         textField: {
-            marginRight: theme.spacing.unit,
+            marginRight: theme.spacing(),
         },
         title: {
             flexGrow: 1,
-            margin: theme.spacing.unit * 2,
+            margin: theme.spacing() * 2,
         },
     });
 
@@ -81,9 +81,9 @@ const PatientList = withStyles(styles)(
             const { classes } = this.props;
             return (
                 <div className={classes.root}>
-                    <Grid container={true} spacing={16} className={classes.container} justify={'center'}>
+                    <Grid container={true} spacing={10} className={classes.container} justify={'center'}>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
-                            <Grid container={true} spacing={16} justify={'space-around'}>
+                            <Grid container={true} spacing={10} justify={'space-around'}>
                                 <Grid item={true} lg={9} md={9} sm={8} xs={8}>
                                     <Typography variant="h4" className={classes.title} >Patient List</Typography>
                                 </Grid>
@@ -102,7 +102,7 @@ const PatientList = withStyles(styles)(
                                 }
                             </Grid>
                             <Paper className={classes.paper}>
-                                <Grid container={true} spacing={16} justify={'space-around'}>
+                                <Grid container={true} spacing={10} justify={'space-around'}>
                                     <Grid item={true} lg={11} md={11} sm={11} xs={10}>
                                         <TextField
                                             id="search"

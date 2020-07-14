@@ -15,31 +15,31 @@ import { IPatient } from "./Patient";
 const styles = (theme: Theme) =>
     createStyles({
         button: {
-            margin: theme.spacing.unit,
+            margin: theme.spacing(),
         },
         buttonSmall: {
             align: 'right',
             justify: 'center',
-            margin: theme.spacing.unit,
+            margin: theme.spacing(),
         },
         chip: {
-          margin: theme.spacing.unit / 4,
+          margin: theme.spacing() / 4,
         },
         container: {
             display: 'flex',
             flexWrap: 'wrap',
-            margin: theme.spacing.unit,
+            margin: theme.spacing(),
         },
         leftIcon: {
-            marginRight: theme.spacing.unit,
+            marginRight: theme.spacing(),
         },
         paper: {
             color: theme.palette.text.secondary,
-            padding: theme.spacing.unit,
+            padding: theme.spacing(),
             textAlign: 'center',
         },
         rightIcon: {
-            marginLeft: theme.spacing.unit,
+            marginLeft: theme.spacing(),
         },
         root: {
             display: 'flex',
@@ -48,10 +48,10 @@ const styles = (theme: Theme) =>
             overflow: 'hidden',
         },
         textField: {
-            marginRight: theme.spacing.unit,
+            marginRight: theme.spacing(),
         },
         title: {
-            margin: theme.spacing.unit * 2,
+            margin: theme.spacing() * 2,
             verticalAlign: 'middle',
         },
     });
@@ -116,14 +116,14 @@ const PatientView = withStyles(styles)(
             const { classes } = this.props;
             return (
                 <div className={classes.root}>
-                    <Grid container={true} spacing={16} className={classes.container} justify={'center'}>
+                    <Grid container={true} spacing={10} className={classes.container} justify={'center'}>
                         <Grid item={true} lg={8} md={10} sm={12} xs={12}>
                             <Typography variant="h4" className={classes.title}>
                                 Patient: Demographic Data
                             </Typography>
                             <Paper className={classes.paper}>
                                 <form>
-                                    <Grid container={true} spacing={16} justify={'space-around'}>
+                                    <Grid container={true} spacing={10} justify={'space-around'}>
                                         <Grid item={true} lg={11} md={11} sm={12} xs={12}>
                                             <TextField
                                                 required={true}
@@ -207,7 +207,7 @@ const PatientView = withStyles(styles)(
                                                 disabled={this.props.disabled}
                                                 value={this.props.origin}
                                                 onChange={this.handleEventChange('origin')}
-                                                label="Origin"
+                                                label="City"
                                                 margin="normal"
                                                 fullWidth={true}
                                             />
@@ -220,7 +220,7 @@ const PatientView = withStyles(styles)(
                                                 disabled={this.props.disabled}
                                                 value={this.props.procedence}
                                                 onChange={this.handleEventChange('procedence')}
-                                                label="Procedence"
+                                                label="State"
                                                 fullWidth={true}
                                                 margin="normal"
                                             />

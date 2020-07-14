@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import CreatableSelect from 'react-select/lib/Creatable';
+import CreatableSelect from 'react-select';
 
 
 const styles = theme => ({
@@ -24,7 +24,9 @@ const styles = theme => ({
   },
   input: {
     display: 'flex',
+    height: "auto",
     padding: 0,
+
   },
   noOptionsMessage: {
     fontSize: 14,
